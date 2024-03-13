@@ -7,7 +7,8 @@ from .managers import (
         OwnerObjects
     )
 from .types import UserTypes
-# Create your models here.
+from uuid import uuid4
+
 
 class Project(models.Model):
     name = models.CharField(verbose_name="Project Name", max_length=100)
@@ -23,14 +24,14 @@ class Department(models.Model):
 
 
 class User(AbstractUser):
-
+    ## managers with customization
     objects = CustomUserManager()
-
     owners = OwnerObjects()
-
     managers = ManagerObjects()
-
     agents = AgentObjects()
+
+    ### other normal fields 
+    uuid = models.CharField(verbose_name='UUID' , max_length= 250 , default=uuid4 )
 
     _password = models.CharField(verbose_name='Password Without Hash (Required)', max_length=128)
 

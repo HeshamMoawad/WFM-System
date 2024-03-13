@@ -4,13 +4,39 @@ from .models import (
     Department ,
     Project ,
 )
-
+from utils.users import FieldSets
 
 # Register your models here.
 class UserAdminSite(admin.ModelAdmin):
     list_display = ("username",'role',"project","is_staff","is_superuser")
     list_filter = ("project","role")
-    # search_fields = ['username']  
+    readonly_fields = ['uuid']
+    fieldsets = FieldSets([
+            'Login Fields' ,
+            'Status Fields',
+            'Other Fields'
+        ],[
+            [
+                "uuid" ,
+                'username',
+                '_password',
+                'is_superuser',
+                'is_staff',
+                'is_active',
+            ] ,
+            [
+                "project",
+                "role",
+                "title",
+                "department" ,
+                "basic" ,
+            ],
+            [
+                "first_name",
+                "last_name",
+            ]
+    ]).fieldsets
+    search_fields = ['username' , 'uuid' , 'first_name']  
 
 
 admin.site.register(User , UserAdminSite)
