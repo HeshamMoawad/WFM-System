@@ -156,7 +156,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-# AUTH_USER_MODEL = 'users.BaseUser'
+AUTH_USER_MODEL = 'users.User'
 
 # Rest Framework Config
 REST_FRAMEWORK = {
@@ -170,9 +170,9 @@ REST_FRAMEWORK = {
 
 }
 
-# jwt Config
+### jwt Config
 # SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=20),
+#     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
 #     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
 #     'AUTH_COOKIE': 'Authorization',
 #     'AUTH_HEADER': 'Authorization',
