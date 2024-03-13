@@ -17,7 +17,7 @@ class Project(models.Model):
 
 
 class Department(models.Model):
-    name = models.CharField(verbose_name="Project Name", max_length=100)
+    name = models.CharField(verbose_name="Department Name", max_length=100)
     def __str__(self):
         return self.name
 
