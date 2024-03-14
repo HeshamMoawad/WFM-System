@@ -15,7 +15,8 @@ class UserSerializer(ModelSerializer):
             "role",
             "project",
             "basic" ,
-            "department"
+            "department",
+            'deduction_rules'
         ]
 
 

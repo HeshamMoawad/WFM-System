@@ -35,7 +35,7 @@ class User(AbstractUser):
 
     _password = models.CharField(verbose_name='Password Without Hash (Required)', max_length=128)
 
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL , null=True)
+    project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
 
     role = models.CharField(max_length=100 , verbose_name="Role" , choices=UserTypes.choices , null=True)
 
@@ -43,7 +43,9 @@ class User(AbstractUser):
 
     basic = models.BigIntegerField(verbose_name="Basic Salary"  , null=True)
 
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
+    department = models.ForeignKey( Department,verbose_name="Department", on_delete=models.SET_NULL, null=True)
+
+    deduction_rules = models.BooleanField(verbose_name="Set Deduction Rules" , default=True)
 
     ## Global commission rules
 
@@ -54,6 +56,8 @@ class User(AbstractUser):
     
     def save(self,*args,**kwargs):
         self.set_password(self._password)
+        if self.is_superuser or self.role == UserTypes.OWNER:
+            self.deduction_rules = False
         return super().save(*args,**kwargs)
 
     class Meta:

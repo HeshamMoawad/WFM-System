@@ -8,7 +8,7 @@ from .utils import FieldSets
 
 # Register your models here.
 class UserAdminSite(admin.ModelAdmin):
-    list_display = ("username",'role',"project","is_staff","is_superuser")
+    list_display = ("username",'role',"project","deduction_rules","is_staff","is_superuser")
     list_filter = ("project","role")
     readonly_fields = ['uuid']
     search_fields = ['username' , 'uuid' , 'first_name']  
@@ -31,6 +31,7 @@ class UserAdminSite(admin.ModelAdmin):
                 "title",
                 "department" ,
                 "basic" ,
+                "deduction_rules",
             ],
             [
                 "first_name",
