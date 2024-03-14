@@ -171,13 +171,14 @@ REST_FRAMEWORK = {
 }
 
 ### jwt Config
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
-#     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
-#     'AUTH_COOKIE': 'Authorization',
-#     'AUTH_HEADER': 'Authorization',
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'AUTH_COOKIE': 'Authorization',
+    'AUTH_HEADER': 'Authorization',
+    'AUTH_BODY': 'Authorization',
     
-# }
+}
 
 # CORS_ALLOWED_ORIGINS = [os.getenv("CORS_ALLOWED_ORIGINS")]
 CORS_ALLOW_ALL_ORIGINS = True
