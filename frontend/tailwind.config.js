@@ -36,13 +36,16 @@ module.exports = {
 
 
       
-      "pr-dark":'#1f2f3e' ,
-      "sec-dark" : '#35bfbf',
-      "pr-dark-2":"#3b5d7a" ,
-      "third-dark" : "#15202b" ,
+      // "pr-dark":'#1f2f3e' ,
+      // "sec-dark" : '#35bfbf',
+      // "pr-dark-2":"#3b5d7a" ,
+      // "third-dark" : "#15202b" ,
     } ,
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+
+  ],
 }
 
