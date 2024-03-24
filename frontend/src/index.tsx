@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-// import App from './App';
 import Pages from './pages/Pages';
+import AuthContextProvider from './contexts/authContext';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Pages/>
+    <AuthContextProvider>
+      <Pages/>
+    </AuthContextProvider>
   </React.StrictMode>
 );
 
