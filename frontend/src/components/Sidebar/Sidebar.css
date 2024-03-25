@@ -1,17 +1,16 @@
 .side-bar{
     @apply 
-    relative 
+    absolute
+    z-50 
     flex
     flex-col
     justify-start
-    gap-5
+    gap-2
     items-center
-    w-[70px]
-    h-[80px]  
+    pt-2
+    w-[90px]
     text-[white]
-    bg-light-colors-dashboard-forth-bg
-    md:w-[80px]
-    dark:h-screen
+    md:w-[100px]
     transition-all
     ease-in
     duration-500

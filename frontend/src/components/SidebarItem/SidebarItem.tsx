@@ -3,20 +3,21 @@ import type { IconType } from 'react-icons';
 
 interface SidebarItemProps {
     Icon?:IconType,
-    name?:string
+    name?:string,
+    href?:string
 
 }
 
-const SidebarItem: FC<SidebarItemProps> = ({Icon , name="" } : SidebarItemProps) => {
+const SidebarItem: FC<SidebarItemProps> = ({Icon , name="" , href='#s' } : SidebarItemProps) => {
     return (<>
-        <li className='block w-full text-center border-t-[1px] pt-2 border-[gray] overflow-hidden'>
-            <a href='#s' >
+        <li className='block w-full text-center overflow-hidden'>
+            <a href={href} >
                 {
                     Icon?
-                    <Icon className='w-full h-8 md:h-8 fill-[red]' />
+                    <Icon className='w-full h-7' />
                     : null
                 }
-                <span>{name}</span>
+                <span className='text-sm opacity-80'>{name}</span>
             </a>
             
         </li>
