@@ -1,5 +1,6 @@
 import { type FC } from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import Topbar from '../../components/Topbar/Topbar';
 
 
 interface MainLayoutProps {
@@ -9,9 +10,16 @@ interface MainLayoutProps {
 
 const MainLayout: FC<MainLayoutProps> = ({children}:MainLayoutProps) => {
         return (
-        <div className='main-layout'>
+        <div className='main-layout flex flex-row'>
             <Sidebar/>
-            {children}
+            <div className="flex flex-col gap-5 h-screen w-full">
+                <Topbar/>
+                <div className="">
+                    {children}
+                </div>
+
+            </div>
+            
         </div>
     );
 }
