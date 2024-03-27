@@ -14,6 +14,7 @@ module.exports = {
           "primary-bg":"#15202b" ,
           "secondry-bg":"#1f2f3e",
           "third-bg":"#22424f",
+          "forth-bg" :"#1a2a39"
         },
         "text":"white"
       },
