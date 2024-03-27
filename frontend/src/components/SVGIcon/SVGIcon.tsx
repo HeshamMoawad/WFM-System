@@ -2,11 +2,11 @@ import type { FC } from "react";
 import { SVGProps } from 'react';
 
 interface SVGIconProps extends SVGProps<SVGSVGElement> {
-    pathFilling:string
+    pathfilling:string
 }
 
 const SVGIcon: FC<SVGIconProps> = (props:SVGIconProps) => {
-    const {pathFilling} = props;
+    const {pathfilling} = props;
     return (
         <>
             <svg
@@ -40,19 +40,19 @@ const SVGIcon: FC<SVGIconProps> = (props:SVGIconProps) => {
                     d="m75.74,139.56s-5.61-12.23-7.39-31.15c0-9.62,2.55-24.46,2.55-24.46h4.84"
                 />
                 <path
-                    className={`cls-4 ${pathFilling}`}
+                    className={`cls-4 ${pathfilling}`}
                     d="m115.33,112.38s5.61-12.23,7.39-31.15c0-9.62-2.55-24.46-2.55-24.46h-4.84"
                 />
                 <path
-                    className={`cls-4 ${pathFilling}`}
+                    className={`cls-4 ${pathfilling}`}
                     d="m115.33,112.38s-5.61-12.23-7.39-31.15c0-9.62,2.55-24.46,2.55-24.46h4.84"
                 />
                 <path
-                    className={`cls-4 ${pathFilling}`}
+                    className={`cls-4 ${pathfilling}`}
                     d="m36.09,112.38s5.61-12.23,7.39-31.15c0-9.62-2.55-24.46-2.55-24.46h-4.84"
                 />
                 <path
-                    className={`cls-4 ${pathFilling}`}
+                    className={`cls-4 ${pathfilling}`}
                     d="m36.09,112.38s-5.61-12.23-7.39-31.15c0-9.62,2.55-24.46,2.55-24.46h4.84"
                 />
             </svg>

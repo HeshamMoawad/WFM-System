@@ -19,8 +19,8 @@ const UserIcon: FC<UserIconProps> = () => {
                 <span className='block opacity-55'>Sales</span>
             </div>
         </div>
-        <div id="dropdownDots" className={`${showMenu ? '' : 'hidden'} mt-1 z-10 w-40 md:w-52 rounded-lg bg-[white] shadow-md dark:bg-dark-colors-login-secondry-bg`}>
-            <ul className="py-2 text-base flex flex-col justify-center items-center" aria-labelledby="dropdownMenuIconButton">
+        <div  className={`${showMenu ? '' : 'hidden'} mt-1 z-10 w-40 md:w-52 rounded-lg bg-[white] shadow-md dark:bg-dark-colors-login-secondry-bg`}>
+            <ul className="py-2 text-base flex flex-col justify-center items-center"> 
                 <li>
                     <a href="#s" className="flex justify-center items-center gap-3 px-4 py-2 ">
                         <CgProfile />
