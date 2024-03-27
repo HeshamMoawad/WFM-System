@@ -4,8 +4,8 @@
     flex-col 
     justify-center 
     items-center 
-    w-full 
-    h-full 
+    w-screen 
+    h-screen 
     bg-light-colors-login-primary-bg
     dark:bg-dark-colors-login-primary-bg
     ;
