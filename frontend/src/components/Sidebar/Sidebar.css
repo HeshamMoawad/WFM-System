@@ -1,6 +1,7 @@
 .side-bar{
     @apply 
-    absolute
+    fixed
+    top-0
     z-50 
     flex
     flex-col
