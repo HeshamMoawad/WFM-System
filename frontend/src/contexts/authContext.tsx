@@ -1,14 +1,14 @@
 import { createContext,useState } from "react";
 import Authintication  ,{} from '../types/auth';
 import { loadLogin } from "../utils/storage";
+import { ChildrenType } from "../types/base";
 
 type AuthContextType = {
     auth : Authintication ,
     setAuth: React.Dispatch<React.SetStateAction<Authintication>>;
 }
 
-interface AuthContextProviderProps {
-    children?: string | JSX.Element | JSX.Element[] ;
+interface AuthContextProviderProps extends ChildrenType {
 }
 
 const login = loadLogin()
