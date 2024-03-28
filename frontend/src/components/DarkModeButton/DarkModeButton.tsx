@@ -1,13 +1,24 @@
-import type { FC } from "react";
+import  {type FC , useContext } from "react";
+import { ModeContext } from "../../contexts/DarkModeContext";
+import { saveMode } from "../../utils/storage";
 
 interface DarkModeButtonProps {}
 
-const DarkModeButton: FC<DarkModeButtonProps> = () => {
+const DarkModeButton: FC<DarkModeButtonProps> = () => { // () => 
+    const {setMode} = useContext(ModeContext);
+    const toggleMode = ()=>{
+        setMode(prev=>{
+            const val = !prev
+            saveMode(val)
+            return val
+        })
+        document.body.classList.toggle("dark")
+    }
     return (
         <>
             <div className="fixed bottom-5 right-5 rounded-full dark:bg-gray-800 md:bottom-9 md:right-9">
                 <button
-                    onClick={() => document.body.classList.toggle("dark")}
+                    onClick={toggleMode}
                     className="h-14 w-14 rounded-lg p-2  hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                     <svg
