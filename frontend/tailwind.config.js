@@ -33,6 +33,10 @@ module.exports = {
         "text":"black"
       },
       "primary":"#51c9c9",
+      "btns-colors":{
+          "primary" : "#35bfbf",
+          "secondry" :"#ff6150"
+      },
 
 
 

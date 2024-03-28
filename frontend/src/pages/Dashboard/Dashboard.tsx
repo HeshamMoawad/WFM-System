@@ -1,11 +1,12 @@
 import type { FC } from 'react';
+import AttendCard from '../../components/AttendCard/AttendCard';
 
 interface DashBoardProps {}
 
 const DashBoard: FC<DashBoardProps> = () => {
     return (
-        <div className='bg-[red] h-screen w-screen'>
-            
+        <div className='flex justify-center mt-10 w-screen'>
+            <AttendCard/>
         </div>
     );
 }
