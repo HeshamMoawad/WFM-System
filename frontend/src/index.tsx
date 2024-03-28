@@ -3,6 +3,8 @@ import React from 'react';
 import './index.css';
 import Pages from './pages/Pages';
 import AuthContextProvider from './contexts/authContext';
+import ModeContextProvider from './contexts/DarkModeContext'; 
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,7 +13,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
+      <ModeContextProvider>
         <Pages/>
+      </ModeContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );
