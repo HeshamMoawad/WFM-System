@@ -1,9 +1,6 @@
 import { type FC } from "react";
 import { BrowserRouter,Routes, Route} from 'react-router-dom';
-// import Login from "./Login/Login";
 import MainLayout from "../layouts/MainLayout/MainLayout";
-// import {useAuth} from "../hooks/auth";
-// import DashBoard from "./Dashboard/Dashboard";
 import DarkModeButton from "../components/DarkModeButton/DarkModeButton";
 import DashBoard from "./Dashboard/Dashboard";
 import { useAuth } from "../hooks/auth";
@@ -12,12 +9,12 @@ import Login from "./Login/Login";
 interface PagesProps {}
 
 const Pages: FC<PagesProps> = () => {
-    const {auth} = useAuth({})
+    const {auth} = useAuth();
     return (<>
     {
         auth.Authorization ? 
         (
-            <div className="
+            <div className={`
                 overflow-x-hidden
                 transition 
                 ease-linear 
@@ -26,8 +23,8 @@ const Pages: FC<PagesProps> = () => {
                 dark:text-dark-colors-text 
                 bg-light-colors-dashboard-primary-bg 
                 dark:bg-dark-colors-dashboard-primary-bg
-                ">
-                    <div className="h-[screen] w-screen">
+                `}>
+                    <div className={``}>
                         <MainLayout>
                             <BrowserRouter>
                                 <Routes>

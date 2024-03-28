@@ -8,7 +8,7 @@ interface useAuthReturns {
     auth:Authintication ,
 }
 
-export const useAuth = ({}:useAuthProps):useAuthReturns => {
+export const useAuth = ():useAuthReturns => {
     const {auth} = useContext(AuthContext);
     return {
         auth

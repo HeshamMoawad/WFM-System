@@ -15,8 +15,6 @@ const SidebarItem: FC<SidebarItemProps> = ({
             index = 0,
             sections,
         }: SidebarItemProps) => {
-    console.log("re-renders")
-
     const { setShowed } = useContext(SidebarContext)
     const toggleLi = useCallback(()=>{
         setShowed(prev => {

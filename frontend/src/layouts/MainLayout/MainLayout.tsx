@@ -9,8 +9,9 @@ interface MainLayoutProps extends ChildrenType{
 }
 
 const MainLayout: FC<MainLayoutProps> = ({children}:MainLayoutProps) => {
+        // console.log('re-render MainLayout')
         return (
-            <div className='main-layout flex flex-row'>
+            <div className='flex flex-row' id='main-layout'>
                 <SidebarContextProvider>
                     <Sidebar/>
                 </SidebarContextProvider>
