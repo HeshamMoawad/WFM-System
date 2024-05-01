@@ -124,11 +124,11 @@ class Request(BaseModel):
         return super().save(*args,**kwargs)
 
 
-class Notification(BaseModel):
+# class Notification(BaseModel):
 
-    # user = models.ForeignKey(User,verbose_name="User" , on_delete=models.SET_NULL , null=True )
-    department = models.ForeignKey(Department)
-    details = models.TextField(verbose_name="Details", max_length=100)
+#     # user = models.ForeignKey(User,verbose_name="User" , on_delete=models.SET_NULL , null=True )
+#     department = models.ForeignKey(Department)
+#     details = models.TextField(verbose_name="Details", max_length=100)
 
 
 def profile_creator_signal(sender:User, instance:User, created:bool, **kwargs):

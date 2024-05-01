@@ -4,9 +4,10 @@ from rest_framework.status import  HTTP_401_UNAUTHORIZED , HTTP_200_OK
 from rest_framework.request import Request
 from auth import  Login
 from auth.constants import AUTH_COOKIE
+from rest_framework.status import HTTP_200_OK,HTTP_401_UNAUTHORIZED
 
 
-@api_view(["POST"])
+@api_view(["POST","GET"])
 def login(request: Request):
     login_class = Login()
     try :
@@ -27,6 +28,4 @@ def login(request: Request):
 def logout(request: Request):
     response = Response({"message":"Logout successfully"})
     response.delete_cookie(AUTH_COOKIE)
-    # response.delete_cookie(CSRF_TOKEN)
-    # response.delete_cookie(SESSION_ID)
     return response
