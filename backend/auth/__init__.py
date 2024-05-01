@@ -1,6 +1,6 @@
 from .models import CookieAuthentication , HeaderAuthentication , BodyAuthentication 
 from .mixin import AuthenticateMixins , LoginMixins
-from users.serializers.user import UserSerializer
+from users.serializers import UserSerializer
 
 
 class AuthenticateUser(AuthenticateMixins):

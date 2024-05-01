@@ -1,4 +1,5 @@
 from django.http.request import HttpRequest
+from rest_framework.request import Request
 from typing import Optional , List , Tuple , Union
 from .models import User , JWTAuthenticationMixin , Token
 from django.contrib.auth import  authenticate
@@ -6,7 +7,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import AuthenticationFailed
 from .constants import (
     AUTH_COOKIE ,
-    EXPIRE
+    EXPIRE , 
+    REFRESH_COOKIE ,
 )
 from datetime import datetime
 from abc import ABCMeta
@@ -84,7 +86,6 @@ class LoginMixins(metaclass=ABCMeta):
 
     def create_login_data(self,request:HttpRequest):
         credentials = self.check_body(request).copy()
-        print(f"\n{credentials}\n")
         if all(key in credentials.keys() for key in self.auth_fields):
             user = authenticate(request, username=credentials['username'] , password=credentials['password'])
             if user :
@@ -98,7 +99,7 @@ class LoginMixins(metaclass=ABCMeta):
         token:RefreshToken = RefreshToken.for_user(user)
         return self.get_data(user,token.access_token)
 
-    def get_data(self,user:User ,token:Token , *args , **kwargs):
+    def get_data(self,user:User ,token , *args , **kwargs):
         data:dict = self.user_serializer(user).data.copy()
         data.update({AUTH_COOKIE:f"{token}"})
         data.update({EXPIRE:datetime.utcfromtimestamp(token['exp']).isoformat()})
@@ -111,12 +112,11 @@ class LoginMixins(metaclass=ABCMeta):
         else :
             return self.create_login_data(request)
 
-    def check_body(self , request:HttpRequest):
+    def check_body(self , request:Request):
         try :
             return json.loads(request.body)
-        except json.JSONDecodeError:
-            return {}
-
+        except json.JSONDecodeError: ...
+        return request.query_params.dict()
 
 
         
