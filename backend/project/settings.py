@@ -32,6 +32,7 @@ DEBUG = os.getenv("DEBUG")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS")
 
 
+# print("Allowed Hosts ",ALLOWED_HOSTS)
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,13 +50,17 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'users'
+    'users' ,
+    'commission',
+    'treasury',
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -133,7 +138,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -177,10 +182,11 @@ SIMPLE_JWT = {
     'AUTH_COOKIE': 'Authorization',
     'AUTH_HEADER': 'Authorization',
     'AUTH_BODY': 'Authorization',
-    
+    "USER_ID_FIELD" : "uuid"
+
 }
 
-# CORS_ALLOWED_ORIGINS = [os.getenv("CORS_ALLOWED_ORIGINS")]
+# CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
