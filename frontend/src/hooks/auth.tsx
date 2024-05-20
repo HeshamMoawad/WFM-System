@@ -6,12 +6,14 @@ interface useAuthProps {}
 
 interface useAuthReturns {
     auth:Authintication ,
+    setAuth: React.Dispatch<React.SetStateAction<Authintication>>;
 }
 
 export const useAuth = ():useAuthReturns => {
-    const {auth} = useContext(AuthContext);
+    const {auth , setAuth} = useContext(AuthContext);
     return {
-        auth
+        auth ,
+        setAuth
     };
 }
 
