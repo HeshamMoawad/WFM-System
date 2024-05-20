@@ -1,14 +1,43 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { GrNotification } from "react-icons/gr";
-import NotificationCard from "../NotificationCard/NotificationCard";
+import NotificationCard from "./NotificationCard/NotificationCard";
+import { sendRequest } from "../../calls/base";
+import { getDateDifference } from "../../utils/converter";
+import { useAuth } from "../../hooks/auth";
+import { NotificationType } from "../../types/auth";
 
 interface NotificationIconProps {}
 
 const NotificationIcon: FC<NotificationIconProps> = () => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
+    const [notifications, setNotifications] = useState<NotificationType[]>([]);
+    const [hasNew,setHasNew]= useState(false);
+    const [refresh , setRefresh] = useState(false);
+    const {auth} = useAuth()
+    const fetcher = ()=>{
+            sendRequest({
+                url:"api/treasury/my-notification",
+                method:"GET"
+            }).then((data)=>{
+                setNotifications(data);
+                const _ = data as NotificationType[]
+                if(_.filter(noti=>!noti.seen_by_users.includes(auth.uuid)).length > 0){  
+                    setHasNew(true);
+                }else{
+                    setHasNew(false);
+                }
+            }).catch((error)=>{
+                console.log(error);
+            })
+        }
+    useEffect(()=>{
+        fetcher()
+        const interval = setInterval(fetcher,20000);
+        return ()=> clearInterval(interval);
+    },[refresh])
     return (
         <>
-            <div className="flex flex-row justify-end items-center h-full w-24 md:w-[100px]">
+            <div className="flex flex-row justify-end items-center h-full w-fit ">
                 <GrNotification
                     className="opacity-80 h-7 md:h-8 w-fit"
                     onClick={() => {
@@ -18,7 +47,7 @@ const NotificationIcon: FC<NotificationIconProps> = () => {
 
                 {/* Notification Dot */}
                 <div className="relative top-2 w-3 h-full">
-                    <span className="block relative animate-ping top-2 w-2 h-2 bg-[red] rounded-full"></span>
+                    <span className={`${hasNew?"bg-btns-colors-secondry" : ""} block relative w-3 h-3 animate-bounce rounded-lg text-[black] text-center`}></span>
                 </div>
                 
                 
@@ -33,21 +62,18 @@ const NotificationIcon: FC<NotificationIconProps> = () => {
                             Notifications
                         </span>
                         <span className="bg-[gray] my-5  opacity-80 w-full h-[1px]"></span>
-
                         <div className="flex flex-col items-center justify-start max-h-80 md:max-h-[35rem] overflow-y-auto overflow-x-hidden pb-4">
                             <div className="flex flex-col flex-nowrap gap-5 justify-center items-center text-right  px-4 py-2">
-                                <NotificationCard
-                                    text={`
-                                 شسيشهسياخشهس شسهي شسه يتحشخس يةىحشخس هابخشهس تابشهنتس خهبش سهتاشجس بهتشسخج هبتشسج حخبشخهجس بخحه اسشخبهاشس حخهاب
-                                `}
-                                    time="10 hrs"
-                                />
-                                <NotificationCard
-                                    text={`
-                                 شسيشهسياخشهس شسهي شسه يتحشخس يةىحشخس هابخشهس تابشهنتس خهبش سهتاشجس بهتشسخج هبتشسج حخبشخهجس بخحه اسشخبهاشس حخهاب
-                                `}
-                                    time="10 hrs"
-                                />
+                                {
+                                    notifications.map(notification => <NotificationCard
+                                        setRefresh={setRefresh}
+                                        key={notification.uuid}
+                                        text={notification.message}
+                                        uuid={notification.uuid}
+                                        time={`${getDateDifference(new Date(notification.created_at), new Date())} hrs`}
+                                        seen={notification.seen_by_users.includes(auth.uuid)}
+                                    />)
+                                }
                             </div>
                         </div>
                     </ul>

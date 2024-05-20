@@ -1,6 +1,6 @@
 import { useCallback, type FC, useContext } from "react";
-import type {  SideItem } from '../../types/sidebar';
-import {SidebarContext} from '../../contexts/SidebarContext';
+import type {  SideItem } from '../../../types/sidebar';
+import {SidebarContext} from '../../../contexts/SidebarContext';
 import SidebarPopup from "../SidebarPopup/SidebarPopup";
 
 interface SidebarItemProps extends  SideItem{

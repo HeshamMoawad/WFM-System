@@ -1,6 +1,6 @@
 import  { useContext,type FC, useMemo } from 'react';
-import {SidebarContext} from '../../contexts/SidebarContext';
-import { SideSection } from '../../types/sidebar';
+import {SidebarContext} from '../../../contexts/SidebarContext';
+import { SideSection } from '../../../types/sidebar';
 
 interface SidebarPopupProps {
     name:string,

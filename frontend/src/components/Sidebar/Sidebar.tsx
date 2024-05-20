@@ -1,10 +1,9 @@
 import { useState,useCallback, type FC, useContext } from 'react';
 import './Sidebar.css'
-import SidebarItem from '../SidebarItem/SidebarItem';
-import SVGIcon from '../SVGIcon/SVGIcon';
+import SidebarItem from './SidebarItem/SidebarItem';
+import SVGIcon from './SVGIcon/SVGIcon';
 import type {SideItem} from '../../types/sidebar';
 import {SidebarContext} from '../../contexts/SidebarContext';
-
 import {RxDashboard} from 'react-icons/rx';
 import {PiFingerprint , PiWallet , PiUserList , PiUsersThree} from 'react-icons/pi';
 import {LiaUsersCogSolid} from 'react-icons/lia';
@@ -15,6 +14,7 @@ import {IoCalendarNumberOutline} from 'react-icons/io5';
 import {RiCustomerService2Line , RiUserAddLine} from 'react-icons/ri';
 import {CgUserList} from 'react-icons/cg';
 import {PiChartLine} from 'react-icons/pi';
+import { useAuth } from '../../hooks/auth';
 
 
 const Items : SideItem[] = [
@@ -35,12 +35,12 @@ const Items : SideItem[] = [
         sections:[
             {
                 name:'Requests',
-                href:'#p',
+                href:'/requests',
                 Icon:VscGitPullRequestNewChanges
             },
             {
                 name:'Attendance Details',
-                href:'#p',
+                href:'/attendance-details',
                 Icon:IoCalendarNumberOutline
             }
         ]
@@ -49,6 +49,12 @@ const Items : SideItem[] = [
     {
         name : 'Salary',
         Icon:PiWallet ,
+        permissions:[
+            "OWNER",
+            // "MANAGER",
+            // "AGENT",
+            "HR",
+        ],
         sections:[
             {
                 name:'Marketing',
@@ -81,15 +87,21 @@ const Items : SideItem[] = [
     {
         name : "Users",
         Icon : LiaUsersCogSolid ,
+        permissions:[
+            "OWNER",
+            "MANAGER",
+            // "AGENT",
+            "HR",
+        ],
         sections:[
             {
                 name:'Add User',
-                href:'#p',
+                href:'/add-user',
                 Icon:RiUserAddLine
             },
             {
                 name:'Users List',
-                href:'#p',
+                href:'/users-list',
                 Icon:PiUserList
             },
         ]
@@ -98,27 +110,34 @@ const Items : SideItem[] = [
     {
         name : "General",
         Icon:RiListSettingsLine ,
+        permissions:[
+            "OWNER",
+            // "MANAGER",
+            // "AGENT",
+            // "HR",
+        ],
         sections:[
             {
-                name:'Add Project',
+                name:'General Settings',
                 href:'#p',
-                Icon:BsBuildingAdd
-            },
-            {
-                name:'Add Treasury',
-                href:'#p',
-                Icon:BsDatabaseAdd
-            },
+                Icon:RiListSettingsLine,//BsBuildingAdd
+            }
         ]
 
     },
     {
         name:"Treasury",
         Icon:BsSafe,
+        permissions:[
+            "OWNER",
+            // "MANAGER",
+            // "AGENT",
+            // "HR",
+        ],
         sections:[
             {
-                name:'Treasury List',
-                href:'#p',
+                name:'Treasury',
+                href:'/treasury',
                 Icon:BsSafe
             }
         ]
@@ -133,6 +152,7 @@ interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = () => {
     const [opened , setOpened] = useState<boolean>(false)
+    const {auth} = useAuth()
     const {setShowed} = useContext(SidebarContext)
     const toggleSidebar = useCallback(() => {
         setOpened(prevOpened => !prevOpened);
@@ -151,9 +171,20 @@ const Sidebar: FC<SidebarProps> = () => {
             <nav>
                 {
                     Items.map((item,index)=>{
-                        return (
-                        <SidebarItem key={index}  {...{...item , index }}/>
-                        )
+
+                        if (!item.permissions) {
+                            return (
+                                <SidebarItem key={index}  {...{...item , index }}/>
+                                )
+                        }else {
+                            if (item.permissions.includes(auth.role) || auth.is_superuser) {
+                                return (
+                                    <SidebarItem key={index}  {...{...item , index }}/>
+                                )
+                            }else {
+                                return null
+                            }
+                        }
                     })
                 }
             </nav>

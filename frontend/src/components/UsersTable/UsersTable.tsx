@@ -1,0 +1,175 @@
+import  {type FC , useState, useEffect, useMemo} from 'react';
+import Container from '../../layouts/Container/Container';
+import useRequest from '../../hooks/calls';
+import LoadingComponent from '../LoadingComponent/LoadingComponent';
+import Table from '../TableCard/Table/Table';
+import { convertObjectToArrays, getFullURL } from '../../utils/converter';
+import { User } from '../../types/auth';
+import { FaUserEdit } from "react-icons/fa";
+import { FaUserXmark } from "react-icons/fa6";
+import PwdComponent from './PwdComponent/PwdComponent';
+import TableFilters from './TableFilters/TableFilters';
+import { sendRequest } from '../../calls/base';
+import Swal from 'sweetalert2';
+
+
+
+interface UsersTableProps {}
+
+const UsersTable: FC<UsersTableProps> = () => {
+    const [filters,setFilters] = useState<object>({})
+    const deleteUser = (uuid:string)=>{
+        sendRequest({url:"api/users/user",method:"DELETE",params:{uuid}})
+            .then(data=>{
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Deleted Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                    }).then(() => setFilters({}))
+            }).catch((error) => {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Can't Deleted",
+                    showConfirmButton: false,
+                    timer: 1000
+                    }).then(() => setFilters({}))
+            })
+
+    }
+    const {data , loading } = useRequest<User>({
+        url: 'api/users/user' ,
+        method: 'GET',
+        params: filters
+    },[filters])
+    useEffect(()=>{
+        console.log(filters)
+    },[filters])
+
+    return (
+    <Container className='w-[1500px] md:w-screen h-fit min-h-[300px] relative flex flex-col gap-3 justify-center items-center'>
+        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>Users</h1>
+        <TableFilters setFilters={setFilters}/>
+        {
+            loading? <LoadingComponent/> : <></>
+        }
+
+        {
+            data ? (
+                <>
+                <Table
+                    className='mb-2'
+                    headers={["picture","username","password","is active","role","title","department","project","Phone",""]}
+                    data={convertObjectToArrays(data?.results,[
+                        {
+                            key:"profile",
+                            method : (_)=>{
+                                const item = _ as any; 
+                                return (
+                                    item.picture ? 
+                                        <td key={Math.random()} className='flex justify-center items-center'>
+                                            <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/>
+                                        </td>
+                                        : 
+                                        <td key={Math.random()} className='text-center w-[40px] h-[40px]'>
+                                            -
+                                            {/* <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/> */}
+                                        </td>
+
+                                )}
+    
+                        },{
+                            key:"username",
+                            method:null
+                        },{
+                            key:"_password",
+                            method:(_)=>{
+                                return <PwdComponent content={_}/>
+                            }
+                        },{
+                            key:"is_active",
+                            method:(_)=>
+                            <td className=''>
+                                <span className={`inline-block w-3 h-3 rounded-full border ${_ ? "bg-btns-colors-primary border-btns-colors-primary " : "bg-btns-colors-secondry border-btns-colors-secondry"}`}>
+                                </span>
+                            </td>
+                            
+                        },{
+                            key:"role",
+                            method:null
+                        },{
+                            key:"title",
+                            method:null
+                        },{
+                            key:"department",
+                            method:(item)=>{
+                                const depart = item as any; 
+                                return depart.name
+                            }
+                        },{
+                            key:"project",
+                            method:(item)=>{
+                                const project = item as any; 
+                                return project.name
+                            }
+                        },{
+                            key:"profile",
+                            method:(item)=>{
+                                const profile = item as any; 
+                                return profile.phone ? profile.phone :"-"
+                            }
+                        },{
+                            key:"uuid",
+                            method : (uuid)=>{
+                                return (
+                                    <td key={Math.random()} className='px-3 py-1'>
+                                            <a className='rounded-md w-2/3 h-8' href={`/edit-user/${uuid}`} >
+                                                <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
+                                            </a>
+                                    </td>
+                                )
+                            }
+                        },{
+                            key:"uuid",
+                            method : (uuid)=>{
+                                return (
+                                    <td key={Math.random()} className='px-3 py-1'>
+                                            <a onClick={(e)=>{
+                                                    e.preventDefault();
+                                                    Swal.fire({
+                                                        title: "Are you sure?",
+                                                        text: "You won't be able to revert this!",
+                                                        icon: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#3085d6",
+                                                        cancelButtonColor: "#d33",
+                                                        confirmButtonText: "Yes, delete it!"
+                                                      }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            deleteUser(String(uuid))
+                                                        }
+                                                      });                
+                                        }} className='rounded-md w-2/3 h-8' href='#0'>
+                                                <FaUserXmark className='w-full h-6 text-center fill-btns-colors-secondry'/>
+                                            </a>
+                                    </td>
+                                )
+                            }
+                    }
+                    ])}
+                
+                />
+                </>
+            ):<></>
+        }
+
+
+        
+
+    </Container>
+    );
+}
+
+export default UsersTable;
