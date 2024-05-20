@@ -161,3 +161,5 @@ cython_debug/
 
 backup/
 media/
+backend/trash.py
+profile-picture.jpeg
