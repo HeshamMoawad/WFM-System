@@ -5,6 +5,13 @@ import DarkModeButton from "../components/DarkModeButton/DarkModeButton";
 import DashBoard from "./Dashboard/Dashboard";
 import { useAuth } from "../hooks/auth";
 import Login from "./Login/Login";
+import Requests from "./Requests/Requests";
+import Profile from "./Profile/Profile";
+import AddUser from "./AddUser/AddUser";
+import AttendanceDetails from "./AttendanceDetails/AttendanceDetails";
+import UsersList from "./UsersList/UsersList";
+import Treasury from "./Treasury/Treasury";
+import EditUser from "./EditUser/EditUser";
 
 interface PagesProps {}
 
@@ -29,6 +36,13 @@ const Pages: FC<PagesProps> = () => {
                             <BrowserRouter>
                                 <Routes>
                                     <Route path="/dashboard" element={<DashBoard/>}/>
+                                    <Route path="/requests" element={<Requests/>}/>
+                                    <Route path="/profile" element={<Profile/>}/>
+                                    <Route path="/add-user" element={<AddUser/>}/>
+                                    <Route path="/edit-user/:user_uuid" element={<EditUser/>}/>
+                                    <Route path="/users-list" element={<UsersList/>}/>
+                                    <Route path="/attendance-details" element={<AttendanceDetails/>}/>
+                                    <Route path="/treasury" element={<Treasury/>}/>
                                 </Routes>
                             </BrowserRouter>
                         </MainLayout>
