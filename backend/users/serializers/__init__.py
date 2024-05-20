@@ -1,7 +1,9 @@
-from rest_framework.serializers import SerializerMethodField,  ModelSerializer 
+from rest_framework.serializers import SerializerMethodField
+from api_views.serializers import ModelSerializer ,  ForeignField , ManyToManyField  
 import json
-from django.http import HttpRequest
-
+from datetime import datetime
+from commission.models import UserCommissionDetails , DeductionRules
+from core.calculator import Calculator
 from ..models import (
     Department , 
     User , 
@@ -47,9 +49,10 @@ class ProfileSerializer(ModelSerializer):
         ]
 
 class UserSerializer(ModelSerializer):
-    project = ProjectSerializer()
-    department = DepartmentSerializer()
-    profile = ProfileSerializer()
+    project = ProjectSerializer(read_only=True)
+    department = DepartmentSerializer(read_only=True)
+    profile = ProfileSerializer(read_only=True)
+
     class Meta:
         model = User
         fields = [
@@ -62,11 +65,50 @@ class UserSerializer(ModelSerializer):
             "first_name",
             "last_name",
             "is_superuser",
+            "is_active",
+            "_password",
             "profile",
         ]
+        foreign_models = {
+            "department": ForeignField("department",Department,'uuid') ,
+            "project": ForeignField("project",Project,'uuid') ,
+        }
+    def create(self, validated_data: dict, *args, **kwargs):
+        validated_data.pop("is_superuser",None)
+        validated_data.pop("is_staff",None)
+        return super().create(validated_data, *args, **kwargs)
 
 
 class ArrivingLeavingSerializer(ModelSerializer):
+    late = SerializerMethodField()
+    departure = SerializerMethodField()
+    deuration = SerializerMethodField()
+    deduction = SerializerMethodField()
+
+    def get_late(self,obj:ArrivingLeaving):
+        calculator = Calculator()
+        return calculator.calc_late(obj)
+
+    def get_departure(self,obj:ArrivingLeaving):
+        calculator = Calculator()
+        return calculator.calc_departure(obj)
+
+    def get_deuration(self,obj:ArrivingLeaving):
+        calculator = Calculator()
+        return calculator.calc_deuration(obj)
+
+    def get_deduction(self,obj:ArrivingLeaving):
+        calculator = Calculator()
+        late_time = calculator.calc_late(obj)
+        details:UserCommissionDetails = obj.user.usercommissiondetails
+        total= 0 
+        if details.set_deduction_rules :
+            total += calculator.calc_global_deduction(late_time)
+        else :
+            total += calculator.calc_custom_deduction(late_time,details)
+        return total 
+
+
     class Meta:
         model = ArrivingLeaving
         fields = [
@@ -75,7 +117,10 @@ class ArrivingLeavingSerializer(ModelSerializer):
             "date",
             "arriving_at",
             "leaving_at",
-            "deuration_between",
+            "deuration",
+            "late",
+            "departure",
+            "deduction",
         ]
 
 
@@ -92,7 +137,11 @@ class LeadSerializer(ModelSerializer):
         ]
 
 
+
+
+
 class RequestSerializer(ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Request
         fields = [
@@ -100,9 +149,18 @@ class RequestSerializer(ModelSerializer):
             "user",
             "details",
             "type",
+            "note",
             "department",
             "status",
+            "created_at",
+            "updated_at",
+
         ]
+        foreign_models = {
+            "department": ForeignField("department",Department,'uuid') ,
+            "user": ForeignField("user",User,'uuid') ,
+        }
+
 
 
 class UpdateHistorySerializer(ModelSerializer):

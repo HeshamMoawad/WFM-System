@@ -61,7 +61,7 @@ class ArrivingLeaving(BaseModel):
     date = models.DateField(verbose_name="Day Date",auto_now_add=True )
     arriving_at = models.DateTimeField(verbose_name="Arrining Date & Time",auto_now_add=True)
     leaving_at = models.DateTimeField(verbose_name="Leaving Date & Time",null=True)
-    deuration_between = models.PositiveIntegerField(verbose_name="Deuration in secounds" , null=True)
+    # deuration_between = models.PositiveIntegerField(verbose_name="Deuration in secounds" , null=True)
 
     def save(self,*args,**kwargs):
         if self.leaving_at:
@@ -115,20 +115,15 @@ class UpdateHistory(models.Model):
 class Request(BaseModel):
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.SET_NULL , null=True )
     details = models.TextField(verbose_name="Details", max_length=100)
+    note = models.TextField(verbose_name="Note", max_length=100 , blank=True , null=True)
     type = models.CharField(verbose_name="Request Type", max_length=50, choices=RequestTypes.choices ,default=RequestTypes.GLOBAL)
     department = models.ForeignKey(Department,verbose_name="Department" , on_delete=models.SET_NULL , null=True)
     status = models.CharField(verbose_name="Request Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
 
     def save(self,*args,**kwargs):
-        self.department = self.user.department
+        if self.user :
+            self.department = self.user.department
         return super().save(*args,**kwargs)
-
-
-# class Notification(BaseModel):
-
-#     # user = models.ForeignKey(User,verbose_name="User" , on_delete=models.SET_NULL , null=True )
-#     department = models.ForeignKey(Department)
-#     details = models.TextField(verbose_name="Details", max_length=100)
 
 
 def profile_creator_signal(sender:User, instance:User, created:bool, **kwargs):
