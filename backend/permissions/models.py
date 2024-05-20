@@ -1,8 +1,6 @@
 from rest_framework.permissions import BasePermissionMetaclass 
 from django.contrib.auth import get_user_model
-from users.models import UserTypes
-from auth.utils import fetch_user
-from auth import AuthenticateUser
+# from users.views.auth import AuthenticateUser
 User = get_user_model()
 
 
@@ -37,12 +35,5 @@ class CustomBasePermission(metaclass=BasePermissionMetaclass):
         return {}
 
 
-
-class IsAuthenticated(CustomBasePermission):
-    """
-    Allows access only to authenticated users.
-    """
-    def has_permission(self, request, view):
-        return bool(fetch_user(request,AuthenticateUser))
 
 
