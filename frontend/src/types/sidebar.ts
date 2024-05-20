@@ -14,7 +14,8 @@ interface SideItem {
     index?:number
     name : string ,
     Icon : IconType ,
-    sections:SideSection[]
+    sections:SideSection[] ,
+    permissions?:string[]
 
 }
 
