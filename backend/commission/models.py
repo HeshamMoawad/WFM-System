@@ -32,7 +32,7 @@ class DeductionRules(BaseModel):
     late_time = models.PositiveIntegerField(verbose_name="Late in Secounds")
     deduction_days = models.FloatField(verbose_name="Deduction in Days")
     is_global = models.BooleanField(verbose_name="Set Global Rule")
-    department = models.ForeignKey(Department, verbose_name="", on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, verbose_name="Department", on_delete=models.CASCADE)
     class Meta:
         verbose_name = "Deduction Rules"
         verbose_name_plural = "Deduction Rules"
@@ -46,9 +46,9 @@ class UserCommissionDetails(BaseModel):
     user = models.OneToOneField(User,verbose_name="User" , on_delete=models.CASCADE)
     basic = models.PositiveIntegerField(verbose_name="Basic Salary"  , default= 0)
     set_deduction_rules = models.BooleanField(verbose_name="Set Deduction Rules" , default=True)
-    deduction_rules = models.ManyToManyField(DeductionRules,verbose_name="Deduction Rules")
+    deduction_rules = models.ManyToManyField(DeductionRules,verbose_name="Deduction Rules" , blank=True )
     set_global_commission_rules = models.BooleanField(verbose_name="Set Global Rule" , default=True)
-    commission_rules = models.ManyToManyField(TargetSlice,verbose_name="Commission Target Slices")
+    commission_rules = models.ManyToManyField(TargetSlice,verbose_name="Commission Target Slices" , blank=True)
     will_arrive_at = models.TimeField(verbose_name="Must Arrive At",default=datetime.time(9,0,0))
     will_leave_at = models.TimeField(verbose_name="Must Leave At",default=datetime.time(17,0,0))
 
