@@ -17,8 +17,8 @@ const MainLayout: FC<MainLayoutProps> = ({children}:MainLayoutProps) => {
                 </SidebarContextProvider>
                 <div className="flex flex-col gap-5 min-h-screen w-screen">
                     <Topbar/>
-                    <div className="empty h-24 md:h-28"></div>
-                    <div className="w-full h-full ">
+                    <div className="empty h-28 md:h-32"></div>
+                    <div className="w-full h-full z-0">
                         {children}
                     </div>
                 </div>
