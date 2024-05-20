@@ -4,7 +4,7 @@ import './index.css';
 import Pages from './pages/Pages';
 import AuthContextProvider from './contexts/authContext';
 import ModeContextProvider from './contexts/DarkModeContext'; 
-
+import LanguageContextProvider from './contexts/LanguageContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,7 +14,9 @@ root.render(
   <React.StrictMode>
     <AuthContextProvider>
       <ModeContextProvider>
-        <Pages/>
+        <LanguageContextProvider>
+          <Pages/>
+        </LanguageContextProvider>
       </ModeContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
