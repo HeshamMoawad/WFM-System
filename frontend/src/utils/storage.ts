@@ -1,9 +1,10 @@
 import Authintication , {DefaultAuthintication} from '../types/auth'
-import { DarkModeType } from '../types/base';
+import { DarkModeType, Language } from '../types/base';
 
 export const AUTH_KEY:string = "Auth"
 export const PERM_KEY:string = "Perm"
 export const MODE_KEY:string = "Mode"
+export const LANG_KEY:string = "Lang"
 
 
 export const save = (key:string , obj:Object):any=>{
@@ -42,4 +43,13 @@ export const loadMode = ():DarkModeType =>{
 }
 
 
+
+export const saveLang = (lang:Language)=>{
+    return save(LANG_KEY,lang) 
+};
+
+export const loadLang = ():Language =>{
+    const loadedLang = load(LANG_KEY,()=>{return saveLang('en');})
+    return loadedLang
+}
 
