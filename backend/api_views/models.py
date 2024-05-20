@@ -3,7 +3,7 @@ from .mixin import APIViewMixins
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK,HTTP_400_BAD_REQUEST,HTTP_405_METHOD_NOT_ALLOWED
 from rest_framework.request import Request
-
+from .exceptions import CreationFaildException , ExaptionBase
 
 
 
@@ -11,22 +11,22 @@ class APIViewSet(APIViewMixins):
 
         
     def get(self,request:Request):
-        # return self.wrapper(self._get,request=request)
-        return Response(self._get(request=request))
+        return self.wrapper(self._get,request=request)
+        # return Response(self._get(request=request))
 
 
     def post(self,request:Request):
-        # return self.wrapper(self._get,request=request)
-        return Response(self._post(request=request))
+        return self.wrapper(self._post,request=request)
+        # return Response(self._post(request=request))
 
 
     def put(self,request:Request):
-        # return self.wrapper(self._get,request=request)
-        return Response(self._put(request=request))
+        return self.wrapper(self._put,request=request)
+        # return Response(self._put(request=request))
 
     def delete(self,request:Request):
-        # return self.wrapper(self._get,request=request)
-        return Response(self._delete(request=request))
+        return self.wrapper(self._delete,request=request)
+        # return Response(self._delete(request=request))
 
     def wrapper( self, func, *args, **kwargs):
         request = kwargs.get("request")
@@ -36,11 +36,18 @@ class APIViewSet(APIViewMixins):
                 if isinstance(data,Response):
                     return data
                 response = Response(data, HTTP_200_OK)
-            except Exception as e:
+
+            except CreationFaildException as e:
+                data = {
+                    "details": e.args[1],
+                    "type": str(e.__class__.__name__),
+                }
+                response = Response(data, HTTP_400_BAD_REQUEST)
+
+            except ExaptionBase as e:
                 data = {
                     "details": str(e),
-                    "type": str(e.__name__),
-                    # "traceback" : str(e.__traceback__)
+                    "type": str(e.__class__.__name__),
                 }
                 response = Response(data, HTTP_400_BAD_REQUEST)
         else :

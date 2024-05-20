@@ -14,7 +14,11 @@ class RequestParser(object):
         if isinstance(self._request.body,dict):
             self.__body = self.__parse(self._available_filters,self._request.body.copy())
         elif isinstance(self._request.body,bytes) and self._request.body:
-            self.__body = self.__parse(self._available_filters,json.loads(self._request.body))
+            try : 
+                data = json.loads(self._request.body)
+            except json.JSONDecodeError: 
+                data = self._request.data
+            self.__body = self.__parse(self._available_filters,data)
         else :
             self.__body = {}
 
