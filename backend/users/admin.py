@@ -13,7 +13,7 @@ from utils.admin_utils import FieldSets
 
 # Register your models here.
 class UserAdminSite(admin.ModelAdmin):
-    list_display = ("username",'role',"project","is_staff","is_superuser")
+    list_display = ("username",'role',"project","is_active","is_staff","is_superuser")
     list_filter = ("project","role")
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['username' , 'uuid' , 'first_name']  
@@ -71,9 +71,9 @@ class ProfileAdminSite(admin.ModelAdmin):
 
 
 class ArrinigLeavingAdminSite(admin.ModelAdmin):
-    list_display = ["user","date","arriving_at","leaving_at", "deuration_between"]
+    list_display = ["user","date","arriving_at","leaving_at",]
     list_filter = ["user","date"]
-    readonly_fields = ['uuid',"created_at","updated_at","date" ,"arriving_at", "deuration_between"]
+    readonly_fields = ['uuid',"created_at","updated_at","date" ,"arriving_at"]
     search_fields = ['user__username' , 'uuid' , 'date']  
     fieldsets = FieldSets([
             'Attendance Fields' ,
@@ -84,7 +84,6 @@ class ArrinigLeavingAdminSite(admin.ModelAdmin):
                 'date',
                 'arriving_at',
                 'leaving_at',
-                "deuration_between", 
             ],[
                 "uuid" ,
                 "created_at",
@@ -191,6 +190,7 @@ class RequestAdminSite(admin.ModelAdmin):
                 'type',
                 'status',
                 'details',
+                'note',
             ],[
                 "uuid" ,
                 "created_at",

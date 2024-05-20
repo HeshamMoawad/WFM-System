@@ -27,6 +27,5 @@ urlpatterns = [
     path('request',RequestAPI.as_view()) ,
     path('send_password',forget_password) ,
 
-
     path('test',test) ,
 ]

@@ -1,19 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view , permission_classes
-from rest_framework.status import  HTTP_401_UNAUTHORIZED , HTTP_200_OK
 from rest_framework.request import Request
-from auth import  AuthenticateUser
-from auth.constants import AUTH_COOKIE
-from rest_framework.status import HTTP_200_OK,HTTP_401_UNAUTHORIZED
-from permissions.models import IsAuthenticated
-from users.models import ArrivingLeaving
+from users.views.auth import  AuthenticateUser
+from users.models import ArrivingLeaving , User 
 from django.utils import timezone
+from users.serializers import RequestSerializer 
+from users.views import IsAuthenticated
 
-from users.models import User
-
-
-from datetime import datetime, timedelta
-from django.db.models import Count, F
 
 
 @api_view(["POST"])
@@ -75,21 +68,32 @@ def arrive_leave_details(request: Request):
 
 
 
-@api_view(["GET"])
-def test(request):
+@api_view(["POST"])
+def test(request:Request):
+    # user= User.objects.get(uuid=request.data.pop("user"))
 
-    # Define the start and end dates for the specified date range
-    start_date = datetime(2024, 4, 1)
-    end_date = datetime(2024, 5, 1)
-    user= User.objects.get(username="test")
-    # Filter the ArrivingLeaving objects for the specified date range
-    arriving_leaving_objects = ArrivingLeaving.objects.filter(
-        date__gte=start_date.date(),
-        date__lte=end_date.date(),
-        leaving_at__isnull=False ,
-        user=user
-    )
-    print(arriving_leaving_objects, user.usercommissiondetails)
+    # data = request.data.copy()
+    # data.update({"user":user})
+    print(request.data)
+    ser = RequestSerializer(data = request.data)
+    # print(ser.is_valid() , ser)
+    if ser.is_valid():
+        ser.save()
+
+
+    # # Define the start and end dates for the specified date range
+    # start_date = datetime(2024, 4, 1)
+    # end_date = datetime(2024, 5, 1)
+    # user= User.objects.get(username="test")
+    
+    # # Filter the ArrivingLeaving objects for the specified date range
+    # arriving_leaving_objects = ArrivingLeaving.objects.filter(
+    #     date__gte=start_date.date(),
+    #     date__lte=end_date.date(),
+    #     leaving_at__isnull=False ,
+    #     user=user
+    # )
+    # print(arriving_leaving_objects, user.usercommissiondetails)
 
     # print(arriving_leaving_objects,"arriving_leaving_objects")
 

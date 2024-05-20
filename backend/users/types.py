@@ -16,5 +16,5 @@ class RequestTypes (models.TextChoices):
 
 class RequestStatuses (models.TextChoices):
     PENDING = ("PENDING", "Pending")
-    ACCEPTED = ("ANNUAL", "Accepted")
-    REJECTED = ('VACATION','Rejected')
+    ACCEPTED = ("ACCEPTED", "Accepted")
+    REJECTED = ('REJECTED','Rejected')
