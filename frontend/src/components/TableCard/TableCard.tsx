@@ -50,6 +50,7 @@ const TableCard: FC<TableCardProps> = ({label , userID , setUserID,date , setDat
                         <div className='w-2/6 flex justify-evenly items-center'>
                         <SelectComponent
                             selectClassName='w-2/3'
+                            LabelClassName='text-xl font-bold'
                             LabelName={lang === "en" ? "User" : "الموظف"}
                             url='api/users/user'
                             name='user'

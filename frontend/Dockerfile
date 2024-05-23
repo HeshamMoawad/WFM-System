@@ -1,5 +1,5 @@
 # Use official Node.js image as base
-FROM node:20
+FROM node:20-alpine
 
 # Set working directory inside the container
 WORKDIR /frontend

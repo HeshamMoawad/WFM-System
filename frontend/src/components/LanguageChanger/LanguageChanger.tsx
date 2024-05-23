@@ -16,7 +16,7 @@ const LanguageChanger: FC<LanguageChangerProps> = () => {
       };
       
     return (<div className='opacity-80 font-bold'>
-        <select defaultValue={lang} onChange={onChangeLang} className='bg-[transparent]'>
+        <select defaultValue={lang} onChange={onChangeLang} className='bg-[transparent] border-none'>
           {
           TRANSLATIONS.Labels.map((label)=>{
             return (                

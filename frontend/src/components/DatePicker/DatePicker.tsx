@@ -20,14 +20,14 @@ const DatePicker: FC<DatePickerProps> = ({type="date",className,setDate}) => {
     };
     return (
     <div className={`bg-[transparent] border border-[gray] flex flex-row justify-between p-2 rounded-md  rtl:flex-row-reverse ${className}`} id='DatePicker'  onClick={handleClick}>
-        <div className='w-fit'>
-            <input type={type} ref={dateRef} onChange={(e)=>{
+        <div className='w-fit flex flex-row-reverse justify-center items-center'>
+            <input className='invisible' type={type} ref={dateRef} onChange={(e)=>{
                 setCurrentDate(e.target.value);
                 if (setDate){
                     setDate(new Date(e.target.value)) 
                 }
             }}/>
-            <IoCalendarOutline className='inline w-full min-w-5 h-[79] -[red]bg '/>
+            <IoCalendarOutline className='inline w-full min-w-5'/>
         </div>
         <span>{currentDate}</span>
     </div>

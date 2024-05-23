@@ -163,7 +163,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                                 }
                                 return null;
                             });
-                        }} className="w-fit outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg">
+                        }} className="">
                             <option value="AGENT">Agent</option>
                             <option value="MANAGER">Manager</option>
                             <option value="HR">HR</option>
@@ -192,7 +192,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                                 }}
                                 name="is_active"
                                 id="is_active"
-                                className="checked:text-[red] w-fit place-self-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg"
+                                className=""
                             />
 
                         </div>

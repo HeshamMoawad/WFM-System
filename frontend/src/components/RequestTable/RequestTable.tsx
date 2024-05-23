@@ -56,7 +56,7 @@ const RequestTable: FC<RequestTableProps> = ({className , refresh , setRefresh})
                                 key:"user",
                                 method : (_)=>{
                                     const item = _ as any; 
-                                    return item?.username
+                                    return item ? item.username : "-"
                                 },
                             },
                             {

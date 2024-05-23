@@ -33,7 +33,7 @@ function SelectComponent<ValuesType>({name,LabelName,url,selectClassName , Label
             loading ? <LoadingComponent/> : null
         }
         <label htmlFor={name} className={`${LabelClassName}`}>{LabelName}</label>
-        <select onChange={(e)=>setSelection?setSelection(e.currentTarget.value) : null} multiple={multiple} name={name} className={`${selectClassName} w-fit outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg`}>
+        <select onChange={(e)=>setSelection?setSelection(e.currentTarget.value) : null} multiple={multiple} name={name} className={`${selectClassName}`}>
             {
                 moreOptions?.map((_,index) => {
                     return (

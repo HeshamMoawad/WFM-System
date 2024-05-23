@@ -22,4 +22,31 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     /* Apply styles to the icon */
     /* For example, changing the color */
     color: #ff0000; /* Change to your desired color */
+    
 }
+
+input[type="time"]{
+    @apply max-w-[150px] place-self-center place-content-center;
+
+}
+
+
+
+input[type="checkbox"]{
+    @apply checked:text-btns-colors-primary border-none w-[18px] h-[18px] place-self-center rounded-full bg-btns-colors-secondry ;
+}
+
+
+select{
+    @apply 
+    w-fit 
+    outline-none 
+    text-center 
+    rounded-lg 
+    border 
+    border-[gray] 
+    bg-light-colors-login-third-bg 
+    dark:border-[#374558] 
+    dark:bg-dark-colors-login-third-bg ;
+}
+

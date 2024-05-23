@@ -110,7 +110,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                         }}
                     >
                         <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
-                            <label htmlFor="basic">Basic</label>
+                            <label htmlFor="basic">Basic in [ EGP ] </label>
                             <input
                                 type="number"
                                 value={currentCommissionDetails.basic}
@@ -143,7 +143,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                 }}
                                 name="set_deduction_rules"
                                 id="set_deduction_rules"
-                                className="col-span-1 md:col-auto  w-fit place-self-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg"
+                                className="col-span-1 md:col-auto"
                             />
 
                             <label
@@ -170,7 +170,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                 }}
                                 name="set_global_commission_rules"
                                 id="set_global_commission_rules"
-                                className="col-span-1 md:col-auto w-fit place-self-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg"
+                                className="col-span-1 md:col-auto "
                             />
 
                             <section className="col-span-3 md:col-span-6 grid grid-cols-2">
@@ -178,8 +178,9 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                     name="deduction_rules"
                                     LabelName="Deduction Rules"
                                     url="api/commission/deduction-rules"
+                                    LabelClassName="place-self-center"
                                     multiple={true}
-                                    selectClassName="w-[150px] md:w-[250px]"
+                                    selectClassName="w-[150px] md:w-[250px] rounded-lg overflow-auto"
                                     selected={currentCommissionDetails.deduction_rules as string[]}
                                     config={{
                                         value: "uuid",
@@ -194,7 +195,8 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                     LabelName="Commission Rules"
                                     url="api/commission/target-slices"
                                     multiple={true}
-                                    selectClassName="w-[150px] md:w-[250px]"
+                                    LabelClassName="place-self-center"
+                                    selectClassName="w-[150px] md:w-[250px] rounded-lg overflow-auto"
                                     selected={currentCommissionDetails.commission_rules as string[]}
                                     config={{
                                         value: "uuid",
@@ -203,7 +205,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                 />
                             </section>
 
-                            <label htmlFor="will_arrive_at">Arrive At</label>
+                            <label htmlFor="will_arrive_at" className="place-self-center">Arrive At</label>
                             <input
                                 type="time"
                                 value={currentCommissionDetails.will_arrive_at}
@@ -213,7 +215,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                 className="col-span-2 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg"
                             />
 
-                            <label htmlFor="will_leave_at">Leave At</label>
+                            <label htmlFor="will_leave_at" className="place-self-center">Leave At</label>
                             <input
                                 type="time"
                                 value={currentCommissionDetails.will_leave_at}
