@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework' ,
     'corsheaders',
+    'import_export',
 ]
 
 LOCAL_APPS = [
@@ -100,12 +101,26 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'testDB',
+#         'USER': 'admin',
+#         'PASSWORD': 'admin',
+#         'HOST': '192.168.11.250',  # Set to 'localhost' if running locally
+#         'PORT': '5432',  # Set to '5432' for default
+#     }
+# }
 
 
 # Password validation

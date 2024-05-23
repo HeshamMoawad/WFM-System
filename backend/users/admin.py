@@ -1,4 +1,7 @@
 from django.contrib import admin
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+
 from .models import (
     User , 
     Department ,
@@ -11,8 +14,15 @@ from .models import (
 )
 from utils.admin_utils import FieldSets
 
-# Register your models here.
-class UserAdminSite(admin.ModelAdmin):
+class UserResource(resources.ModelResource):
+    class Meta:
+        model = User  
+
+
+
+# Register your models here..
+class UserAdminSite(ImportExportModelAdmin):
+    resource_classes = [UserResource]
     list_display = ("username",'role',"project","is_active","is_staff","is_superuser")
     list_filter = ("project","role")
     readonly_fields = ['uuid',"created_at","updated_at"]
@@ -45,8 +55,6 @@ class UserAdminSite(admin.ModelAdmin):
             ]
     ]).fieldsets
 
-
-
 class ProfileAdminSite(admin.ModelAdmin):
     list_display = ["user","telegram_id"]
     list_filter = ["user"]
@@ -68,9 +76,13 @@ class ProfileAdminSite(admin.ModelAdmin):
             ]
     ]).fieldsets
 
+class ArrivingLeavingResource(resources.ModelResource):
+    class Meta:
+        model = ArrivingLeaving  
 
 
-class ArrinigLeavingAdminSite(admin.ModelAdmin):
+class ArrinigLeavingAdminSite(ImportExportModelAdmin):
+    resource_classes = [ArrivingLeavingResource]
     list_display = ["user","date","arriving_at","leaving_at",]
     list_filter = ["user","date"]
     readonly_fields = ['uuid',"created_at","updated_at","date" ,"arriving_at"]
