@@ -1,5 +1,5 @@
 from django.urls import path , include
-from ..views.authenticate import login , logout
+from users.views.authenticate import login , logout
 from users.views import (
     ProjectsAPI , 
     DepartmentsAPI , 

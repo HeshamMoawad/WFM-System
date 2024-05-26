@@ -1,15 +1,9 @@
-from api_views.mixin import (
-    PageNumberPagination ,
-)
-from api_views.models import APIViewSet , ForeignField , ManyToManyField
-from users.views import CustomPagination , IsAuthenticated , AuthenticateUser 
-
+from api_views.models import APIViewSet 
+from users.views import CustomPagination , IsAuthenticated 
 from commission.models import (
     UserCommissionDetails , 
-    User,
     DeductionRules,
     TargetSlice,
-    Department
     )
 from commission.serializers import UserCommissionDetailsSerializer , DeductionRulesSerializer , TargetSliceSerializer
 
@@ -24,11 +18,9 @@ class UserCommissionDetailsAPI(APIViewSet):
     search_filters = ["uuid","user"]
     unique_field:str = 'uuid'
     updating_filters = ["basic","set_deduction_rules","first_name","last_name","deduction_rules","set_global_commission_rules","commission_rules","will_arrive_at","will_leave_at"]
-    auth_class = AuthenticateUser
 
 
 class DeductionRulesAPI(APIViewSet):
-    # allowed_methods = ["GET","PUT","POST","DELETE"]
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
     model = DeductionRules
@@ -39,11 +31,9 @@ class DeductionRulesAPI(APIViewSet):
     requiered_fields = ["late_time","deduction_days"]
     updating_filters = ["late_time","deduction_days","is_global","department"]
     unique_field:str = 'uuid'
-    auth_class = AuthenticateUser
 
 
 class TargetSlicesAPI(APIViewSet):
-    # allowed_methods = ["GET","PUT","POST","DELETE"]
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
     model = TargetSlice
@@ -54,6 +44,5 @@ class TargetSlicesAPI(APIViewSet):
     requiered_fields = ["min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
     updating_filters = ["min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
     unique_field:str = 'uuid'
-    auth_class = AuthenticateUser
 
 

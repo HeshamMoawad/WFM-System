@@ -186,6 +186,9 @@ REST_FRAMEWORK = {
     ) ,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'auth.models.HeaderAuthentication',
+        'auth.models.CookieAuthentication',
+        'auth.models.BodyAuthentication',
     ],
 
 }

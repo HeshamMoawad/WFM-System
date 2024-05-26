@@ -1,5 +1,8 @@
 from rest_framework.permissions import BasePermissionMetaclass 
 from django.contrib.auth import get_user_model
+# from auth.utils import fetch_user
+from dataclasses import dataclass
+from typing import List
 # from users.views.auth import AuthenticateUser
 User = get_user_model()
 
@@ -35,5 +38,27 @@ class CustomBasePermission(metaclass=BasePermissionMetaclass):
         return {}
 
 
+# @dataclass()
+class PermissionsAdaptor(CustomBasePermission):
+    
+    
+    methods:List[str] = ["GET","POST","PUT","DELETE"]
 
+    config = {
+        "AGENT" : [],
+        "MANAGER" : [],
+        "OWNER" : [],
+        "HR" : [],
+    }
+
+    def has_permission(self, request, view):
+        # user:User = fetch_user(request)
+
+        return True
+
+    
+
+    def __contains__(self,role:str):
+
+        pass
 

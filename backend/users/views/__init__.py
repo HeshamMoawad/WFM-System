@@ -1,8 +1,7 @@
 from api_views.mixin import (
     PageNumberPagination ,
 )
-from .auth import AuthenticateMixins, AuthenticateUser
-from api_views.models import APIViewSet , ForeignField , ManyToManyField
+from api_views.models import APIViewSet 
 from users.models import (
     User , 
     Project , 
@@ -22,17 +21,9 @@ from users.serializers import (
     RequestSerializer ,
     )
 
-from permissions.models import CustomBasePermission 
-from auth.utils import fetch_user
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import FormParser , MultiPartParser 
 
-
-class IsAuthenticated(CustomBasePermission):
-    """
-    Allows access only to authenticated users.
-    """
-    def has_permission(self, request, view):
-        return bool(fetch_user(request,AuthenticateUser))
 
 
 class CustomPagination15(PageNumberPagination):
@@ -52,10 +43,9 @@ class Pagination1K(PageNumberPagination):
 
 
 class UsersAPI(APIViewSet):
-    permission_classes = [IsAuthenticated ]
+    permission_classes = [IsAuthenticated]
     pagination_class = Pagination1K
     model = User
-    auth_class:AuthenticateMixins = AuthenticateUser
     model_serializer= UserSerializer
     order_by = ('username',)
     search_filters = ["uuid",'username','project' ,"department","role"]
@@ -63,7 +53,6 @@ class UsersAPI(APIViewSet):
     requiered_fields = ['username',"_password"]
     updating_filters = ["username","_password","is_active","role","is_staff","title","project","department"]
     unique_field:str = 'uuid'
-    auth_class = AuthenticateUser
     required_filters = {
         "is_superuser": False ,
     }
@@ -73,8 +62,6 @@ class ProjectsAPI(APIViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = Pagination1K
     model = Project
-    auth_class:AuthenticateMixins = AuthenticateUser
-
     model_serializer= ProjectSerializer
     order_by = ('name',)
     search_filters = ["uuid",'name']
@@ -96,7 +83,6 @@ class DepartmentsAPI(APIViewSet):
     requiered_fields = ['name']
     updating_filters = ["name"]
     unique_field:str = 'uuid'
-    auth_class:AuthenticateMixins = AuthenticateUser
 
 
 class ArrivingLeavingAPI(APIViewSet):
@@ -108,7 +94,6 @@ class ArrivingLeavingAPI(APIViewSet):
     order_by = ('date',)
     search_filters = ["uuid","user","date"]
     unique_field:str = 'uuid'
-    auth_class:AuthenticateMixins = AuthenticateUser
 
 
 class ProfileAPI(APIViewSet):
@@ -122,12 +107,10 @@ class ProfileAPI(APIViewSet):
     search_filters = ["uuid",'user','about']
     updating_filters = ["phone","picture","telegram_id","about"]
     unique_field:str = 'uuid'
-    auth_class = AuthenticateUser
     use_serializer_for_create = True
     image_fields = [
         "picture"
     ]
-    auth_class:AuthenticateMixins = AuthenticateUser
 
 
 class LeadAPI(APIViewSet):
@@ -140,7 +123,6 @@ class LeadAPI(APIViewSet):
     creating_filters = ["phone","name","user","date","project"]
     requiered_fields = ["user","phone","date","project"]
     unique_field:str = 'uuid'
-    auth_class:AuthenticateMixins = AuthenticateUser
 
 
 class RequestAPI(APIViewSet):
@@ -154,4 +136,3 @@ class RequestAPI(APIViewSet):
     requiered_fields =  ["user","details","type"]
     updating_filters = ["status","details","type"]
     unique_field:str = 'uuid'
-    auth_class:AuthenticateMixins = AuthenticateUser
