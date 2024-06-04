@@ -6,45 +6,39 @@ import Swal from 'sweetalert2';
 import { saveLogin } from '../../utils/storage';
 import Authintication from '../../types/auth';
 import { Language } from '../../types/base';
-import { useNavigate } from 'react-router-dom';
+
 
 export const onSubmitLoginForm = (e:FormEvent , lang:Language , setLoading:React.Dispatch<React.SetStateAction<boolean>> , setAuth:React.Dispatch<React.SetStateAction<Authintication>>) => {
+  // e.preventDefault()
   setLoading(true)
-    e.preventDefault()
-    sendRequest({url:"api/users/login",method:"POST",params:parseObject(e)})
+    
+    sendRequest({url:"api/users/login",method:"POST",params:parseObject(e),reloadWhenUnauthorized:false})
         .then(data => {
-            //  console.log(data)
-             setLoading(false)
-             if (data){
-                setAuth(data)
-                saveLogin(data)
-                Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: TRANSLATIONS.Login.Alerts.onSuccess[lang],
-                    text:`${data?.username} -- ${data?.title}` ,
-                    showConfirmButton: false,
-                    timer: 1000
-                  }).then(()=>{
-                    if (window.location.pathname === "/login"){
-                      window.location.href = '/dashboard'
-                    }
-                  });           
-             }else {
-              throw new Error("Please try again")
-             }
+            setLoading(false)
+            setAuth(data)
+            saveLogin(data)
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: TRANSLATIONS.Login.Alerts.onSuccess[lang],
+                text:`${data?.username} & ${data?.title}` ,
+                showConfirmButton: false,
+                timer: 1000
+              }).then(()=>{
+                window.location.href = '/dashboard'
+              });           
              
          })
-         .catch(err => {
-              console.log(err)
-              setLoading(false)
+        .catch(err => {
               Swal.fire({
                 icon: "error",
                 title: TRANSLATIONS.Login.Alerts.onFaild[lang],
+                text: "Please check your username and password",
                 showConfirmButton: false,
                 timer: 1000
               });
             })
+        .finally(() => setLoading(false))
 }
 
 
@@ -67,21 +61,21 @@ export const onForgetPassword = (lang:Language , setLoading:React.Dispatch<React
         showLoaderOnConfirm: true,
         preConfirm: async (username_) => {
             try {
-              const response = await sendRequest({url:"api/users/send_password",method:"POST",params:{"username":username_}});
-              if (response) {
-                return Swal.showValidationMessage(`
-                  ${JSON.stringify(await response.json())}
-                `);
+              const data = await sendRequest({url:"api/users/send_password",method:"POST",params:{"username":username_}});
+              if (data) {
+                return Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  title: "Successfully sent password",
+                  text:`${data.message}` ,
+                  showConfirmButton: false,
+                  timer: 1200
+                }) 
               }
-              setLoading(false)
-              return response.json();
-
             } catch (error) {
               Swal.showValidationMessage(`
                 Request failed: ${error}
               `);
-              setLoading(false)
-
             }
           },
         

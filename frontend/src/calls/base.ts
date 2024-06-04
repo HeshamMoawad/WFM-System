@@ -8,9 +8,10 @@ export interface sendRequestKwargs {
     method?:"GET"|"POST"|"PUT"|"DELETE",
     params?:{[k:string] : FormDataEntryValue}|object,
     data?:FormData|any,
-    headers?:object
+    headers?:object,
+    reloadWhenUnauthorized?:boolean;
 }
-export const sendRequest = ({url,method,params,data , headers}:sendRequestKwargs)=>{
+export const sendRequest = ({url,method,params,data , headers,reloadWhenUnauthorized=true}:sendRequestKwargs)=>{
     return fetch(`${BASE_URL}${url}${params ? "?" + new URLSearchParams(params as Record<string,string>).toString():""}` , {
         method: method,
         body: data , 
@@ -23,7 +24,7 @@ export const sendRequest = ({url,method,params,data , headers}:sendRequestKwargs
       }).then(response => {
         if (response.status === 200) {
             return response.json()
-        } else if (response.status === 401){
+        } else if (response.status === 401 && reloadWhenUnauthorized){
             localStorage.removeItem(AUTH_KEY);
             Swal.fire({
                 icon: "error",
@@ -31,6 +32,8 @@ export const sendRequest = ({url,method,params,data , headers}:sendRequestKwargs
                 showConfirmButton: false,
                 timer: 1000
               }).then(() => window.location.reload())
+        }else if (!reloadWhenUnauthorized){
+            throw new Error(response.statusText)
         }
     });
 

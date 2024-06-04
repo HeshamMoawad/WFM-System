@@ -24,7 +24,7 @@ const Login: FC<LoginProps> = () => {
             <div className="login-card dark:text-[white]" dir={TRANSLATIONS.Direction[lang]}>
                 <label className='sign'>{TRANSLATIONS.Login.SignIn[lang]}</label>
                 <div className="form">
-                    <form action="" method='' className='form' onSubmit={(e)=>{onSubmitLoginForm(e,lang,setLoading,setAuth)}}>
+                    <form action="" method='' className='form' onSubmit={(e)=>{e.preventDefault();onSubmitLoginForm(e,lang,setLoading,setAuth)}}>
                         <div className="section">
                             <label htmlFor="username">{TRANSLATIONS.Login.username[lang]}</label>
                             <input name='username' type="text" placeholder={TRANSLATIONS.Login.username[lang]}/>
