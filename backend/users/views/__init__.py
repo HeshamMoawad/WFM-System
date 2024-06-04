@@ -23,7 +23,7 @@ from users.serializers import (
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import FormParser , MultiPartParser 
-
+from permissions.users import IsAgent , IsManager , IsHR , IsOwner , IsSuperUser
 
 
 class CustomPagination15(PageNumberPagination):
@@ -53,10 +53,12 @@ class UsersAPI(APIViewSet):
     requiered_fields = ['username',"_password"]
     updating_filters = ["username","_password","is_active","role","is_staff","title","project","department"]
     unique_field:str = 'uuid'
-    required_filters = {
-        "is_superuser": False ,
+    permissions_config = {
+        "GET": [IsSuperUser | IsOwner],
+        "POST": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner],
+        "DELETE": [IsSuperUser | IsOwner],
     }
-
 
 class ProjectsAPI(APIViewSet):
     permission_classes = [IsAuthenticated]
@@ -69,6 +71,11 @@ class ProjectsAPI(APIViewSet):
     requiered_fields = ['name']
     updating_filters = ["name","logo"]
     unique_field:str = 'uuid'
+    permissions_config = {
+        "POST": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner],
+        "DELETE": [IsSuperUser | IsOwner],
+    }
 
 
 
@@ -83,6 +90,11 @@ class DepartmentsAPI(APIViewSet):
     requiered_fields = ['name']
     updating_filters = ["name"]
     unique_field:str = 'uuid'
+    permissions_config = {
+        "POST": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner],
+        "DELETE": [IsSuperUser | IsOwner],
+    }
 
 
 class ArrivingLeavingAPI(APIViewSet):

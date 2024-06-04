@@ -23,12 +23,12 @@ class APIViewMixins(APIView):
     updating_filters:List[str] = ["*"]
     unique_field:str = 'id'
     image_fields:List[str]=[]
-    required_filters = {}
+    permissions_config = {}
 
     def _get(self,request:Request):
         parser = RequestParser( request , self.search_filters)
-        queryset = self.model.objects.filter(**self.required_filters,**parser.params).all().distinct().order_by(*self.order_by)
-        queryset = self.filter_queryset_with_permissions(request.user,queryset)
+        queryset = self.model.objects.filter(**parser.params).all().distinct().order_by(*self.order_by)
+        queryset = self.filter_queryset_with_permissions(queryset)
         if self.pagination_class :
             return self.get_pagination_data(queryset,request)
         return self.model_serializer(queryset , many=True).data
@@ -45,7 +45,9 @@ class APIViewMixins(APIView):
 
     def _put(self,request:Request):
         id = RequestParser(request,self.search_filters).params.get(self.unique_field)
-        obj = self.model.objects.get(**self.required_filters , **{self.unique_field:id})
+        queryset = self.model.objects.filter(**{self.unique_field:id})
+        queryset = self.filter_queryset_with_permissions(queryset)
+        obj = queryset.get(**{self.unique_field:id})
         data = request.data.copy()
         serializer = self.model_serializer(instance=obj , data = request.data)
         if self.image_fields :
@@ -62,22 +64,24 @@ class APIViewMixins(APIView):
     def _delete(self , request:Request ):
         parser = RequestParser( request , [self.unique_field])
         id = parser.params.get(self.unique_field)
-        obj = self.model.objects.get(**self.required_filters , **{self.unique_field:id})
-        self.check_object_permissions(request,obj)
+
+        queryset = self.model.objects.filter(**{self.unique_field:id})
+        queryset = self.filter_queryset_with_permissions(queryset)
+        obj = queryset.get(**{self.unique_field:id})
         obj.delete()
         return self.model_serializer(obj).data
         
 
  
-    def filter_queryset_with_permissions(self,user,queryset:QuerySet)->QuerySet:
+    def filter_queryset_with_permissions(self,queryset:QuerySet)->QuerySet:
         filter_kwargs = {}
         exclode_kwargs = {}
         for perm_class in self.permission_classes :
             perm_class = perm_class() 
-            filter_objects_by = getattr(perm_class,"filter_objects_by",lambda x: {})
-            exclude_objects_by = getattr(perm_class,"exclude_objects_by",lambda x: {})
-            filter_kwargs.update(filter_objects_by(user).get(self.model.__name__,{}).get(user.role,{}))
-            exclode_kwargs.update(exclude_objects_by(user).get(self.model.__name__,{}).get(user.role,{}))
+            filter_objects_by = getattr(perm_class,"filter_objects_by",lambda : {})
+            exclude_objects_by = getattr(perm_class,"exclude_objects_by",lambda : {})
+            filter_kwargs.update(filter_objects_by().get(self.model.__name__,{}))#.get(user.role,{}))
+            exclode_kwargs.update(exclude_objects_by().get(self.model.__name__,{}))#.get(user.role,{}))
         return queryset.filter(**filter_kwargs).exclude(**exclode_kwargs)
         
 
@@ -91,3 +95,7 @@ class APIViewMixins(APIView):
             "results": self.model_serializer( result , many=True ).data
         }
 
+
+    def get_permissions(self):
+        self.permission_classes = self.permissions_config.get(str(self.request.method),[])
+        return [permission() for permission in self.permission_classes]

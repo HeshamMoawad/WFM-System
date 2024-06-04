@@ -163,3 +163,4 @@ backup/
 media/
 backend/trash.py
 profile-picture.jpeg
+backend/runner.bat

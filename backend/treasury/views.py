@@ -4,6 +4,7 @@ from rest_framework.response import Response
 # from permissions.models import CustomBasePermission
 from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
+from permissions.users import IsOwner, IsSuperUser , IsManager
 from users.views import CustomPagination15
 from .serializer import (
     AdvanceSerializer , 
@@ -32,6 +33,12 @@ class AdvancesAPIView(APIViewSet):
     creating_filters = ["user","creator","amount"]
     requiered_fields = ["user","creator","amount"]
     unique_field:str = 'uuid'
+    permissions_config = {
+        "GET": [],
+        "POST": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner],
+        "DELETE": [IsSuperUser | IsOwner],
+    }
 
 
 class OutcomeAPIView(APIViewSet):
@@ -45,6 +52,12 @@ class OutcomeAPIView(APIViewSet):
     creating_filters = ["details","creator","amount"]
     requiered_fields = ["details","creator","amount"]
     unique_field:str = 'uuid'
+    permissions_config = {
+        "GET": [IsSuperUser | IsOwner],
+        "POST": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner],
+        "DELETE": [IsSuperUser | IsOwner],
+    }
 
 
 class IncomeAPIView(APIViewSet):
@@ -58,23 +71,26 @@ class IncomeAPIView(APIViewSet):
     creating_filters = ["details","creator","amount"]
     requiered_fields = ["details","creator","amount"]
     unique_field:str = 'uuid'
+    permissions_config = {
+        "GET": [IsSuperUser | IsOwner],
+        "POST": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner],
+        "DELETE": [IsSuperUser | IsOwner],
+    }
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated , IsSuperUser | IsOwner])
 def total_treasury(request:Request):
-    if request.user.role == "OWNER" or request.user.is_superuser:
-        income = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
-        outcome = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
-        income = income if income else 0
-        outcome = outcome if outcome else 0
-        return Response({
-            "income":income,
-            "outcome":outcome,
-            "total":income - outcome,
-        })
-    else :
-        return Response({"details":"you have not access for this"},401)
+    income = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
+    outcome = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
+    income = income if income else 0
+    outcome = outcome if outcome else 0
+    return Response({
+        "income":income,
+        "outcome":outcome,
+        "total":income - outcome,
+    })
 
 
 @api_view(["GET"])

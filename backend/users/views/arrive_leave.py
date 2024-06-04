@@ -51,7 +51,7 @@ def arrive_leave_details(request: Request):
 @api_view(["POST"])
 def test(request:Request):
 
-    print(f"\n--{request.user}--\n")
+    print(f"\n-- {request.user_loc_info} --\n")
 
     print(request.data)
     ser = RequestSerializer(data = request.data)
