@@ -26,7 +26,7 @@ export const saveLogin = (auth:Authintication)=>{
 };
 
 export const loadLogin = ():Authintication =>{
-    return load(AUTH_KEY,()=>{return saveLogin(DefaultAuthintication) as Authintication;})
+    return load(AUTH_KEY,()=>{return saveLogin({} as Authintication) as Authintication;})
 }
 
 

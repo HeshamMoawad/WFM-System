@@ -9,12 +9,13 @@ import {PiFingerprint , PiWallet , PiUserList , PiUsersThree} from 'react-icons/
 import {LiaUsersCogSolid} from 'react-icons/lia';
 import {RiListSettingsLine} from 'react-icons/ri';
 import {VscGitPullRequestNewChanges} from 'react-icons/vsc';
-import {BsPersonWorkspace,BsSafe , BsBuildingAdd , BsDatabaseAdd} from 'react-icons/bs';
+import {BsPersonWorkspace,BsSafe } from 'react-icons/bs';
 import {IoCalendarNumberOutline} from 'react-icons/io5';
 import {RiCustomerService2Line , RiUserAddLine} from 'react-icons/ri';
 import {CgUserList} from 'react-icons/cg';
 import {PiChartLine} from 'react-icons/pi';
 import { useAuth } from '../../hooks/auth';
+import { PiHandCoins } from "react-icons/pi";
 
 
 const Items : SideItem[] = [
@@ -139,6 +140,11 @@ const Items : SideItem[] = [
                 name:'Treasury',
                 href:'/treasury',
                 Icon:BsSafe
+            },
+            {
+                name:'Advances',
+                href:'/advances',
+                Icon:PiHandCoins
             }
         ]
 

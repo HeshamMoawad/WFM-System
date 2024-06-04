@@ -15,7 +15,7 @@ interface TableCardProps {
     label: string;
     userBox?: boolean ;
     userID: string;
-    setUserID:React.Dispatch<SetStateAction<string>>;
+    setUserID:React.Dispatch<SetStateAction<string>>; 
     date:Date;
     setDate:React.Dispatch<SetStateAction<Date>>;
 }

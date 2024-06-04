@@ -4,26 +4,27 @@ import { CgProfile , CgLogOut  } from "react-icons/cg";
 import { AUTH_KEY } from '../../../utils/storage';
 import { useAuth } from '../../../hooks/auth';
 import { getFullURL } from '../../../utils/converter';
+import { useNavigate } from 'react-router-dom';
 
 interface UserIconProps {}
 
 const UserIcon: FC<UserIconProps> = () => {
     const [showMenu , setShowMenu] = useState<boolean>(false)
-    // const navigate = useNavigation()
+    const navigate = useNavigate()
     const {auth} = useAuth()
     return (
     <div className='user-icon w-5/12 h-full md:w-[12%] md:mr-5  cursor-pointer' onClick={e=>setShowMenu(!showMenu)}>
         <div className='container flex flex-row-reverse justify-center w-full h-full'>
             <div className="info flex flex-col justify-center px-2 text-xs md:text-lg">
-                    <span >{auth.first_name} {auth.last_name}</span>
-                    <span className='block opacity-55'>{auth.department.name}</span>
+                    <span >{auth?.first_name} {auth?.last_name}</span>
+                    <span className='block opacity-55'>{auth?.department?.name}</span>
             </div>
             <div className="icon flex flex-col justify-center items-center  w-full md:w-5/12">
                 {
-                    auth.profile.picture ?
+                    auth?.profile?.picture ?
                     (
                         <div className="flex justify-center items-center rounded-full h-12 w-12 md:w-14 md:h-14 bg-[#c4cce3]">
-                            <img src={getFullURL(auth.profile.picture)} alt='' className="w-full h-full rounded-full" />
+                            <img src={getFullURL(auth?.profile?.picture)} alt='' className="w-full h-full rounded-full" />
                         </div>
                     ):
                     (
@@ -47,6 +48,7 @@ const UserIcon: FC<UserIconProps> = () => {
                 <li onClick={(e)=>{
                     e.preventDefault();
                     localStorage.removeItem(AUTH_KEY);
+                    // navigate("/login")
                     window.location.reload();
                 }}>
                     <a href="#s" className="flex  items-center gap-3 px-4 py-2">

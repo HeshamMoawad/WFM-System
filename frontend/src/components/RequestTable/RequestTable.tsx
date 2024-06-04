@@ -38,6 +38,7 @@ const RequestTable: FC<RequestTableProps> = ({className , refresh , setRefresh})
             <>
                 <Table
                     className='mb-5'
+                    key={Math.random()}
                     headers={["username","type","status","details","note","delete"]}
                     data={convertObjectToArrays<RequestType>(
                         data.results,

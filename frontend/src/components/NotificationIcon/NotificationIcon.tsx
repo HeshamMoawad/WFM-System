@@ -65,7 +65,7 @@ const NotificationIcon: FC<NotificationIconProps> = () => {
                         <div className="flex flex-col items-center justify-start max-h-80 md:max-h-[35rem] overflow-y-auto overflow-x-hidden pb-4">
                             <div className="flex flex-col flex-nowrap gap-5 justify-center items-center text-right  px-4 py-2">
                                 {
-                                    notifications.map(notification => <NotificationCard
+                                    notifications?.map(notification => <NotificationCard
                                         setRefresh={setRefresh}
                                         key={notification.uuid}
                                         text={notification.message}

@@ -6,10 +6,10 @@ import Swal from 'sweetalert2';
 import { saveLogin } from '../../utils/storage';
 import Authintication from '../../types/auth';
 import { Language } from '../../types/base';
-
+import { useNavigate } from 'react-router-dom';
 
 export const onSubmitLoginForm = (e:FormEvent , lang:Language , setLoading:React.Dispatch<React.SetStateAction<boolean>> , setAuth:React.Dispatch<React.SetStateAction<Authintication>>) => {
-    setLoading(true)
+  setLoading(true)
     e.preventDefault()
     sendRequest({url:"api/users/login",method:"POST",params:parseObject(e)})
         .then(data => {
@@ -26,7 +26,7 @@ export const onSubmitLoginForm = (e:FormEvent , lang:Language , setLoading:React
                     showConfirmButton: false,
                     timer: 1000
                   }).then(()=>{
-                    if (window.location.pathname === "/"){
+                    if (window.location.pathname === "/login"){
                       window.location.href = '/dashboard'
                     }
                   });           
