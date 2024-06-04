@@ -48,12 +48,14 @@ THIRD_PARTY_APPS = [
     'rest_framework' ,
     'corsheaders',
     'import_export',
+
 ]
 
 LOCAL_APPS = [
     'users' ,
     'commission',
     'treasury',
+
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -61,7 +63,6 @@ INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -190,6 +191,12 @@ REST_FRAMEWORK = {
         'auth.models.CookieAuthentication',
         'auth.models.BodyAuthentication',
     ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    ]
+
 
 }
 
@@ -208,3 +215,5 @@ SIMPLE_JWT = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
+
+
