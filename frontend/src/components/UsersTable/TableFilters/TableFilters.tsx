@@ -11,7 +11,7 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters}) => {
     const [refresh , setRefresh] = useState<boolean>(false)
     return (
     <div className='flex flex-row w-2/3 gap-3 justify-evenly'>
-        <div className='w-full flex justify-evenly'>
+        <div className='w-full flex justify-evenly items-center'>
             <SelectComponent 
                 url='api/users/department'
                 LabelName='Department'
@@ -35,7 +35,7 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters}) => {
         </div>
 
 
-        <div className='w-full flex justify-evenly'>
+        <div className='w-full flex justify-evenly items-center'>
             <SelectComponent 
                 url='api/users/project'
                 LabelName='Project'
@@ -56,7 +56,7 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters}) => {
                 />
         </div>
 
-        <div className='w-full flex justify-evenly'>
+        <div className='w-full flex justify-evenly items-center'>
         <SelectComponent 
             url='api/users/role'
             LabelName='Role'

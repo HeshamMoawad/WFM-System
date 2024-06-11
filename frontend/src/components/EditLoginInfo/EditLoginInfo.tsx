@@ -38,6 +38,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
     };
 
     useEffect(()=>{
+
         setLoading(true);
         sendRequest({
             url:`api/users/user`,
@@ -61,7 +62,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
             loginInfo ? (
                 <form action="" method="post" className="p-3" onSubmit={(e)=>{
                     e.preventDefault();
-                    console.log(loginInfo)
+                    // console.log(loginInfo)
                     setLoading(true);
                     sendRequest({
                         url:`api/users/user`,

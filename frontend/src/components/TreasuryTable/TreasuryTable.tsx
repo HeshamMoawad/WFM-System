@@ -38,14 +38,19 @@ const TreasuryTable: FC<TreasuryTableProps> = ({label , url , color}) => {
                             const item = _ as any; 
                             return (
                             <td className='flex justify-center items-center'>
-                                <img src={getFullURL(item.profile.picture)} alt="" className='rounded-full w-[50px] h-[50px]'/>
+                                {
+                                    item?.profile?.picture ?
+                                    <img src={getFullURL(item?.profile?.picture)} alt="" className='rounded-full w-[50px] h-[50px]'/>
+                                    :" "
+                                }
+                                
                             </td>)
                         },
                     },{
                         key:"creator",
                         method : (_)=>{
                             const item = _ as any; 
-                            return item?.username
+                            return item?.username ? item?.username : "Admin"
                         },
                     },{
                         key:"amount",

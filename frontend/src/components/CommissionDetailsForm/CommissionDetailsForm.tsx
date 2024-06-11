@@ -6,7 +6,7 @@ import { CommissionDetails } from "../../types/auth";
 import { sendRequest } from "../../calls/base";
 import Swal from "sweetalert2";
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
-import { Convert } from "../../utils/converter";
+import { Convert, convertObjectToArrays } from "../../utils/converter";
 
 interface CommissionDetailsFormProps {
     user_uuid: string;
@@ -117,6 +117,8 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                 onChange={onChange}
                                 name="basic"
                                 id="basic"
+                                min={10}
+                                required
                                 className="col-span-2 md:col-span-5 w-[100%] md:w-[50%]  place-self-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg"
                             />
 
@@ -176,7 +178,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                             <section className="col-span-3 md:col-span-6 grid grid-cols-2">
                                 <SelectComponent<DeductionRules>
                                     name="deduction_rules"
-                                    LabelName="Deduction Rules"
+                                    LabelName="Deduction Rules ( Secounds , deduction in days )"
                                     url="api/commission/deduction-rules"
                                     LabelClassName="place-self-center"
                                     multiple={true}
@@ -185,6 +187,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                     config={{
                                         value: "uuid",
                                         label: ["late_time", "deduction_days"],
+                                        method:(...args:any[])=> ` ${(args[0]/60).toPrecision(3)} min , ${args[1]} day `
                                     }}
                                 />
                             </section>
@@ -200,7 +203,9 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                     selected={currentCommissionDetails.commission_rules as string[]}
                                     config={{
                                         value: "uuid",
-                                        label: ["min_value", "max_value" , "money" ],
+                                        label: ["min_value", "max_value" , "money" , "is_money_percentage" , "is_global"],
+                                        method:(...args:any[])=> ` ${args[0]} , ${args[1]} , ${args[2]} ${args[3] ? "%" : "EGP" } , ${args[4] ? "Global" :""}`
+
                                     }}
                                 />
                             </section>

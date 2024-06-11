@@ -16,6 +16,7 @@ import {CgUserList} from 'react-icons/cg';
 import {PiChartLine} from 'react-icons/pi';
 import { useAuth } from '../../hooks/auth';
 import { PiHandCoins } from "react-icons/pi";
+import { GrNotification } from "react-icons/gr";
 
 
 const Items : SideItem[] = [
@@ -115,13 +116,18 @@ const Items : SideItem[] = [
             "OWNER",
             // "MANAGER",
             // "AGENT",
-            // "HR",
+            "HR",
         ],
         sections:[
             {
                 name:'General Settings',
                 href:'#p',
                 Icon:RiListSettingsLine,//BsBuildingAdd
+            },
+            {
+                name:'Notifications',
+                href:'#p',
+                Icon:GrNotification,//BsBuildingAdd
             }
         ]
 

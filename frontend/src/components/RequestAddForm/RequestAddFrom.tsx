@@ -32,7 +32,7 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
                 <input type="hidden" name='user' value={auth.uuid}/>
                 <section className="flex flex-row justify-between items-center" dir=''>
                     <label className='inline-block'>{TRANSLATIONS.Request.Type[lang]}</label>
-                    <select name='type' className='w-1/3 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg text-center' >
+                    <select name='type' className='w-1/3 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg text-center' required>
                         {TRANSLATIONS.Request.Types.map((type__)=>{
                             return <option key={type__.value} value={type__.value}>{type__.translate[lang]}</option>
                         })}
@@ -57,7 +57,7 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
                 }
                 <div className='flex flex-row justify-between'>
                     <label htmlFor="details">{TRANSLATIONS.Request.Details[lang]} :</label>
-                    <textarea  name="details" id="details" className='w-[80%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' dir={TRANSLATIONS.Direction[lang]}/>
+                    <textarea  name="details" id="details" className='w-[80%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' dir={TRANSLATIONS.Direction[lang]} required/>
 
                 </div>
                 <button type='submit' className='bg-btns-colors-primary rounded-md mb-4 h-9'>{TRANSLATIONS.Request.Submit[lang]}</button>

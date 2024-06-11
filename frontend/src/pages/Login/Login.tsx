@@ -27,11 +27,11 @@ const Login: FC<LoginProps> = () => {
                     <form action="" method='' className='form' onSubmit={(e)=>{e.preventDefault();onSubmitLoginForm(e,lang,setLoading,setAuth)}}>
                         <div className="section">
                             <label htmlFor="username">{TRANSLATIONS.Login.username[lang]}</label>
-                            <input name='username' type="text" placeholder={TRANSLATIONS.Login.username[lang]}/>
+                            <input name='username' type="text" placeholder={TRANSLATIONS.Login.username[lang]} required/>
                         </div>
                         <div className="section">
                             <label htmlFor="password">{TRANSLATIONS.Login.password[lang]}</label>
-                            <input name='password' type="password" placeholder={TRANSLATIONS.Login.password[lang]}/>
+                            <input name='password' type="password" placeholder={TRANSLATIONS.Login.password[lang]} required/>
                         </div>
                     
                         <button type='submit'>{TRANSLATIONS.Login.Login[lang]}</button>
