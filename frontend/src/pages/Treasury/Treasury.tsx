@@ -18,11 +18,11 @@ const Treasury: FC<TreasuryProps> = () => {
                 <TotalTreasury refresh={refresh} setRefresh={setRefresh}/>
             </div>
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
-                <TreasuryForm setRefresh={setRefresh} header="Outcome" creator_uuid={auth.uuid} color="btns-colors-secondry"  url="api/treasury/treasury-outcome"/>
+                <TreasuryForm setRefresh={setRefresh} header="Outcome" creator_uuid={auth?.uuid} color="btns-colors-secondry"  url="api/treasury/treasury-outcome"/>
                 <TreasuryTable color="btns-colors-secondry" label="Outcome Details" url="api/treasury/treasury-outcome" />
             </div>
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
-                <TreasuryForm setRefresh={setRefresh} header="Income" color="btns-colors-primary" creator_uuid={auth.uuid} url="api/treasury/treasury-income"/>
+                <TreasuryForm setRefresh={setRefresh} header="Income" color="btns-colors-primary" creator_uuid={auth?.uuid} url="api/treasury/treasury-income"/>
                 <TreasuryTable color="btns-colors-primary" label="Income Details" url="api/treasury/treasury-income" />
             </div>
         </div>

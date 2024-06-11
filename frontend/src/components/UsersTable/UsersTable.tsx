@@ -11,6 +11,7 @@ import PwdComponent from './PwdComponent/PwdComponent';
 import TableFilters from './TableFilters/TableFilters';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 
 
 
@@ -125,9 +126,9 @@ const UsersTable: FC<UsersTableProps> = () => {
                             method : (uuid)=>{
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            <a className='rounded-md w-2/3 h-8' href={`/edit-user/${uuid}`} >
+                                            <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
                                                 <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
-                                            </a>
+                                            </Link>
                                     </td>
                                 )
                             }

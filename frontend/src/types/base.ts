@@ -9,10 +9,14 @@ interface ChildrenType {
     children?: Childrens;
 }
 
+interface Base {
+    uuid: string;
+}
 
 export type {
     ChildrenType ,
     Childrens ,
     DarkModeType ,
     Language ,
+    Base
 }

@@ -31,10 +31,10 @@ const SidebarItem: FC<SidebarItemProps> = ({
         <>
             <span className="w-full h-[1px] bg-[gray] opacity-30"></span>
             <li className="block w-full text-center overflow-hidden" onClick={toggleLi}>
-                <Link to={""} className="hover:fill-primary hover:text-primary">
+                <div className="hover:fill-primary hover:text-primary">
                     <Icon className="w-full h-7"/>
                     <span className="text-sm opacity-80">{name}</span>
-                </Link>
+                </div>
             </li>
             <SidebarPopup index={index} name={name} sections={sections} />
 

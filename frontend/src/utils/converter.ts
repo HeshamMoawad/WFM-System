@@ -1,5 +1,6 @@
 import React from 'react';
 import { BASE_URL } from './constants';
+import { Base } from '../types/base';
 
 
 export const parseObject = (e:React.FormEvent)=> {
@@ -112,8 +113,13 @@ function concatDicts(dictList: Dict[]): Dict {
 }
 
 
-export function Convert(data:any,key:string[]){
-    let newD  = key.map(k=>({[k]: data[k].uuid}))
+export function Convert(data:any,keys:string[]){
+    let newD  = keys.map(k=>{
+        const values : Base[]|Base = data[String(k)]
+        return {
+            [k]: Array.isArray(values)? values.map(val=> val.uuid) : values.uuid
+        }
+    })
     let newData = newD as Dict[]
     return {
         ...data,
@@ -131,5 +137,15 @@ export function Convert(data:any,key:string[]){
 //     }
 
 // }
+
+export function getArgsFrom(obj:any,args:string[]|string){
+    if (typeof args === "string"){
+        return obj[args]
+    }
+    return args.map(arg => obj[arg]);
+}
+
+
+
 
 
