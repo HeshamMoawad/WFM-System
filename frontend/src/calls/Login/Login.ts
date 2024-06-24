@@ -3,7 +3,7 @@ import { TRANSLATIONS } from '../../utils/constants';
 import { sendRequest } from '../../calls/base';
 import { parseObject } from '../../utils/converter';
 import Swal from 'sweetalert2';
-import { saveLogin } from '../../utils/storage';
+import { loadID, saveLogin } from '../../utils/storage';
 import Authintication from '../../types/auth';
 import { Language } from '../../types/base';
 
@@ -12,7 +12,7 @@ export const onSubmitLoginForm = (e:FormEvent , lang:Language , setLoading:React
   // e.preventDefault()
   setLoading(true)
     
-    sendRequest({url:"api/users/login",method:"POST",params:parseObject(e),reloadWhenUnauthorized:false})
+    sendRequest({url:"api/users/login",method:"POST",params:{unique_id:loadID(), ...parseObject(e)},reloadWhenUnauthorized:false})
         .then(data => {
             setLoading(false)
             setAuth(data)
@@ -33,7 +33,7 @@ export const onSubmitLoginForm = (e:FormEvent , lang:Language , setLoading:React
               Swal.fire({
                 icon: "error",
                 title: TRANSLATIONS.Login.Alerts.onFaild[lang],
-                text: "Please check your username and password",
+                text: "Please check your username and password \n or check your device id",
                 showConfirmButton: false,
                 timer: 1000
               });
