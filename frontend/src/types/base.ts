@@ -13,10 +13,15 @@ interface Base {
     uuid: string;
 }
 
+interface PageinationDetails{
+    next:string | null;
+    previous:string | null;
+}
 export type {
     ChildrenType ,
     Childrens ,
     DarkModeType ,
     Language ,
-    Base
+    Base , 
+    PageinationDetails
 }

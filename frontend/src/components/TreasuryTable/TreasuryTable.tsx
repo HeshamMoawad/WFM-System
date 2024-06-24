@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import Container from "../../layouts/Container/Container";
 import useRequest from "../../hooks/calls";
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
@@ -7,6 +7,7 @@ import { convertObjectToArrays, getFullURL } from "../../utils/converter";
 import { TreasuryRecord } from "../../types/auth";
 import { sendRequest } from "../../calls/base";
 import Swal from "sweetalert2";
+import Pagination from "../Pagination/Pagination";
 
 interface TreasuryTableProps {
     label?: string;
@@ -15,12 +16,16 @@ interface TreasuryTableProps {
 }
 
 const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
+    const [currentPage, setCurrentPage] = useState(1)
     const { data, loading } = useRequest<TreasuryRecord>(
         {
             url: url,
             method: "GET",
+            params: {
+                page: currentPage,
+            },
         },
-        []
+        [currentPage]
     );
     return (
         <Container className="w-full h-fit relative">
@@ -89,7 +94,8 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
                                             key={Math.random()}
                                             className="px-3 py-1"
                                         >
-                                            {from_advance ? (
+                                            {
+                                            !from_advance ? (
                                                 <button
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -141,6 +147,7 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
                             },
                         ])}
                     />
+                    <Pagination page={data} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
                 </>
             ) : (
                 <></>
