@@ -1,12 +1,12 @@
 import * as FingerprintJS from 'fingerprintjs2';
 
-export const getFingerprint = async () => {
-    let clientId = ''
-    await FingerprintJS.get({}, (components) => {
-      // Use fingerprint as the client ID
-      clientId = FingerprintJS.x64hash128(components.map((component) => component.value).join(), 31);
+export const getFingerprint = () => {
+  return new Promise((resolve, reject) =>  {
+    FingerprintJS.get({}, (components) => {
+      resolve(FingerprintJS.x64hash128(components.map((component) => component.value).join(), 31))
     });
-    return clientId
+})
+
   };
 
 // const [id , setID] = useState<string>('')
