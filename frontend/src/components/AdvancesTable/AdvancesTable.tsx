@@ -68,7 +68,7 @@ const AdvancesTable: FC<AdvancesTableProps> = ({date,userID}) => {
                                 },
                             },{
                                 key:"created_at",
-                                method : (_)=>new Date(_).toLocaleDateString("en-US",{ day: '2-digit', month: 'short' }),
+                                method : (_)=>new Date(_ as string).toLocaleDateString("en-US",{ day: '2-digit', month: 'short' }),
                             }
 
                         ])}

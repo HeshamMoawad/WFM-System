@@ -85,9 +85,10 @@ const UsersTable: FC<UsersTableProps> = () => {
                             key:"username",
                             method:null
                         },{
-                            key:"_password",
+                            key:["_password" , "is_superuser" , "role"],
                             method:(_)=>{
-                                return <PwdComponent content={_}/>
+                                const { _password , is_superuser , role} = _ as any;
+                                return !(is_superuser || role === "OWNER") ? <PwdComponent content={_password}/> : <td className={``} ></td>
                             }
                         },{
                             key:"is_active",
@@ -122,39 +123,49 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 return profile.phone ? profile.phone :"-"
                             }
                         },{
-                            key:"uuid",
-                            method : (uuid)=>{
+                            key:["uuid" , "is_superuser" , "role"],
+                            method : (args)=>{
+                                const {uuid,is_superuser,role} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
-                                                <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
-                                            </Link>
+                                            {!(is_superuser || role === "OWNER") ? (
+                                                <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
+                                                    <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
+                                                </Link>
+                                            ):null}
+
                                     </td>
                                 )
                             }
                         },{
-                            key:"uuid",
-                            method : (uuid)=>{
+                            key:["uuid" , "is_superuser" , "role"],
+                            method : (args)=>{
+                                const {uuid,is_superuser,role} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            <a onClick={(e)=>{
-                                                    e.preventDefault();
-                                                    Swal.fire({
-                                                        title: "Are you sure?",
-                                                        text: "You won't be able to revert this!",
-                                                        icon: "warning",
-                                                        showCancelButton: true,
-                                                        confirmButtonColor: "#3085d6",
-                                                        cancelButtonColor: "#d33",
-                                                        confirmButtonText: "Yes, delete it!"
-                                                      }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            deleteUser(String(uuid))
-                                                        }
-                                                      });                
-                                        }} className='rounded-md w-2/3 h-8' href='#0'>
-                                                <FaUserXmark className='w-full h-6 text-center fill-btns-colors-secondry'/>
-                                            </a>
+                                        {
+                                            !(is_superuser || role === "OWNER") ? (
+                                                <a onClick={(e)=>{
+                                                        e.preventDefault();
+                                                        Swal.fire({
+                                                            title: "Are you sure?",
+                                                            text: "You won't be able to revert this!",
+                                                            icon: "warning",
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: "#3085d6",
+                                                            cancelButtonColor: "#d33",
+                                                            confirmButtonText: "Yes, delete it!"
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                deleteUser(String(uuid))
+                                                            }
+                                                        });                
+                                            }} className='rounded-md w-2/3 h-8' href='#0'>
+                                                    <FaUserXmark className='w-full h-6 text-center fill-btns-colors-secondry'/>
+                                                </a>
+
+                                            ): null
+                                        }
                                     </td>
                                 )
                             }

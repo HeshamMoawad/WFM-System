@@ -22,13 +22,41 @@ export const getFullURL = (url:string|null):string=>{
 
 
 interface TableValues{
-    key:string,
-    method:((item:string|number)=>any)|null,
+    key:string | string[],
+    method:((item:(string|number|Array<any>))=>any)|null,
+
 }
 
-function convertArray(item:any, neededArrayString:string[] , neededArrayMethods:any[]){
-    return neededArrayString.map((key,index)=>neededArrayMethods[index] ? neededArrayMethods[index](item[key]) : item[key])
+function convertArray(item:any, neededArrayString:(string | string[])[] , neededArrayMethods:any[]){
+    return neededArrayString.map((key,index)=>{ 
+        if (typeof key === 'string'){
+            return neededArrayMethods[index] ? neededArrayMethods[index](item[key]) : item[key]
+        }else if (Array.isArray(key)){
+            const objs = Object.keys(item).filter(k => key.includes(k)).map(
+                k => ({[k]:item[k]})
+            )
+            return neededArrayMethods[index] ? neededArrayMethods[index](concatDicts(objs)) : item
+        }
+        else {
+            return key
+        }
+    })
 }
+
+
+export function convertObjectToArrays<T extends object>(arrayOfObjects:T[] , neededValues:TableValues[]){
+    let subArrays:any[] = [];
+    const neededArrayString = neededValues.map(v => v.key)
+    const neededArrayMethods = neededValues.map(v => v.method)
+
+
+    arrayOfObjects.map((item, index)=>{
+        subArrays.push(convertArray(item,neededArrayString , neededArrayMethods));
+    })
+    // console.log(subArrays)
+    return subArrays
+}
+
 
 function convertEmptyArray(neededArrayString:string[]){
     return Array.from(neededArrayString , (item,index)=>"-")
@@ -49,22 +77,6 @@ function getDaysInMonthExcludingFriSat(year: number, month: number): number[] {
 
     return daysInMonth;
 }
-
-
-
-export function convertObjectToArrays<T extends object>(arrayOfObjects:T[] , neededValues:TableValues[]){
-    let subArrays:any[] = [];
-    const neededArrayString = neededValues.map(v => v.key)
-    const neededArrayMethods = neededValues.map(v => v.method)
-
-
-    arrayOfObjects.map((item, index)=>{
-        subArrays.push(convertArray(item,neededArrayString , neededArrayMethods));
-    })
-    // console.log(subArrays)
-    return subArrays
-}
-
 
 
 export function formatTime(seconds:number) {

@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { useEffect, type FC } from 'react';
 import AttendCard from '../../components/AttendCard/AttendCard';
 import LateSpeedoMeter from '../../components/LateSpeedoMeter/LateSpeedoMeter';
 import { useAuth } from '../../hooks/auth';

@@ -78,19 +78,19 @@ const TableCard: FC<TableCardProps> = ({label , userID , setUserID,date , setDat
                             [
                             {
                                 key:"date",
-                                method:(item) => new Date(item).toLocaleDateString("en-US",{ day: '2-digit', month: 'short' }),
+                                method:(item) => new Date(item as string).toLocaleDateString("en-US",{ day: '2-digit', month: 'short' }),
                             }, 
                             {
                                 key:"date",
-                                method:(item) => WEEK_DAYS[new Date(item).getDay()][lang],
+                                method:(item) => WEEK_DAYS[new Date(item as string).getDay()][lang],
                             }, 
                             {
                                 key:"arriving_at",
-                                method:(item) => new Date(item).toLocaleTimeString(),
+                                method:(item) => new Date(item as string).toLocaleTimeString(),
                             },
                             {
                                 key:"leaving_at",
-                                method:(item) => item ? new Date(item).toLocaleTimeString() : "-" ,
+                                method:(item) => item ? new Date(item as string).toLocaleTimeString() : "-" ,
                             },
                             {
                                 key:"deuration",
