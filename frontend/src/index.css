@@ -50,3 +50,16 @@ select{
     dark:bg-dark-colors-login-third-bg ;
 }
 
+
+input[type="text"]{
+    @apply 
+    h-11
+    outline-none
+    px-4
+    rounded-lg
+    border
+    border-[gray]
+    bg-light-colors-login-third-bg
+    dark:border-[#374558]
+    dark:bg-dark-colors-login-third-bg;
+}
