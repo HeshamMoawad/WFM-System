@@ -76,6 +76,7 @@ class APIViewMixins(APIView):
     def filter_queryset_with_permissions(self,queryset:QuerySet)->QuerySet:
         filter_kwargs = {}
         exclode_kwargs = {}
+        # print(self.permission_classes,"permission_classes")
         for perm_class in self.permission_classes :
             perm_class = perm_class() 
             filter_objects_by = getattr(perm_class,"filter_objects_by",lambda : {})

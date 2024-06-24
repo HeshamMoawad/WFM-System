@@ -1,4 +1,5 @@
-from django.db import models
+from django.db import models 
+from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_save , post_save
 from users.models import  User ,Department , create_update_history
 from core.models import BaseModel
@@ -8,7 +9,7 @@ import typing , datetime
 
 class TargetSlice(BaseModel):
     min_value = models.PositiveIntegerField(verbose_name="Min Value")
-    max_value = models.PositiveIntegerField(verbose_name="Max Value")
+    max_value = models.PositiveIntegerField(verbose_name="Max Value" )
     money = models.CharField(verbose_name="Commission", max_length=100)
     is_money_percentage = models.BooleanField(verbose_name="Set Commession as Percentage")
     is_global = models.BooleanField(verbose_name="Set Global Rule")
@@ -17,6 +18,11 @@ class TargetSlice(BaseModel):
         verbose_name = "Target Slice"
         verbose_name_plural = "Target Slices"
  
+    def save(self, *args , **kwargs) -> None:
+        if self.min_value >= self.max_value :
+            raise ValidationError("Max Value must be greater than Min Value")
+        return super().save(*args , **kwargs)
+
     def is_achieved(self,count:int):
         return count > self.min_value
         
