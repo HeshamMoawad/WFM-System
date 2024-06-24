@@ -186,12 +186,12 @@ const Sidebar: FC<SidebarProps> = () => {
 
                         if (!item.permissions) {
                             return (
-                                <SidebarItem key={index}  {...{...item , index }}/>
+                                <SidebarItem  key={index}  {...{...item , index }} setOpened={setOpened}/>
                                 )
                         }else {
                             if (item.permissions.includes(auth.role) || auth.is_superuser) {
                                 return (
-                                    <SidebarItem key={index}  {...{...item , index }}/>
+                                    <SidebarItem  key={index}  {...{...item , index }} setOpened={setOpened}/>
                                 )
                             }else {
                                 return null

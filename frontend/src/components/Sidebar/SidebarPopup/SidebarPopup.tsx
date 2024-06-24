@@ -6,10 +6,11 @@ import { Link } from 'react-router-dom';
 interface SidebarPopupProps {
     name:string,
     index:number , 
-    sections:SideSection[]
+    sections:SideSection[] ,
+    setOpened?:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections}:SidebarPopupProps) => {
+const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections , setOpened }:SidebarPopupProps) => {
     const {showed , setShowed} = useContext(SidebarContext)
     const style = useMemo(()=>{
         return showed === index ? 'w-60 md:w-72':'w-0 opacity-0 overflow-hidden'
@@ -28,7 +29,10 @@ const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections}:SidebarPopupP
                                 <Link 
                                     to={section.href}
                                     className="pl-10 md:pl-16 flex justify-start items-center gap-3 hover:text-primary hover:fill-primary"
-                                    onClick={e=>{setShowed(null)}}
+                                    onClick={e=>{
+                                        if(setOpened){setOpened(prev=>!prev)} 
+                                        setShowed(null)
+                                    }}
                                     >
                                 
                                         {

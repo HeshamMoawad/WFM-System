@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 interface SidebarItemProps extends  SideItem{
     href?: string;
+    setOpened?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
@@ -15,6 +16,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
             href = "#s",
             index = 0,
             sections,
+            setOpened
         }: SidebarItemProps) => {
     const { setShowed } = useContext(SidebarContext)
     const toggleLi = useCallback(()=>{
@@ -31,12 +33,12 @@ const SidebarItem: FC<SidebarItemProps> = ({
         <>
             <span className="w-full h-[1px] bg-[gray] opacity-30"></span>
             <li className="block w-full text-center overflow-hidden" onClick={toggleLi}>
-                <div className="hover:fill-primary hover:text-primary">
+                <div className="hover:fill-primary hover:text-primary cursor-grab">
                     <Icon className="w-full h-7"/>
                     <span className="text-sm opacity-80">{name}</span>
                 </div>
             </li>
-            <SidebarPopup index={index} name={name} sections={sections} />
+            <SidebarPopup setOpened={setOpened} index={index} name={name} sections={sections} />
 
         </>
     );
