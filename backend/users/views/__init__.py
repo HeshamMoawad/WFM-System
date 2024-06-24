@@ -9,7 +9,8 @@ from users.models import (
     ArrivingLeaving ,
     Profile,
     Lead,
-    Request
+    Request ,
+    FingerPrintID ,
     )
 from users.serializers import (
     ProjectSerializer , 
@@ -19,6 +20,7 @@ from users.serializers import (
     ProfileSerializer ,
     LeadSerializer ,
     RequestSerializer ,
+    FingerPrintIDSerializer ,
     )
 
 from rest_framework.permissions import IsAuthenticated
@@ -48,7 +50,7 @@ class UsersAPI(APIViewSet):
     model = User
     model_serializer= UserSerializer
     order_by = ('username',)
-    search_filters = ["uuid",'username','project' ,"department","role"]
+    search_filters = ["uuid",'username','project' ,"department","role","is_active"]
     creating_filters = ["username","_password","is_active","role","is_staff","title","project","department"]
     requiered_fields = ['username',"_password"]
     updating_filters = ["username","_password","is_active","role","is_staff","title","project","department"]
@@ -148,3 +150,22 @@ class RequestAPI(APIViewSet):
     requiered_fields =  ["user","details","type"]
     updating_filters = ["status","details","type"]
     unique_field:str = 'uuid'
+
+
+
+class FingerPrintIDAPI(APIViewSet):
+    # permission_classes = [IsAuthenticated]
+    allowed_methods = ["GET","POST","DELETE"]
+    pagination_class = Pagination1K
+    model = FingerPrintID
+    model_serializer= FingerPrintIDSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid","user","name","unique_id"]
+    creating_filters = ["user","name","unique_id"]
+    requiered_fields =  ["user","name","unique_id"]
+    unique_field:str = 'uuid'
+    permissions_config = {
+        "POST": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner],
+        "DELETE": [IsSuperUser | IsOwner],
+    }

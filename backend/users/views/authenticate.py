@@ -15,13 +15,15 @@ def login(request: Request):
     try :
         data = login_class.login(request)
         uuid = data.get("uuid",None)
-        if uuid:
+        is_superuser = data.get("is_superuser",False)
+        if uuid :
             finger = FingerPrintID.objects.filter(user__uuid=uuid , unique_id=request.query_params.get("unique_id",request.data.get("unique_id",None))).first()
             if not finger :
                 raise NotImplementedError("No Devices ID added Please add one !")
             data.update({"unique_id":FingerPrintIDSerializer(finger).data})
         else :
             raise NotImplementedError
+
         status = HTTP_200_OK
         response = Response(data,status)
         response.set_cookie(AUTH_COOKIE , data[AUTH_COOKIE])

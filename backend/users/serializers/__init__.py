@@ -138,6 +138,8 @@ class LeadSerializer(ModelSerializer):
         ]
 
 class FingerPrintIDSerializer(ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = FingerPrintID
         fields = [
@@ -149,6 +151,9 @@ class FingerPrintIDSerializer(ModelSerializer):
             "updated_at",
 
         ]
+        foreign_models = {
+            "user": ForeignField("user",User,'uuid') ,
+        }
 
 
 

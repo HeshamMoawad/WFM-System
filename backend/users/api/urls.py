@@ -8,6 +8,7 @@ from users.views import (
     LeadAPI ,
     ProfileAPI ,
     RequestAPI ,
+    FingerPrintIDAPI
      )
 from users.views.arrive_leave import arreive , leave , arrive_leave_details , test
 from users.views.forget_pass import forget_password
@@ -25,6 +26,7 @@ urlpatterns = [
     path('lead',LeadAPI.as_view()) ,
     path('profile',ProfileAPI.as_view()) ,
     path('request',RequestAPI.as_view()) ,
+    path('device-access',FingerPrintIDAPI.as_view()) ,
     path('send_password',forget_password) ,
 
     path('test',test) ,
