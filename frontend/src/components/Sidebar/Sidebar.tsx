@@ -17,6 +17,7 @@ import {PiChartLine} from 'react-icons/pi';
 import { useAuth } from '../../hooks/auth';
 import { PiHandCoins } from "react-icons/pi";
 import { GrNotification } from "react-icons/gr";
+import { BiDevices } from "react-icons/bi";
 
 
 const Items : SideItem[] = [
@@ -105,6 +106,11 @@ const Items : SideItem[] = [
                 name:'Users List',
                 href:'/users-list',
                 Icon:PiUserList
+            },
+            {
+                name:'Devices Access',
+                href:'/devices-access',
+                Icon:BiDevices
             },
         ]
 

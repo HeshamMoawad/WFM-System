@@ -50,7 +50,7 @@ const UsersTable: FC<UsersTableProps> = () => {
     },[filters])
 
     return (
-    <Container className='w-[1500px] md:w-screen h-fit min-h-[300px] relative flex flex-col gap-3 justify-center items-center'>
+    <Container className='w-fit md:w-screen h-fit min-h-[300px] relative flex flex-col gap-3 justify-center items-center'>
         <h1 className='text-2xl text-btns-colors-primary text-center w-full'>Users</h1>
         <TableFilters setFilters={setFilters}/>
         {
@@ -70,11 +70,11 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 const item = _ as any; 
                                 return (
                                     item.picture ? 
-                                        <td key={Math.random()} className='flex justify-center items-center'>
+                                        <td key={Math.random()} className='flex justify-center items-center px-3 py-1'>
                                             <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/>
                                         </td>
                                         : 
-                                        <td key={Math.random()} className='text-center w-[40px] h-[40px]'>
+                                        <td key={Math.random()} className='text-center w-[40px] h-[40px] px-3 py-1'>
                                             -
                                             {/* <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/> */}
                                         </td>
@@ -93,7 +93,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                         },{
                             key:"is_active",
                             method:(_)=>
-                            <td className=''>
+                            <td className='px-3 py-1'>
                                 <span className={`inline-block w-3 h-3 rounded-full border ${_ ? "bg-btns-colors-primary border-btns-colors-primary " : "bg-btns-colors-secondry border-btns-colors-secondry"}`}>
                                 </span>
                             </td>
