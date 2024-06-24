@@ -10,7 +10,8 @@ from .models import (
     Lead ,
     Profile ,
     UpdateHistory , 
-    Request
+    Request , 
+    FingerPrintID
 )
 from utils.admin_utils import FieldSets
 
@@ -212,6 +213,28 @@ class RequestAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 
+class FingerPrintIDAdminSite(admin.ModelAdmin):
+    list_display = ["user","name" ,"unique_id"]
+    list_filter = ["user" ]
+    readonly_fields = ['uuid',"created_at","updated_at" ]
+    search_fields = ['user__username',"unique_id" ,"name"]  
+    fieldsets = FieldSets([
+            'FingerPrintID Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'name', 
+                'user',
+                'unique_id',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at" ,
+            ]
+    ]).fieldsets
+
+admin.site.site_title = "WFM-System"
+admin.site.site_header = "WFM-System"
 admin.site.register(User , UserAdminSite)
 admin.site.register(Department, DepartmentAdminSite)
 admin.site.register(Project , ProjectAdminSite)
@@ -220,3 +243,4 @@ admin.site.register(ArrivingLeaving,ArrinigLeavingAdminSite)
 admin.site.register(Lead,LeadAdminSite)
 admin.site.register(Request,RequestAdminSite)
 admin.site.register(UpdateHistory , UpdateHistoryAdminSite)
+admin.site.register(FingerPrintID , FingerPrintIDAdminSite)

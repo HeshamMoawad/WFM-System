@@ -43,7 +43,7 @@ class Pagination1K(PageNumberPagination):
 
 
 class UsersAPI(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     pagination_class = Pagination1K
     model = User
     model_serializer= UserSerializer
@@ -61,7 +61,7 @@ class UsersAPI(APIViewSet):
     }
 
 class ProjectsAPI(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     pagination_class = Pagination1K
     model = Project
     model_serializer= ProjectSerializer
@@ -80,7 +80,7 @@ class ProjectsAPI(APIViewSet):
 
 
 class DepartmentsAPI(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     pagination_class = Pagination1K
     model = Department
     model_serializer= DepartmentSerializer
@@ -99,7 +99,7 @@ class DepartmentsAPI(APIViewSet):
 
 class ArrivingLeavingAPI(APIViewSet):
     allowed_methods = ["GET"]
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     pagination_class = Pagination1K
     model = ArrivingLeaving
     model_serializer= ArrivingLeavingSerializer
@@ -110,7 +110,7 @@ class ArrivingLeavingAPI(APIViewSet):
 
 class ProfileAPI(APIViewSet):
     parser_classes=[MultiPartParser , FormParser]
-    permission_classes = [IsAuthenticated ]
+    # permission_classes = [IsAuthenticated ]
     allowed_methods = ["GET","PUT"]
     pagination_class = CustomPagination15
     model = Profile
@@ -126,7 +126,7 @@ class ProfileAPI(APIViewSet):
 
 
 class LeadAPI(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     pagination_class = Pagination1K
     model = Lead
     model_serializer= LeadSerializer
@@ -138,7 +138,7 @@ class LeadAPI(APIViewSet):
 
 
 class RequestAPI(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination15
     model = Request
     model_serializer= RequestSerializer

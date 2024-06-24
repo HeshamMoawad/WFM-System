@@ -56,6 +56,14 @@ class User(AbstractUser , BaseModel):
         verbose_name = "User"
 
 
+class FingerPrintID(BaseModel):
+    name = models.CharField(max_length=100 , verbose_name="Name" , default='PC')
+    user = models.ForeignKey(User,verbose_name="User" , on_delete=models.CASCADE )
+    unique_id = models.CharField(verbose_name="Unique ID", unique=True , max_length=100)
+    def __str__(self):
+        return f"{self.name} - {self.user}"
+        
+
 class ArrivingLeaving(BaseModel):
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.CASCADE )
     date = models.DateField(verbose_name="Day Date",auto_now_add=True )
@@ -156,6 +164,7 @@ def create_update_history(sender, instance:BaseModel, **kwargs):
 post_save.connect(profile_creator_signal, sender=User)
 pre_save.connect(create_update_history, sender=Project)
 pre_save.connect(create_update_history, sender=Department)
+pre_save.connect(create_update_history, sender=FingerPrintID)
 pre_save.connect(create_update_history, sender=User)
 pre_save.connect(create_update_history, sender=ArrivingLeaving)
 pre_save.connect(create_update_history, sender=Profile)

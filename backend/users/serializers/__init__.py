@@ -13,6 +13,7 @@ from ..models import (
     Lead,
     Request ,
     UpdateHistory , 
+    FingerPrintID
     )
 
 
@@ -136,6 +137,18 @@ class LeadSerializer(ModelSerializer):
             "project",
         ]
 
+class FingerPrintIDSerializer(ModelSerializer):
+    class Meta:
+        model = FingerPrintID
+        fields = [
+            "uuid",
+            "user",
+            "name",
+            "unique_id",
+            "created_at",
+            "updated_at",
+
+        ]
 
 
 

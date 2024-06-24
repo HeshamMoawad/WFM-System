@@ -5,6 +5,8 @@ from rest_framework.request import Request
 from auth import Login
 from auth.constants import AUTH_COOKIE
 from rest_framework.status import HTTP_200_OK,HTTP_401_UNAUTHORIZED
+from users.models import FingerPrintID
+from users.serializers import FingerPrintIDSerializer
 
 
 @api_view(["POST","GET"])
@@ -12,6 +14,14 @@ def login(request: Request):
     login_class = Login()
     try :
         data = login_class.login(request)
+        uuid = data.get("uuid",None)
+        if uuid:
+            finger = FingerPrintID.objects.filter(user__uuid=uuid , unique_id=request.query_params.get("unique_id",request.data.get("unique_id",None))).first()
+            if not finger :
+                raise NotImplementedError("No Devices ID added Please add one !")
+            data.update({"unique_id":FingerPrintIDSerializer(finger).data})
+        else :
+            raise NotImplementedError
         status = HTTP_200_OK
         response = Response(data,status)
         response.set_cookie(AUTH_COOKIE , data[AUTH_COOKIE])
