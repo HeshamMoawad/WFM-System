@@ -5,7 +5,7 @@ export const AUTH_KEY:string = "Auth"
 export const PERM_KEY:string = "Perm"
 export const MODE_KEY:string = "Mode"
 export const LANG_KEY:string = "Lang"
-
+export const CLIENT_ID_KEY:string = "uniqueID"
 
 export const save = (key:string , obj:Object):any=>{
     localStorage.setItem( key ,JSON.stringify(obj)) 
@@ -27,6 +27,15 @@ export const saveLogin = (auth:Authintication)=>{
 
 export const loadLogin = ():Authintication =>{
     return load(AUTH_KEY,()=>{return saveLogin({} as Authintication) as Authintication;})
+}
+
+
+export const saveID = (uniqueID:string)=>{
+    return save(CLIENT_ID_KEY,uniqueID) 
+};
+
+export const loadID = ():string =>{
+    return load(CLIENT_ID_KEY,()=>{return saveID("");})
 }
 
 
