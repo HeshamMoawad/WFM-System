@@ -14,6 +14,7 @@ import Treasury from "./Treasury/Treasury";
 import EditUser from "./EditUser/EditUser";
 import Advances from "./Advances/Advances";
 import DevicesAccess from "./DevicesAccess/DevicesAccess";
+import SalaryAll from "./SalaryAll/SalaryAll";
 
 interface PagesProps {}
 
@@ -50,6 +51,7 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/attendance-details" element={<AttendanceDetails/>}/>
                                             <Route path="/treasury" element={<Treasury/>}/>
                                             <Route path="/advances" element={<Advances/>}/>
+                                            <Route path="/salary-all" element={<SalaryAll/>}/>
                                         </Routes>
                                     </MainLayout>
                             

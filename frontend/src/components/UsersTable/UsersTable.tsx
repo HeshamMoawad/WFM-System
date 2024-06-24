@@ -1,4 +1,4 @@
-import  {type FC , useState, useEffect, useMemo} from 'react';
+import  {type FC , useState, useEffect} from 'react';
 import Container from '../../layouts/Container/Container';
 import useRequest from '../../hooks/calls';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';

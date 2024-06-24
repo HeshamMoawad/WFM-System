@@ -81,7 +81,7 @@ const Items : SideItem[] = [
             },
             {
                 name:'All',
-                href:'#p',
+                href:'/salary-all',
                 Icon:PiUsersThree
             },
         ]
