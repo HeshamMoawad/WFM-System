@@ -120,6 +120,14 @@ interface CommissionDetails{
 
 }
 
+interface DeviceAccessDetails{
+    uuid:string;
+    user:User;
+    name:string;
+    unique_id:string;
+    created_at:string;
+    updated_at:string;
+}
 
 const DefaultAuthintication = {
     uuid:"",
@@ -168,4 +176,5 @@ export type {
     User ,
     Filters ,
     CommissionDetails ,
+    DeviceAccessDetails ,
 };

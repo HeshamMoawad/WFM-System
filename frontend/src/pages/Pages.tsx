@@ -13,6 +13,7 @@ import UsersList from "./UsersList/UsersList";
 import Treasury from "./Treasury/Treasury";
 import EditUser from "./EditUser/EditUser";
 import Advances from "./Advances/Advances";
+import DevicesAccess from "./DevicesAccess/DevicesAccess";
 
 interface PagesProps {}
 
@@ -45,6 +46,7 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/add-user" element={<AddUser/>}/>
                                             <Route path="/edit-user/:user_uuid" element={<EditUser/>}/>
                                             <Route path="/users-list" element={<UsersList/>}/>
+                                            <Route path="/devices-access" element={<DevicesAccess/>}/>
                                             <Route path="/attendance-details" element={<AttendanceDetails/>}/>
                                             <Route path="/treasury" element={<Treasury/>}/>
                                             <Route path="/advances" element={<Advances/>}/>
