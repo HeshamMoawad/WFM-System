@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Team , CoinChanger , DeductionRules , TargetSlice , UserCommissionDetails
+from .models import Team , CoinChanger , DeductionRules , TargetSlice , UserCommissionDetails , BasicRecord
 from utils.admin_utils import FieldSets
 
 # Register your models here.
@@ -115,6 +115,29 @@ class UserCommissionDetailsAdminSite(admin.ModelAdmin):
             ]
     ]).fieldsets
 
+class BasicRecordAdminSite(admin.ModelAdmin):
+    list_display = ["user_commission_details","date","basic"]
+    list_filter = ["user_commission_details","date"]
+    readonly_fields = ['uuid',"created_at","updated_at"]
+    search_fields = ['user_commission_details__user__username']  
+    fieldsets = FieldSets([
+            'Basic Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'user_commission_details',
+                'deduction_days',
+                'deduction_money',
+                'kpi',
+                'gift',
+                'date',                
+                'basic',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at"
+            ]
+    ]).fieldsets
 
 
 admin.site.register(Team , TeamAdminSite)
@@ -122,3 +145,4 @@ admin.site.register(CoinChanger, CoinChangerAdminSite)
 admin.site.register(DeductionRules,DedactionRulesAdminSite)
 admin.site.register(TargetSlice , TargetSliceAdminSite)
 admin.site.register(UserCommissionDetails , UserCommissionDetailsAdminSite)
+admin.site.register(BasicRecord , BasicRecordAdminSite)

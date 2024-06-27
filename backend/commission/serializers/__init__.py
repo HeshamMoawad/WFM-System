@@ -1,6 +1,7 @@
 # from rest_framework.serializers import  ModelSerializer
 from api_views.models import ForeignField , ManyToManyField 
-from api_views.serializers import ModelSerializer
+from api_views.serializers import ModelSerializer 
+from rest_framework.serializers import Serializer
 from users.models import User
 from commission.models import (
     CoinChanger,
@@ -8,6 +9,7 @@ from commission.models import (
     TargetSlice,
     Team,
     UserCommissionDetails,
+    BasicRecord ,
 )
 from users.serializers import UserSerializer , DepartmentSerializer
 
@@ -67,6 +69,7 @@ class TeamSerializer(ModelSerializer):
 class UserCommissionDetailsSerializer(ModelSerializer):
     deduction_rules = DeductionRulesSerializer(many=True, read_only=True)
     commission_rules = TargetSliceSerializer(many=True , read_only=True)
+    user = UserSerializer(read_only=True)
     class Meta :
         model = UserCommissionDetails
         fields = [
@@ -83,4 +86,23 @@ class UserCommissionDetailsSerializer(ModelSerializer):
         many_to_many_models = {
             "deduction_rules": ManyToManyField("deduction_rules",DeductionRules,'uuid') ,
             "commission_rules": ManyToManyField("commission_rules",TargetSlice,'uuid') ,
+        }
+
+
+class BasicRecordSerializer(ModelSerializer):
+    user_commission_details = UserCommissionDetailsSerializer(read_only=True)
+    class Meta :
+        model = BasicRecord
+        fields = [
+            "uuid",
+            "user_commission_details",
+            "deduction_days",
+            "deduction_money",
+            "kpi",
+            "gift",
+            "date",
+            "basic",
+        ]
+        foreign_models = {
+            "user_commission_details": ForeignField("user_commission_details",UserCommissionDetails,'uuid') ,
         }
