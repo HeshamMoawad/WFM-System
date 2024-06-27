@@ -28,7 +28,7 @@ from rest_framework.parsers import FormParser , MultiPartParser
 from permissions.users import IsAgent , IsManager , IsHR , IsOwner , IsSuperUser
 
 
-class CustomPagination15(PageNumberPagination):
+class DefaultPagination(PageNumberPagination):
     page_size = 15
     page_size_query_param = 'page_size'
     max_page_size = 100
@@ -46,7 +46,7 @@ class Pagination1K(PageNumberPagination):
 
 class UsersAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
-    pagination_class = Pagination1K
+    pagination_class = DefaultPagination
     model = User
     model_serializer= UserSerializer
     order_by = ('username',)
@@ -64,7 +64,7 @@ class UsersAPI(APIViewSet):
 
 class ProjectsAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
-    pagination_class = Pagination1K
+    pagination_class = DefaultPagination
     model = Project
     model_serializer= ProjectSerializer
     order_by = ('name',)
@@ -83,7 +83,7 @@ class ProjectsAPI(APIViewSet):
 
 class DepartmentsAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
-    pagination_class = Pagination1K
+    pagination_class = DefaultPagination
     model = Department
     model_serializer= DepartmentSerializer
     order_by = ('name',)
@@ -114,7 +114,7 @@ class ProfileAPI(APIViewSet):
     parser_classes=[MultiPartParser , FormParser]
     # permission_classes = [IsAuthenticated ]
     allowed_methods = ["GET","PUT"]
-    pagination_class = CustomPagination15
+    pagination_class = DefaultPagination
     model = Profile
     model_serializer= ProfileSerializer
     order_by = ('user',)
@@ -141,14 +141,14 @@ class LeadAPI(APIViewSet):
 
 class RequestAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
-    pagination_class = CustomPagination15
+    pagination_class = DefaultPagination
     model = Request
     model_serializer= RequestSerializer
     order_by = ('-created_at',)
-    search_filters = ["uuid","user","details","type","status"]
-    creating_filters = ["user","details","type"]
-    requiered_fields =  ["user","details","type"]
-    updating_filters = ["status","details","type"]
+    search_filters = ["uuid","user","details","type","status","date"]
+    creating_filters = ["user","details","type","date"]
+    requiered_fields =  ["user","details","type","date"]
+    updating_filters = ["status","details","type","date"]
     unique_field:str = 'uuid'
 
 

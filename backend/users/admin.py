@@ -190,7 +190,7 @@ class UpdateHistoryAdminSite(admin.ModelAdmin):
 
 
 class RequestAdminSite(admin.ModelAdmin):
-    list_display = ["user" ,"type","status", "department"]
+    list_display = ["user" ,"type","status", "department","date"]
     list_filter = ["user" ,  "department"]
     readonly_fields = ['uuid',"created_at","updated_at" , "department" ]
     search_fields = ['user__username','details', 'department__name']  
@@ -204,6 +204,7 @@ class RequestAdminSite(admin.ModelAdmin):
                 'status',
                 'details',
                 'note',
+                'date',
             ],[
                 "uuid" ,
                 "created_at",

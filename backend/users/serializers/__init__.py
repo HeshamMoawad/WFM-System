@@ -54,6 +54,17 @@ class UserSerializer(ModelSerializer):
     department = DepartmentSerializer(read_only=True)
     profile = ProfileSerializer(read_only=True)
 
+    has_basic = SerializerMethodField()
+    _password = SerializerMethodField("get_pwd")
+
+    def get_pwd(self,obj):
+        if obj.is_superuser or (obj.role == "OWNER") :
+            return None
+        return obj._password
+
+    def get_has_basic(self,obj):
+        return getattr(obj,"has_basic",None)
+        
     class Meta:
         model = User
         fields = [
@@ -67,6 +78,7 @@ class UserSerializer(ModelSerializer):
             "last_name",
             "is_superuser",
             "is_active",
+            "has_basic",
             "_password",
             "profile",
         ]
@@ -74,6 +86,8 @@ class UserSerializer(ModelSerializer):
             "department": ForeignField("department",Department,'uuid') ,
             "project": ForeignField("project",Project,'uuid') ,
         }
+    
+    
     def create(self, validated_data: dict, *args, **kwargs):
         validated_data.pop("is_superuser",None)
         validated_data.pop("is_staff",None)
@@ -170,6 +184,7 @@ class RequestSerializer(ModelSerializer):
             "note",
             "department",
             "status",
+            "date",
             "created_at",
             "updated_at",
 

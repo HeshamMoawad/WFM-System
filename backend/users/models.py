@@ -122,11 +122,12 @@ class UpdateHistory(models.Model):
 
 class Request(BaseModel):
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.SET_NULL , null=True )
-    details = models.TextField(verbose_name="Details", max_length=100)
+    details = models.TextField(verbose_name="Details", max_length=300)
     note = models.TextField(verbose_name="Note", max_length=100 , blank=True , null=True)
     type = models.CharField(verbose_name="Request Type", max_length=50, choices=RequestTypes.choices ,default=RequestTypes.GLOBAL)
     department = models.ForeignKey(Department,verbose_name="Department" , on_delete=models.SET_NULL , null=True)
     status = models.CharField(verbose_name="Request Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
+    date = models.DateField(verbose_name="Date of Request", null=True )
 
     def save(self,*args,**kwargs):
         if self.user :
