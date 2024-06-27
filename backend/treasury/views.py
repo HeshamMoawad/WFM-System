@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
 from permissions.users import IsOwner, IsSuperUser , IsManager
-from users.views import CustomPagination15
+from users.views import DefaultPagination
 from .serializer import (
     AdvanceSerializer , 
     Advance , 
@@ -24,11 +24,11 @@ from django.utils.timezone import now
 
 class AdvancesAPIView(APIViewSet):
     permission_classes = [IsAuthenticated]
-    allowed_methods = ["GET","POST"]
-    pagination_class = CustomPagination15
+    allowed_methods = ["GET","POST","DELETE"]
+    pagination_class = DefaultPagination
     model = Advance
     model_serializer= AdvanceSerializer
-    order_by = ('created_at',)
+    order_by = ('-created_at',)
     search_filters = ["uuid",'user',"creator","amount","created_at"]
     creating_filters = ["user","creator","amount"]
     requiered_fields = ["user","creator","amount"]
@@ -44,10 +44,10 @@ class AdvancesAPIView(APIViewSet):
 class OutcomeAPIView(APIViewSet):
     permission_classes = [IsAuthenticated]
     allowed_methods = ["GET","POST","DELETE"]
-    pagination_class = CustomPagination15
+    pagination_class = DefaultPagination
     model = TreasuryOutcome
     model_serializer= TreasuryOutcomeSerializer
-    order_by = ('created_at',)
+    order_by = ('-created_at',)
     search_filters = ["uuid",'details',"creator","amount","created_at"]
     creating_filters = ["details","creator","amount"]
     requiered_fields = ["details","creator","amount"]
@@ -63,10 +63,10 @@ class OutcomeAPIView(APIViewSet):
 class IncomeAPIView(APIViewSet):
     permission_classes = [IsAuthenticated]
     allowed_methods = ["GET","POST","DELETE"]
-    pagination_class = CustomPagination15
+    pagination_class = DefaultPagination
     model = TreasuryIncome
     model_serializer= TreasuryIncomeSerializer
-    order_by = ('created_at',)
+    order_by = ('-created_at',)
     search_filters = ["uuid",'details',"creator","amount","created_at"]
     creating_filters = ["details","creator","amount"]
     requiered_fields = ["details","creator","amount"]
