@@ -145,7 +145,6 @@ def profile_creator_signal(sender:User, instance:User, created:bool, **kwargs):
 def create_update_history(sender, instance:BaseModel, **kwargs):
     if issubclass(sender, BaseModel):  # Check if the sender is a subclass of BaseModel
         previous_values = {}
-        # print(sender , instance)
         try : 
             old_instance = sender.objects.get(uuid=instance.uuid)
         except sender.DoesNotExist:
@@ -154,7 +153,7 @@ def create_update_history(sender, instance:BaseModel, **kwargs):
             previous_values[field.name] = str(getattr(old_instance, field.name))
         previous_values_str = json.dumps(previous_values)
         UpdateHistory.objects.create(
-            user=kwargs.get("by",None),  
+            user=getattr(instance,"__by",None),  
             previous_values=previous_values_str,
             model_name=sender.__name__,  # Get the name of the model
             model_uuid=instance.uuid

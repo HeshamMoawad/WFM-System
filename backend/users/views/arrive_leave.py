@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework.request import Request
 # from users.views.auth import  AuthenticateUser
-from users.models import ArrivingLeaving , User 
+from users.models import ArrivingLeaving , User , Department
 from django.utils import timezone
 from users.serializers import RequestSerializer 
 from users.views import IsAuthenticated
@@ -51,11 +51,13 @@ def arrive_leave_details(request: Request):
 @api_view(["POST"])
 def test(request:Request):
 
-    print(f"\n-- {request.user_loc_info} --\n")
+    # print(f"\n-- {request.user_loc_info} --\n")
 
-    print(request.data)
-    ser = RequestSerializer(data = request.data)
-    # print(ser.is_valid() , ser)
-    if ser.is_valid():
-        ser.save()
+    # t = Department.objects.bulk_create([Department(name=f"{number}") for number in range(10)])
 
+    # print(t)
+    # ser = RequestSerializer(data = request.data)
+    # # print(ser.is_valid() , ser)
+    # if ser.is_valid():
+    #     ser.save()
+    pass

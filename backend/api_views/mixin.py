@@ -22,7 +22,6 @@ class APIViewMixins(APIView):
     requiered_fields:List[str] = []
     updating_filters:List[str] = ["*"]
     unique_field:str = 'id'
-    image_fields:List[str]=[]
     permissions_config = {}
 
     def _get(self,request:Request):
@@ -44,16 +43,13 @@ class APIViewMixins(APIView):
 
 
     def _put(self,request:Request):
-        id = RequestParser(request,self.search_filters).params.get(self.unique_field)
+        id = request.query_params.get(self.unique_field)
         queryset = self.model.objects.filter(**{self.unique_field:id})
         queryset = self.filter_queryset_with_permissions(queryset)
         obj = queryset.get(**{self.unique_field:id})
         data = request.data.copy()
-        serializer = self.model_serializer(instance=obj , data = request.data)
-        if self.image_fields :
-            for field in self.image_fields:
-                if not data[field] :
-                    data.pop(field,None)
+        serializer:ModelSerializer = self.model_serializer(instance=obj , data = data , partial=True)
+        setattr(serializer.instance,"__by",request.user)
         if serializer.is_valid():
             serializer.save()
             return serializer.data
@@ -62,9 +58,7 @@ class APIViewMixins(APIView):
 
 
     def _delete(self , request:Request ):
-        parser = RequestParser( request , [self.unique_field])
-        id = parser.params.get(self.unique_field)
-
+        id = request.query_params.get(self.unique_field)
         queryset = self.model.objects.filter(**{self.unique_field:id})
         queryset = self.filter_queryset_with_permissions(queryset)
         obj = queryset.get(**{self.unique_field:id})
@@ -76,7 +70,6 @@ class APIViewMixins(APIView):
     def filter_queryset_with_permissions(self,queryset:QuerySet)->QuerySet:
         filter_kwargs = {}
         exclode_kwargs = {}
-        # print(self.permission_classes,"permission_classes")
         for perm_class in self.permission_classes :
             perm_class = perm_class() 
             filter_objects_by = getattr(perm_class,"filter_objects_by",lambda : {})

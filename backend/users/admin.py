@@ -191,9 +191,9 @@ class UpdateHistoryAdminSite(admin.ModelAdmin):
 
 class RequestAdminSite(admin.ModelAdmin):
     list_display = ["user" ,"type","status", "department","date"]
-    list_filter = ["user" ,  "department"]
+    list_filter = ["user" ,  "department","status" , "type"]
     readonly_fields = ['uuid',"created_at","updated_at" , "department" ]
-    search_fields = ['user__username','details', 'department__name']  
+    search_fields = ['user__username','details', 'department__name' , "uuid"]  
     fieldsets = FieldSets([
             'UpdateHistory Fields' ,
             'Other Fields'

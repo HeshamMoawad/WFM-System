@@ -121,10 +121,6 @@ class ProfileAPI(APIViewSet):
     search_filters = ["uuid",'user','about']
     updating_filters = ["phone","picture","telegram_id","about"]
     unique_field:str = 'uuid'
-    use_serializer_for_create = True
-    image_fields = [
-        "picture"
-    ]
 
 
 class LeadAPI(APIViewSet):
@@ -150,6 +146,9 @@ class RequestAPI(APIViewSet):
     requiered_fields =  ["user","details","type","date"]
     updating_filters = ["status","details","type","date"]
     unique_field:str = 'uuid'
+    permissions_config = {
+        "DELETE": [IsSuperUser | IsOwner],
+    }
 
 
 
