@@ -81,7 +81,7 @@ class Team(BaseModel):
 
 class CoinChanger(BaseModel):
     egp_to_sar = models.FloatField(verbose_name="1 SAR equal to ? in EGP")
-    date  = models.DateField(verbose_name="Changer Date" , auto_now=True )
+    date  = models.DateField(verbose_name="Changer Date" , default=now )
     
     def __str__(self):
         return self.date.strftime("%Y/%m")
@@ -96,7 +96,8 @@ class CoinChanger(BaseModel):
         
 
 class BasicRecord(BaseModel):
-    user_commission_details = models.ForeignKey(UserCommissionDetails, verbose_name="User", on_delete=models.SET_NULL , null=True)
+    user = models.ForeignKey(User, verbose_name="User", on_delete=models.SET_NULL , null=True)
+    # user_commission_details = models.ForeignKey(UserCommissionDetails, verbose_name="User Commission Details", on_delete=models.SET_NULL , null=True)
     deduction_days = models.FloatField(verbose_name="Deduction Days" , default=0)
     deduction_money = models.IntegerField(verbose_name="Deduction Money" , default=0)
     kpi = models.FloatField(verbose_name="KPI" , default=0)
@@ -108,10 +109,28 @@ class BasicRecord(BaseModel):
         return self.date.strftime("%Y/%m")
 
     class Meta:
-        unique_together = ["date","user_commission_details"]
+        unique_together = ["date","user"]
 
-    # def basic(self):
-    #     return (self.gift + self.kpi ) - (self.deduction_days * (self.user_commission_details.basic / 30)) - self.deduction_money
+
+class Commission(BaseModel):
+    basic = models.ForeignKey(BasicRecord, verbose_name="Basic", on_delete=models.SET_NULL , null=True)
+    commission_team = models.IntegerField(verbose_name="Commission From Team" , default=0)
+    target = models.FloatField(verbose_name="Target" , default=0 )
+    gift = models.FloatField(verbose_name="Gift" , default=0)
+    commission = models.FloatField(verbose_name="Commission" , default=0)
+    date  = models.DateField(verbose_name="Date" , default=now )
+
+    def __str__(self):
+        return self.date.strftime("%Y/%m")
+
+    def total_salary(self):
+        return self.commission + self.basic.basic  
+
+    def get_username(self):
+        return self.basic.user_commission_details.user.username
+
+    class Meta:
+        unique_together = ["date","basic"]
 
 
 def create_user_commission_details(sender, instance:User, created ,**kwargs):
@@ -130,7 +149,7 @@ def create_Outcome_record(sender, instance:BasicRecord, created ,**kwargs):
         details = TreasuryOutcome.objects.create(
             amount = instance.basic ,
             from_basic =  instance ,
-            details = f"Basic Record {instance.user_commission_details.user} Amount {int(instance.basic)}"
+            details = f"Basic Record {instance.user} Amount {int(instance.basic)}"
         )
         details.save()
     else :
@@ -138,7 +157,7 @@ def create_Outcome_record(sender, instance:BasicRecord, created ,**kwargs):
             from_basic =  instance ,
         )
         details.amount = instance.basic
-        details.details = f"Basic Record {instance.user_commission_details.user} Amount {int(instance.basic)}"
+        details.details = f"Basic Record {instance.user} Amount {int(instance.basic)}"
         details.save()
 
 
@@ -148,5 +167,9 @@ pre_save.connect(create_update_history,sender=CoinChanger)
 pre_save.connect(create_update_history, sender=TargetSlice)
 pre_save.connect(create_update_history, sender=DeductionRules)
 pre_save.connect(create_update_history, sender=UserCommissionDetails)
+pre_save.connect(create_update_history, sender=Team)
+pre_save.connect(create_update_history, sender=CoinChanger)
+pre_save.connect(create_update_history, sender=BasicRecord)
+pre_save.connect(create_update_history, sender=Commission)
 post_save.connect(create_user_commission_details,sender=User)
 post_save.connect(create_Outcome_record,sender=BasicRecord)

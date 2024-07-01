@@ -1,5 +1,5 @@
 from django.urls import path , include
-from commission.views import UserCommissionDetailsAPI , DeductionRulesAPI , TargetSlicesAPI , BasicRecordAPI
+from commission.views import UserCommissionDetailsAPI , DeductionRulesAPI , TargetSlicesAPI , BasicRecordAPI , CoinChangerAPI
 from ..views.basic import get_users_with_has_basic 
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path('target-slices',TargetSlicesAPI.as_view()),
     path('users-basic',get_users_with_has_basic),
     path('basic-details',BasicRecordAPI.as_view()),
+    path('coin-changer',CoinChangerAPI.as_view()),
 ]

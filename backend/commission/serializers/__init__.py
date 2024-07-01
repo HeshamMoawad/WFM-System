@@ -10,6 +10,7 @@ from commission.models import (
     Team,
     UserCommissionDetails,
     BasicRecord ,
+    Commission ,
 )
 from users.serializers import UserSerializer , DepartmentSerializer
 
@@ -21,6 +22,7 @@ class CoinChangerSerializer(ModelSerializer):
             "uuid",
             "egp_to_sar",
             "date",
+            "created_at",
         ]
 
 
@@ -90,12 +92,12 @@ class UserCommissionDetailsSerializer(ModelSerializer):
 
 
 class BasicRecordSerializer(ModelSerializer):
-    user_commission_details = UserCommissionDetailsSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
     class Meta :
         model = BasicRecord
         fields = [
             "uuid",
-            "user_commission_details",
+            "user",
             "deduction_days",
             "deduction_money",
             "kpi",
@@ -105,4 +107,24 @@ class BasicRecordSerializer(ModelSerializer):
         ]
         foreign_models = {
             "user_commission_details": ForeignField("user_commission_details",UserCommissionDetails,'uuid') ,
+        }
+
+
+
+
+class CommissionSerializer(ModelSerializer):
+    basic = BasicRecordSerializer(read_only=True)
+    class Meta :
+        model = Commission
+        fields = [
+            "uuid",
+            "basic",
+            "commission_team",
+            "target",
+            "gift",
+            "commission",
+            "date",
+        ]
+        foreign_models = {
+            "basic": ForeignField("basic",BasicRecord,'uuid') ,
         }

@@ -5,9 +5,18 @@ from commission.models import (
     UserCommissionDetails , 
     DeductionRules,
     TargetSlice,
-    BasicRecord
+    BasicRecord,
+    Commission ,
+    CoinChanger ,
     )
-from commission.serializers import UserCommissionDetailsSerializer , DeductionRulesSerializer , TargetSliceSerializer , BasicRecordSerializer
+from commission.serializers import (
+    UserCommissionDetailsSerializer , 
+    DeductionRulesSerializer , 
+    TargetSliceSerializer , 
+    BasicRecordSerializer ,
+    CommissionSerializer ,
+    CoinChangerSerializer,
+    )
 
 
 class UserCommissionDetailsAPI(APIViewSet):
@@ -34,6 +43,18 @@ class DeductionRulesAPI(APIViewSet):
     updating_filters = ["late_time","deduction_days","is_global","department"]
     unique_field:str = 'uuid'
 
+class CoinChangerAPI(APIViewSet):
+    allowed_methods = ["GET","POST","DELETE"]
+    permission_classes = [IsSuperUser|IsOwner]
+    pagination_class = DefaultPagination
+    model = CoinChanger
+    model_serializer= CoinChangerSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid","date"]
+    creating_filters = ["date","egp_to_sar"]
+    requiered_fields = ["date","egp_to_sar"]
+    unique_field:str = 'uuid'
+
 
 class TargetSlicesAPI(APIViewSet):
     permission_classes = [IsAuthenticated]
@@ -55,10 +76,41 @@ class BasicRecordAPI(APIViewSet):
     model = BasicRecord
     model_serializer= BasicRecordSerializer
     order_by = ('-created_at',)
-    search_filters = ["uuid","user_commission_details","date"]
-    creating_filters = ["user_commission_details","deduction_days","deduction_money","kpi" , "gift" , "basic" , "date"]
-    requiered_fields = ["user_commission_details","deduction_days","deduction_money","kpi" , "gift" , "basic" , "date"]
+    search_filters = ["uuid","user","date"]
+    creating_filters = ["user","deduction_days","deduction_money","kpi" , "gift" , "basic" , "date"]
+    requiered_fields = ["user","deduction_days","deduction_money","kpi" , "gift" , "basic" , "date"]
     updating_filters = ["deduction_days","deduction_money","kpi" , "gift" , "basic"]
     unique_field:str = 'uuid'
 
 
+class CommissionAPI(APIViewSet):
+    permission_classes = [IsSuperUser , IsOwner]
+    allowed_methods = ["GET","PUT","POST","DELETE"]
+    pagination_class = DefaultPagination
+    model = Commission
+    model_serializer= CommissionSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid","basic","date"]
+    creating_filters = [
+            "basic",
+            "commission_team",
+            "target",
+            "gift",
+            "commission",
+            "date",
+        ]
+    requiered_fields = [
+            "basic",
+            "commission_team",
+            "target",
+            "gift",
+            "commission",
+            "date",
+        ]
+    updating_filters = [
+            "commission_team",
+            "target",
+            "gift",
+            "commission",
+        ]
+    unique_field:str = 'uuid'
