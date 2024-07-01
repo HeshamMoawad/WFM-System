@@ -169,6 +169,7 @@ pre_save.connect(create_update_history, sender=User)
 pre_save.connect(create_update_history, sender=ArrivingLeaving)
 pre_save.connect(create_update_history, sender=Profile)
 pre_save.connect(create_update_history, sender=Lead)
+pre_save.connect(create_update_history, sender=Request)
 
 
 
