@@ -6,6 +6,7 @@ import { LanguageContext } from '../../contexts/LanguageContext';
 import { onSubmitProfileForm } from '../../calls/Profile/Profile';
 import LoadingPage from '../LoadingPage/LoadingPage';
 import { getFullURL } from '../../utils/converter';
+import { useNavigate } from "react-router-dom";
 
 interface ProfileProps {}
 
@@ -14,6 +15,7 @@ const Profile: FC<ProfileProps> = () => {
     const [disabled , setDisabled] = useState(true);
     const [loading , setLoading] = useState(false);
     const {auth} = useAuth()
+    const navigate = useNavigate()
     const [profile,setProfile] = useState({...auth.profile})
     const onChangeInputs = (e:any)=>{setProfile((prev)=>{
                             return {
@@ -26,7 +28,7 @@ const Profile: FC<ProfileProps> = () => {
         {
             loading ? <LoadingPage/> : null
         }
-        <Container className='h-fit md:h-[75vh] flex flex-col md:flex-row gap-7'>
+        <Container className='h-fit flex flex-col md:flex-row gap-7'>
             <div className='flex justify-center items-center md:justify-start mt-4 md:mx-4 md:mt-0'>
                 <div className='flex flex-col md:flex-row  rounded-full w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-btns-colors-primary'>
                     <img src={getFullURL(profile.picture)} alt='profile' className='rounded-full w-[100%] h-[100%] p-1'/>
@@ -34,7 +36,7 @@ const Profile: FC<ProfileProps> = () => {
             </div>
             <div className='w-full h-full md:p-3'>
                 <h1 className='text-3xl md:text-5xl font-bold text-center'>Profile</h1>
-                <form action="" method="post" className='mt-10 grid grid-cols-1 md:grid-cols-2 gap-3 content-start' onSubmit={(e)=>{onSubmitProfileForm(e,lang,auth.profile.uuid,setLoading)}}>
+                <form className='mt-10 grid grid-cols-1 md:grid-cols-2 gap-3 content-start' onSubmit={(e)=>{onSubmitProfileForm(e,lang,auth.profile.uuid,setLoading)}}>
                     <div className='flex flex-row md:p-3 gap-5 md:col-span-2'>
                         <label htmlFor="picture" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Picture[lang]} : </label>
                         <input disabled={disabled} type="file" name="picture" id="picture"  className='w-[100%] outline-none px-4 rounded-lg bg-[transparent] '/>
@@ -54,9 +56,9 @@ const Profile: FC<ProfileProps> = () => {
                     <div className='flex justify-around items-center h-14 md:col-span-2'>
                         <button className='bg-btns-colors-secondry w-24 h-8 md:w-36 md:h-12 rounded-lg' onClick={(e)=>{
                             e.preventDefault();
-                            window.location.reload();
+                            navigate("/dashboard");
                             }}> Cancel </button>
-                        <button type="submit" className='bg-btns-colors-primary w-24 h-8 md:w-36 md:h-12 rounded-lg'> Save </button>
+                        <button type="submit" disabled={disabled} className={`${disabled?"bg-[gray]":"bg-btns-colors-primary"} w-24 h-8 md:w-36 md:h-12 rounded-lg`}> Save </button>
 
                         <button className={`${disabled?"bg-[gray]":null} w-24 h-8 md:w-36 md:h-12 rounded-lg`} onClick={(e)=>{
                             e.preventDefault();
