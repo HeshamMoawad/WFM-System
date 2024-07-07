@@ -8,6 +8,7 @@ import { LanguageContext } from '../../contexts/LanguageContext';
 // import LoadingPage from '../LoadingPage/LoadingPage';
 import { useAuth } from '../../hooks/auth';
 import Container from '../../layouts/Container/Container';
+import DatePicker from '../DatePicker/DatePicker';
 
 
 interface RequestAddFormProps {
@@ -55,6 +56,10 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
                         </div>
                     ):null
                 }
+                <div className='flex flex-row justify-between'>
+                    <label htmlFor="details">{TRANSLATIONS.Request.Date[lang]} :</label>
+                    <DatePicker name='date' className='w-1/3'/>
+                </div>
                 <div className='flex flex-row justify-between'>
                     <label htmlFor="details">{TRANSLATIONS.Request.Details[lang]} :</label>
                     <textarea  name="details" id="details" className='w-[80%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' dir={TRANSLATIONS.Direction[lang]} required/>

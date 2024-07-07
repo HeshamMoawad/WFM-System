@@ -2,7 +2,7 @@ import  {type FC , useState} from 'react';
 import RequestTable from '../../components/RequestTable/RequestTable';
 import RequestHandling from '../../components/RequestHandling/RequestHandling';
 import RequestAddForm from '../../components/RequestAddForm/RequestAddFrom';
-import Container from '../../layouts/Container/Container';
+// import Container from '../../layouts/Container/Container';
 import { useAuth } from '../../hooks/auth';
 
 interface RequestsProps {}
@@ -12,21 +12,19 @@ const Requests: FC<RequestsProps> = () => {
     const {auth} = useAuth()
 
     return (
-    <div className='grid grid-flow-row md:grid-flow-col md:grid-cols-5 place-content-center justify-items-center'> 
-        <RequestAddForm refresh={refresh} setRefresh={setRefresh} className='col-span-2 h-fit w-[35rem] relative '/>
-        <div className='col-span-3 flex flex-col gap-5'>
-            <RequestTable refresh={refresh} setRefresh={setRefresh} className='w-[900px] max-h-[600px] h-fit min-h-[100px] relative'/>
-            {
-                auth.role === "OWNER" || auth.role === "MANAGER" ? 
-                <>
-                    <RequestHandling refresh={refresh} setRefresh={setRefresh} className='w-[900px] max-h-[1000px] h-fit min-h-[500px] relative'/>
+    <div className='w-full grid grid-flow-row md:grid-cols-9 '> 
+        <RequestAddForm refresh={refresh} setRefresh={setRefresh} className='col-span-4 justify-self-center w-fit min-w-[30rem] h-fit relative'/>
 
-                </>
+        {
+            auth.role === "OWNER" || auth.role === "MANAGER" ? 
+            <>
+                <RequestHandling refresh={refresh} setRefresh={setRefresh} className='col-span-5 place-self-center max-w-[45rem] max-h-[450px] h-fit min-h-[100px] relative'/>
+            </>
+            :
+            null
+        }
+        <RequestTable refresh={refresh} setRefresh={setRefresh} className='col-span-9 place-self-center h-fit min-h-[100px] relative'/>
 
-                :
-                null
-            }
-        </div>
      </div>);
 }
 

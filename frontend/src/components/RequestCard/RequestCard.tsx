@@ -20,6 +20,9 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
         const form  = new FormData();
         form.append("status","ACCEPTED")
         form.append("details",request.details)
+        form.append("user",request.user.uuid)
+        form.append("type",request.type)
+        form.append("date",request.date)
 
         sendRequest({url:"api/users/request",method:"PUT", params: {uuid:request.uuid}, data:form})
             .then(data =>{
@@ -58,6 +61,9 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
                 form.append("status","REJECTED")
                 form.append("details",request.details)
                 form.append("note",note)
+                form.append("user",request.user.uuid)
+                form.append("type",request.type)
+                form.append("date",request.date)
         
                 sendRequest({url:"api/users/request",method:"PUT", params: {uuid:request.uuid}, data:form})
                     .then((data)=> Swal.fire({
