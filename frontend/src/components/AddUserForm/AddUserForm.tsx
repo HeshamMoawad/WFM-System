@@ -60,6 +60,11 @@ const AddUserForm: FC<AddUserFormProps> = ({setUUID}) => {
                     <option value="HR">HR</option>
                 </select>
                 
+                <section className='col-start-1 col-span-full place-self-center w-[100%] flex flex-row items-center justify-center'>
+                    <label htmlFor="crm_username" className='w-1/3 text-center' >CRM Username</label>
+                    <input type="text" name="crm_username" id="crm_username" className='place-content-center w-1/3 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+                </section>
+
                 <div className="col-span-3 md:col-span-6 flex justify-evenly">
                     <button onClick={e=>{e.preventDefault();}} className="bg-btns-colors-secondry w-24 h-7 md:w-36 md:h-10 rounded-lg">Cancel</button>
                     <button type="submit" className="bg-btns-colors-primary w-24 h-7 md:w-36 md:h-10 rounded-lg">Create</button>
