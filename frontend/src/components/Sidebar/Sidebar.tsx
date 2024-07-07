@@ -5,20 +5,17 @@ import SVGIcon from './SVGIcon/SVGIcon';
 import type {SideItem} from '../../types/sidebar';
 import {SidebarContext} from '../../contexts/SidebarContext';
 import {RxDashboard} from 'react-icons/rx';
-import {PiFingerprint , PiWallet , PiUserList , PiUsersThree} from 'react-icons/pi';
+import {PiFingerprint , PiWallet , PiUserList , PiUsersThree , PiMoney , PiHandCoins , PiChartLine} from 'react-icons/pi';
 import {LiaUsersCogSolid} from 'react-icons/lia';
-import {RiListSettingsLine} from 'react-icons/ri';
 import {VscGitPullRequestNewChanges} from 'react-icons/vsc';
-import {BsPersonWorkspace,BsSafe } from 'react-icons/bs';
+import {BsPersonWorkspace,BsSafe , BsCashCoin } from 'react-icons/bs';
 import {IoCalendarNumberOutline} from 'react-icons/io5';
-import {RiCustomerService2Line , RiUserAddLine} from 'react-icons/ri';
+import {RiCustomerService2Line , RiUserAddLine , RiListSettingsLine} from 'react-icons/ri';
 import {CgUserList} from 'react-icons/cg';
-import {PiChartLine} from 'react-icons/pi';
 import { useAuth } from '../../hooks/auth';
-import { PiHandCoins } from "react-icons/pi";
 import { GrNotification } from "react-icons/gr";
 import { BiDevices } from "react-icons/bi";
-
+import {FaHandHoldingUsd} from "react-icons/fa";
 
 const Items : SideItem[] = [
     {
@@ -45,13 +42,17 @@ const Items : SideItem[] = [
                 name:'Attendance Details',
                 href:'/attendance-details',
                 Icon:IoCalendarNumberOutline
+            },
+            {
+                name:'My Salary List',
+                href:'/attendance-details',
+                Icon:FaHandHoldingUsd
             }
         ]
 
-    },
-    {
-        name : 'Salary',
-        Icon:PiWallet ,
+    },{
+        name : 'Basic',
+        Icon:PiMoney ,
         permissions:[
             "OWNER",
             // "MANAGER",
@@ -60,34 +61,50 @@ const Items : SideItem[] = [
         ],
         sections:[
             {
-                name:'Marketing',
-                href:'#p',
-                Icon:BsPersonWorkspace
-            },
-            {
-                name:'Sales',
-                href:'#p',
-                Icon:RiCustomerService2Line
-            },
-            {
-                name:'Technichal',
-                href:'#p',
-                Icon:PiChartLine
-            },
-            {
-                name:'General',
-                href:'#p',
-                Icon:CgUserList
-            },
-            {
-                name:'All',
-                href:'/salary-all',
-                Icon:PiUsersThree
+                name:'Basic',
+                href:'/basic',
+                Icon:PiMoney
             },
         ]
 
-    },
-    {
+    },{
+        name : 'Commission',
+        Icon:PiWallet ,
+        permissions:[
+            "OWNER",
+            // "MANAGER",
+            // "AGENT",
+            // "HR",
+        ],
+        sections:[
+            {
+                name:'Marketing',
+                href:'#p',
+                Icon:BsPersonWorkspace
+            },{
+                name:'Sales',
+                href:'#p',
+                Icon:RiCustomerService2Line
+            },{
+                name:'Technichal',
+                href:'#p',
+                Icon:PiChartLine
+            },{
+                name:'General',
+                href:'#p',
+                Icon:CgUserList
+            },{
+                name:'All',
+                href:'/salary-all',
+                Icon:PiUsersThree
+            },{
+                name:'Coin Changer',
+                href:'/coin-changer',
+                Icon:BsCashCoin
+            },
+        ]
+
+    },{
         name : "Users",
         Icon : LiaUsersCogSolid ,
         permissions:[

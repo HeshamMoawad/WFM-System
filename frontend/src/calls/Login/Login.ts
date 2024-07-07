@@ -25,8 +25,8 @@ export const onSubmitLoginForm = (
         })
             .then((data) => {
                 setLoading(false);
-                setAuth(data);
-                saveLogin(data);
+                setAuth({...data,_password:null});
+                saveLogin({...data,_password:null});
                 Swal.fire({
                     position: "center",
                     icon: "success",

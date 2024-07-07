@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import Container from '../../layouts/Container/Container';
-import Table from '../TableCard/Table/Table';
+import Table from '../Table/Table';
 import useRequest from '../../hooks/calls';
 import { DeviceAccessDetails } from '../../types/auth';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';

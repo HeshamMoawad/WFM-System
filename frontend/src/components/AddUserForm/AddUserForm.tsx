@@ -61,7 +61,7 @@ const AddUserForm: FC<AddUserFormProps> = ({setUUID}) => {
                 </select>
                 
                 <div className="col-span-3 md:col-span-6 flex justify-evenly">
-                    <button type="submit" className="bg-btns-colors-secondry w-24 h-7 md:w-36 md:h-10 rounded-lg">Cancel</button>
+                    <button onClick={e=>{e.preventDefault();}} className="bg-btns-colors-secondry w-24 h-7 md:w-36 md:h-10 rounded-lg">Cancel</button>
                     <button type="submit" className="bg-btns-colors-primary w-24 h-7 md:w-36 md:h-10 rounded-lg">Create</button>
                 </div>
                 

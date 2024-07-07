@@ -6,10 +6,12 @@ import { IoCalendarOutline} from 'react-icons/io5';
 interface DatePickerProps {
     type?: string;
     className?: string;
+    spanClassName?: string;
     setDate?: React.Dispatch<SetStateAction<Date>>;
+    name?:string;
 }
 
-const DatePicker: FC<DatePickerProps> = ({type="date",className,setDate}) => {
+const DatePicker: FC<DatePickerProps> = ({type="date",className,setDate, spanClassName , name=undefined}) => {
     const dateRef = useRef<HTMLInputElement>(null)
     const [currentDate,setCurrentDate] = useState<string|null>(null)
     const handleClick = () => {
@@ -21,7 +23,7 @@ const DatePicker: FC<DatePickerProps> = ({type="date",className,setDate}) => {
     return (
     <div className={`bg-[transparent] border border-[gray] flex flex-row justify-between p-2 rounded-md  rtl:flex-row-reverse ${className}`} id='DatePicker'  onClick={handleClick}>
         <div className='w-fit flex flex-row-reverse justify-center items-center'>
-            <input className='invisible' type={type} ref={dateRef} onChange={(e)=>{
+            <input name={name} className='invisible' type={type} ref={dateRef} onChange={(e)=>{
                 setCurrentDate(e.target.value);
                 if (setDate){
                     setDate(new Date(e.target.value)) 
@@ -29,7 +31,7 @@ const DatePicker: FC<DatePickerProps> = ({type="date",className,setDate}) => {
             }}/>
             <IoCalendarOutline className='inline w-full min-w-5'/>
         </div>
-        <span>{currentDate}</span>
+        <span className={spanClassName}>{currentDate}</span>
     </div>
     );
 }
