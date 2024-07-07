@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 import TableFilters from '../../components/UsersTable/TableFilters/TableFilters';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
-import Table from '../../components/TableCard/Table/Table';
+import Table from '../../components/Table/Table';
 import PwdComponent from '../../components/UsersTable/PwdComponent/PwdComponent';
 
 interface SalaryAllProps {}
