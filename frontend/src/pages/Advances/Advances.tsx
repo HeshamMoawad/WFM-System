@@ -1,4 +1,4 @@
-import  {type FC } from 'react';
+import  {useState, type FC } from 'react';
 import AdvancesTable from '../../components/AdvancesTable/AdvancesTable';
 import { useAuth } from '../../hooks/auth';
 import AdvanceForm from '../../components/AdvanceForm/AdvanceForm';
@@ -7,12 +7,13 @@ interface AdvancesProps {}
 
 const Advances: FC<AdvancesProps> = () => {
     const {auth} = useAuth()
+    const [refresh,setRefresh] = useState(false)
     return (
-        <>
-            <AdvanceForm />
-            <AdvancesTable userID={auth.uuid} date={new Date()} />
+        <div className='grid justify-items-center'>
+            <AdvanceForm setRefresh={setRefresh} />
+            <AdvancesTable refresh={refresh} setRefresh={setRefresh}/>
 
-        </>
+        </div>
     );
 }
 

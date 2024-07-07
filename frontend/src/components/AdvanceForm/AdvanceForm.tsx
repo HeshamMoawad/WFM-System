@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import React, { useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import { useAuth } from '../../hooks/auth';
 import SelectComponent from '../SelectComponent/SelectComponent';
@@ -8,9 +8,11 @@ import { parseFormData } from '../../utils/converter';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import Swal from 'sweetalert2';
 
-interface AdvanceFormProps {}
+interface AdvanceFormProps {
+    setRefresh?:React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const AdvanceForm: FC<AdvanceFormProps> = () => {
+const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh}) => {
     const {auth} = useAuth()
     const [loading , setLoading] = useState(false)
     return (
@@ -40,9 +42,16 @@ const AdvanceForm: FC<AdvanceFormProps> = () => {
                             timer: 1000
                         })
             })
-                .finally(()=>setLoading(false));
+                .finally(()=>{
+                    e.currentTarget.reset();
+                    setLoading(false)
+                    if (setRefresh){
+                        setRefresh(prev=>!prev)
+                    }
+                });
+
         }}>
-                <input type="hidden" name='user' value={auth.uuid}/>
+                <input type="hidden" name='creator' value={auth.uuid}/>
                 <div className='flex flex-row justify-between'>
                     <SelectComponent
                             selectClassName=''
