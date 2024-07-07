@@ -2,7 +2,7 @@ import  {type FC , useState, useEffect} from 'react';
 import Container from '../../layouts/Container/Container';
 import useRequest from '../../hooks/calls';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
-import Table from '../TableCard/Table/Table';
+import Table from '../Table/Table';
 import { convertObjectToArrays, getFullURL } from '../../utils/converter';
 import { User } from '../../types/auth';
 import { FaUserEdit } from "react-icons/fa";
