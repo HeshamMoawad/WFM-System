@@ -13,6 +13,13 @@ export const parseFormData = (e:React.FormEvent):FormData => {
     return new FormData(e.target as HTMLFormElement)
 }
 
+export const parseDateFromParams = (dateString:string) => {
+    const [monthStr , yearStr] = dateString.split("-")
+    const month = parseInt(monthStr,10)
+    const year = parseInt(yearStr,10)
+    return new Date(year,month-1,getLastDayOfMonth(new Date(year,month-1)))
+}
+
 
 export const getFullURL = (url:string|null):string=>{
     // return `${window.location.protocol}//${window.location.hostname}:${window.location.port}`

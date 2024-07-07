@@ -72,6 +72,7 @@ interface RequestType{
     details:string;
     type:string;
     note:string;
+    date:string;
     department:string;
     status:"PENDING"|"ACCEPTED"|"REJECTED";
 }
@@ -89,6 +90,13 @@ interface Advance extends BaseTreasury{
 }
 interface TreasuryRecord extends BaseTreasury{
     details:string;
+}
+
+interface CoinChangerType {
+    uuid: string;
+    egp_to_sar: string;
+    date: string;
+    created_at: string;
 }
 
 interface NotificationType {
@@ -117,6 +125,7 @@ interface CommissionDetails{
     will_arrive_at : string;
     will_leave_at : string;
     uuid: string;
+    user:User;
 
 }
 
@@ -127,6 +136,15 @@ interface DeviceAccessDetails{
     unique_id:string;
     created_at:string;
     updated_at:string;
+}
+
+interface BasicDetails {
+    uuid?:string,
+    deduction_days: number,
+    deduction_money: number,
+    kpi:number,
+    gift:number,
+    basic:number,
 }
 
 const DefaultAuthintication = {
@@ -177,4 +195,6 @@ export type {
     Filters ,
     CommissionDetails ,
     DeviceAccessDetails ,
+    BasicDetails ,
+    CoinChangerType
 };

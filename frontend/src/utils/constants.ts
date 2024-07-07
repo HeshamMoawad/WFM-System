@@ -46,6 +46,7 @@ export const TRANSLATIONS = {
       },
     ],
     Details:t("التفاصيل","Details"),
+    Date:t("التاريخ","Date"),
     Submit:t("ارسال","Send")
   },
   Dashboard:{
