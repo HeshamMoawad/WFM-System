@@ -18,6 +18,8 @@ import SalaryAll from "./SalaryAll/SalaryAll";
 import Basic from "./Basic/Basic";
 import UserBasic from "./UserBasic/UserBasic";
 import CoinChanger from "./CoinChanger/CoinChanger";
+import Leads from "./Leads/Leads";
+import Notifications from "./Notifications/Notifications";
 
 interface PagesProps {}
 
@@ -58,6 +60,8 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/basic" element={<Basic/>}/>
                                             <Route path="/user-basic/:user_uuid/:date" element={<UserBasic/>}/>
                                             <Route path="/coin-changer" element={<CoinChanger/>}/>
+                                            <Route path="/leads" element={<Leads/>}/>
+                                            <Route path="/notifications" element={<Notifications/>}/>
 
                                         </Routes>
                                     </MainLayout>

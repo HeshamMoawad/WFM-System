@@ -16,6 +16,7 @@ import { useAuth } from '../../hooks/auth';
 import { GrNotification } from "react-icons/gr";
 import { BiDevices } from "react-icons/bi";
 import {FaHandHoldingUsd} from "react-icons/fa";
+import { FaUsersLine } from "react-icons/fa6";
 
 const Items : SideItem[] = [
     {
@@ -149,8 +150,13 @@ const Items : SideItem[] = [
             },
             {
                 name:'Notifications',
-                href:'#p',
+                href:'/notifications',
                 Icon:GrNotification,//BsBuildingAdd
+            },
+            {
+                name:'Leads',
+                href:'/leads',
+                Icon:FaUsersLine,//BsBuildingAdd
             }
         ]
 
