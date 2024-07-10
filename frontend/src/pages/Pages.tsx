@@ -20,6 +20,8 @@ import UserBasic from "./UserBasic/UserBasic";
 import CoinChanger from "./CoinChanger/CoinChanger";
 import Leads from "./Leads/Leads";
 import Notifications from "./Notifications/Notifications";
+import Teams from "./Teams/Teams";
+import NotFound from "./NotFound/NotFound";
 
 interface PagesProps {}
 
@@ -45,7 +47,6 @@ const Pages: FC<PagesProps> = () => {
                                     
                                     <MainLayout>
                                         <Routes>
-                                            <Route path="/" element={<DashBoard/>}/>
                                             <Route path="/dashboard" element={<DashBoard/>}/>
                                             <Route path="/requests" element={<Requests/>}/>
                                             <Route path="/profile" element={<Profile/>}/>
@@ -62,6 +63,10 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/coin-changer" element={<CoinChanger/>}/>
                                             <Route path="/leads" element={<Leads/>}/>
                                             <Route path="/notifications" element={<Notifications/>}/>
+                                            <Route path="/teams" element={<Teams/>}/>
+
+                                            <Route path="/" element={<DashBoard/>}/>
+                                            <Route path="*" element={<NotFound/>}/>
 
                                         </Routes>
                                     </MainLayout>
