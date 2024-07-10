@@ -183,6 +183,10 @@ const RequestTable: FC<RequestTableProps> = ({
                         ])}
                     />
                     <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} page={data} />
+                    <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
+                        <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                    </div>
+
                 </>
             ) : (
                 <></>

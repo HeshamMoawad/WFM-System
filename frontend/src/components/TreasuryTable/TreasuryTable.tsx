@@ -150,6 +150,10 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
                         ])}
                     />
                     <Pagination page={data} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
+                    <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
+                        <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                    </div>
+
                 </>
             ) : (
                 <></>

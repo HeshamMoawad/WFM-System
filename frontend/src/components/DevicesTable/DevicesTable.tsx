@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import Table from '../Table/Table';
 import useRequest from '../../hooks/calls';
@@ -7,6 +7,7 @@ import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import { convertObjectToArrays } from '../../utils/converter';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
+import Pagination from '../Pageination/Pageination';
 
 interface DevicesTableProps {
     refresh:number,
@@ -14,13 +15,14 @@ interface DevicesTableProps {
 }
 
 const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
+    const [currentPage,setCurrentPage] = useState(1)
     const {data , loading } = useRequest<DeviceAccessDetails>({
         url: 'api/users/device-access' ,
         method: 'GET',
         params: {
-            
+            page:currentPage
         }
-    },[refresh])
+    },[refresh,currentPage])
 
     return (
         <Container className='relative w-full md:w-[1000px]'>
@@ -29,7 +31,7 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
             }
             {
                 data ? 
-                (
+                (<>
                 <Table
                     className='mb-2'
                     headers={["username","name","device-id" , ""]}
@@ -91,8 +93,12 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
                     ])}
 
                 />
+                <Pagination  currentPage={currentPage} setCurrentPage={setCurrentPage} page={data}/>
+                <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
+                    <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                </div>
 
-                ):<></>
+                </>):<></>
             }
                     
         </Container>

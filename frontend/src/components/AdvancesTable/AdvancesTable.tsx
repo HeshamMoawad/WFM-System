@@ -154,8 +154,9 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
                         ])}
                     />
                     <Pageination page={data} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
-                    <div dir={lang === "en" ? "ltr" : "rtl"} className={`flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                        <label>{TRANSLATIONS.Advance.bottom.total[lang]} : {totalAdvance}</label>
+                    <div dir={lang === "en" ? "ltr" : "rtl"} className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
+                        <label>{TRANSLATIONS.Advance.bottom.total[lang]} : {totalAdvance} EGP</label>
+                        <label>Total Advances Count : {data.total_count}</label>
                     </div>
 
     

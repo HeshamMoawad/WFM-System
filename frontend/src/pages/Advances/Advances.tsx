@@ -11,7 +11,7 @@ const Advances: FC<AdvancesProps> = () => {
     return (
         <div className='grid justify-items-center'>
             <AdvanceForm setRefresh={setRefresh} />
-            <AdvancesTable refresh={refresh} setRefresh={setRefresh}/>
+            <AdvancesTable refresh={refresh} setRefresh={setRefresh} canDelete={true}/>
 
         </div>
     );

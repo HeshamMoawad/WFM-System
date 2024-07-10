@@ -4,12 +4,13 @@ import { CgProfile , CgLogOut  } from "react-icons/cg";
 import { AUTH_KEY } from '../../../utils/storage';
 import { useAuth } from '../../../hooks/auth';
 import { getFullURL } from '../../../utils/converter';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface UserIconProps {}
 
 const UserIcon: FC<UserIconProps> = () => {
     const [showMenu , setShowMenu] = useState<boolean>(false)
+
     const navigate = useNavigate()
     const {auth} = useAuth()
     return (
@@ -39,10 +40,10 @@ const UserIcon: FC<UserIconProps> = () => {
         <div  className={`${showMenu ? '' : 'hidden'} mt-1 mr-0 z-10 w-28 md:w-52 rounded-lg bg-[white] shadow-md dark:bg-dark-colors-login-secondry-bg`}>
             <ul className="py-2 text-base flex flex-col justify-center items-center"> 
                 <li>
-                    <a href="/profile" className="flex items-center gap-3 px-4 py-2 ">
+                    <Link to="/profile" className="flex items-center gap-3 px-4 py-2 ">
                         <CgProfile />
                         <span>Profile</span>
-                    </a>
+                    </Link>
                 </li>
                 <span className='block w-10/12 h-[1px] px-3 bg-[gray] opacity-30'></span>
                 <li onClick={(e)=>{

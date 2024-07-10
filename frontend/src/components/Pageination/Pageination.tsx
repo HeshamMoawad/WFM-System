@@ -15,7 +15,7 @@ const Pagination: FC<PaginationProps> = ({ page  , currentPage , setCurrentPage}
     const prevIsDisabled = page?.previous ? false : true ;
 
     return (
-        <div className='flex flex-row justify-center items-center space-x-3 m-1'>
+        <div className='flex flex-row justify-center items-end space-x-3 m-1 h-fit relative'>
             <button className='bg-btns-colors-secondry disabled:bg-[transparent] rounded-full p-1' disabled={prevIsDisabled} onClick={e=>{
                 e.preventDefault();
                 setCurrentPage(prev=>prev-1)
@@ -26,11 +26,6 @@ const Pagination: FC<PaginationProps> = ({ page  , currentPage , setCurrentPage}
                 e.preventDefault();
                 setCurrentPage(prev=>prev+1)
             }}><GrNext className=' w-[18px] h-[18px] text-center' /></button>
-
-            {/* <button className='disabled:bg-[green] rounded-full w-[25px] h-[25px]' disabled={nextIsDisabled} onClick={e=>{
-                e.preventDefault();
-                setCurrentPage(prev=>prev+1)
-            }}><GrNext/></button> */}
         </div>
     );
 }

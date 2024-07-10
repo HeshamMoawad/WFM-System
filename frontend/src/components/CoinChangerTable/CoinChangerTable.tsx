@@ -118,7 +118,9 @@ const CoinChangerTable: FC<CoinChangerTableProps> = ({refresh , setRefresh}) => 
 
                 />
                 <Pagination currentPage={currentPage}  page={data} setCurrentPage={setCurrentPage}/>
-
+                <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
+                    <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                </div>
             </>
             ) : <></>
         }
