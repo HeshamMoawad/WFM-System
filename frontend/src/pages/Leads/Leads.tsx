@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import LeadForm from '../../components/LeadForm/LeadForm';
 import UploadLeads from '../../components/UploadLeads/UploadLeads';
-import LeadsTable from '../LeadsTable/LeadsTable';
+import LeadsTable from '../../components/LeadsTable/LeadsTable';
 
 interface LeadsProps {
 
