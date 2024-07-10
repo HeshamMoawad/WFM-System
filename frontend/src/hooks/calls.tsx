@@ -7,6 +7,7 @@ import { sendRequest , sendRequestKwargs } from '../calls/base';
 // }
 interface ListData<T> {
     count: number;
+    total_count: number;
     next: string|null;
     previous: string|null;
     results: T[]|[];

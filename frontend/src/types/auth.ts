@@ -147,6 +147,16 @@ interface BasicDetails {
     basic:number,
 }
 
+interface Lead {
+    uuid:string;
+    created_at:string;
+    updated_at:string;
+    user:string;
+    project:string;
+    name:string;
+    phone:string;
+}
+
 const DefaultAuthintication = {
     uuid:"",
     username:'' ,
@@ -196,5 +206,6 @@ export type {
     CommissionDetails ,
     DeviceAccessDetails ,
     BasicDetails ,
-    CoinChangerType
+    CoinChangerType ,
+    Lead
 };

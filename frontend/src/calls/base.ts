@@ -32,7 +32,9 @@ export const sendRequest = ({url,method,params,data , headers,reloadWhenUnauthor
                 showConfirmButton: false,
                 timer: 1000
               }).then(() => window.location.reload())
-        }else {
+        }else if (response.status === 403 ){
+            window.location.pathname = "dashboard";            
+        } else {
             throw new Error(response.statusText)
         }
     });
