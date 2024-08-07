@@ -30,7 +30,7 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
     const user__uuid =  user_uuid ? {user__uuid:user_uuid} : {}
     const dates = date ? {
         created_at__date__gte: `${date.getFullYear()}-${date.getMonth()}-25`,
-        created_at__date__lte: `${date.getFullYear()}-${date.getMonth()+1}-25`,
+        created_at__date__lte: `${date.getFullYear()}-${date.getMonth()+1}-26`,
 
     } : {}
     const {data , loading} = useRequest<Advance>({
@@ -45,16 +45,17 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
 
     let totalAdvance = 0
     return (
-        <Container className={`${className} md:w-2/3 min-h-[250px] h-fit relative pb-2`}>
+        <Container className={`${className} md:w-2/3 h-fit relative pb-2`}>
             {
                 loading ? <LoadingComponent/> : <></>
             }
-            <span className='text-2xl text-btns-colors-primary'>Advances</span>
-            <div className='flex flex-col justify-between items-center'>
+            <span className='text-2xl text-btns-colors-primary'>{TRANSLATIONS.Advance.title[lang]}</span>
+            <div className=' items-center px-2'>
                 {
                     data ? (<>
                         <Table
-                        headers={["user","username","amount","created_at",""]}
+                        className=''
+                        headers={TRANSLATIONS.Advance.table.headers[lang]}
                         data={convertObjectToArrays(data?.results,[
                             {
                                 key:"user",
@@ -63,7 +64,7 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
                                     return (
                                     <td className='px-3 py-1'>
                                         <div className='flex justify-center items-center'>
-                                            <img src={getFullURL(item.profile.picture)} alt="" className='rounded-full w-[60px] h-[60px]'/>
+                                            <img src={getFullURL(item?.profile?.picture)} alt="" className='rounded-full w-[60px] h-[60px]'/>
                                         </div>
                                     </td>
                                     )
@@ -77,7 +78,7 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
                             },{
                                 key:"amount",
                                 method : (_)=>{
-                                    totalAdvance += _ as number;
+                                    totalAdvance += Number(_);
                                     return <td className='px-3 py-1'>{_}</td>
                                 },
                             },{
@@ -154,9 +155,9 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
                         ])}
                     />
                     <Pageination page={data} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
-                    <div dir={lang === "en" ? "ltr" : "rtl"} className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                        <label>{TRANSLATIONS.Advance.bottom.total[lang]} : {totalAdvance} EGP</label>
-                        <label>Total Advances Count : {data.total_count}</label>
+                    <div dir={lang === "en" ? "ltr" : "rtl"} className={`mb-2 grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 rounded-md items-center bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg`}>
+                        <label className='place-self-center'>{TRANSLATIONS.Advance.bottom.total[lang]} : {totalAdvance} EGP</label>
+                        <label className='place-self-center' >{TRANSLATIONS.Advance.bottom.totalCount[lang]} : {data?.total_count}</label>
                     </div>
 
     

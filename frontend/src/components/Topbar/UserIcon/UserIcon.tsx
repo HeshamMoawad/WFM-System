@@ -14,9 +14,9 @@ const UserIcon: FC<UserIconProps> = () => {
     const navigate = useNavigate()
     const {auth} = useAuth()
     return (
-    <div className='user-icon w-5/12 h-full md:w-[12%] md:mr-5  cursor-pointer' onClick={e=>setShowMenu(!showMenu)}>
+    <div className='user-icon w-5/12 h-full md:w-[15%] md:mr-5  cursor-pointer' onClick={e=>setShowMenu(!showMenu)}>
         <div className='container flex flex-row-reverse justify-center w-full h-full'>
-            <div className="info flex flex-col justify-center px-2 text-xs md:text-lg">
+            <div className="info flex flex-col justify-center px-2 text-xs md:text-lg md:w-[100%]">
                     <span >{auth?.first_name} {auth?.last_name}</span>
                     <span className='block opacity-55'>{auth?.department?.name}</span>
             </div>
@@ -48,8 +48,8 @@ const UserIcon: FC<UserIconProps> = () => {
                 <span className='block w-10/12 h-[1px] px-3 bg-[gray] opacity-30'></span>
                 <li onClick={(e)=>{
                     e.preventDefault();
-                    localStorage.removeItem(AUTH_KEY);
-                    // navigate("/login")
+                    localStorage.removeItem(AUTH_KEY)
+                    document.cookie = "";
                     window.location.reload();
                 }}>
                     <a href="#s" className="flex  items-center gap-3 px-4 py-2">

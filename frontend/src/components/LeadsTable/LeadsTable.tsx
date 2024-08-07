@@ -16,7 +16,7 @@ const LeadsTable: FC<LeadsTableProps> = () => {
     const {data , loading} = useRequest<Lead>({url:"api/users/lead",method:"GET",params:{page:currentPage}},[currentPage])
 
     return (
-    <Container className='relative col-span-7 w-[90%] place-self-end h-[680px]'>
+    <Container className='relative md:col-span-6 w-[100%] place-self-end min-h-[680px] h-fit'>
         {
             loading ? <LoadingComponent/> : <></>
         }
@@ -102,7 +102,7 @@ const LeadsTable: FC<LeadsTableProps> = () => {
                 />
                 <Pagination currentPage={currentPage} page={data} setCurrentPage={setCurrentPage} />
                 <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                    <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                    <label htmlFor="" className='text-center'>Total : {data?.total_count}</label>
                 </div>
 
             </>):<></>

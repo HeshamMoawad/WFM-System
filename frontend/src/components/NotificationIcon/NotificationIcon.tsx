@@ -32,7 +32,7 @@ const NotificationIcon: FC<NotificationIconProps> = () => {
         }
     useEffect(()=>{
         fetcher()
-        const interval = setInterval(fetcher,20000);
+        const interval = setInterval(fetcher,50000);
         return ()=> clearInterval(interval);
     },[refresh])
     return (

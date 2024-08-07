@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import { useContext, useState, type FC } from 'react';
 import useRequest from '../../hooks/calls';
 import { RequestType } from '../../types/auth';
 import { convertObjectToArrays } from '../../utils/converter';
@@ -6,6 +6,8 @@ import Table from '../../components/Table/Table';
 import Container from '../../layouts/Container/Container';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import Pageination from '../../components/Pageination/Pageination';
+import { LanguageContext } from '../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../utils/constants';
 
 interface RequestsTableBasicProps {
     className:string;
@@ -15,6 +17,7 @@ interface RequestsTableBasicProps {
 }
 
 const RequestsTableBasic: FC<RequestsTableBasicProps> = ({className ,user_uuid, date }) => {
+    const {lang} = useContext(LanguageContext)
     const [currentPage,setCurrentPage] = useState(1)
     const {data , loading } = useRequest<RequestType>({
         url:"api/users/request",
@@ -35,15 +38,15 @@ const RequestsTableBasic: FC<RequestsTableBasicProps> = ({className ,user_uuid, 
         }
 
         <div className='flex flex-row justify-between items-center'>
-            <label className='text-2xl text-btns-colors-primary'>Request Table</label>
+            <label className='text-2xl text-btns-colors-primary'>{TRANSLATIONS.Requests.title[lang]}</label>
         </div>
         {
             data ? (
             <>
-                <Table
+                <Table 
                     className='mb-5'
                     key={Math.random()}
-                    headers={["type","status","details","date","note","created_at"]}
+                    headers={TRANSLATIONS.Requests.table.headers2[lang]}
                     data={convertObjectToArrays<RequestType>(
                         data.results,
                         [
@@ -85,6 +88,7 @@ const RequestsTableBasic: FC<RequestsTableBasicProps> = ({className ,user_uuid, 
                     )}
                     />
                     <Pageination currentPage={currentPage} setCurrentPage={setCurrentPage} page={data}/>
+                    
             </>
             ): <></>
         }

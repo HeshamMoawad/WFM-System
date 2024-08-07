@@ -18,7 +18,7 @@ const UploadLeads: FC<UploadLeadsProps> = () => {
     })
     const [rowsData,setRowsData] = useState({results:[]});
     return (
-    <Container className='col-span-full w-[50%] place-self-center h-fit relative'>
+    <Container className='col-span-full w-full md:w-[50%] place-self-center h-fit relative'>
         {
             loading? <LoadingComponent/> : <></>
         }

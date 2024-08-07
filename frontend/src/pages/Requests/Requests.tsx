@@ -12,18 +12,19 @@ const Requests: FC<RequestsProps> = () => {
     const {auth} = useAuth()
 
     return (
-    <div className='w-full grid grid-flow-row md:grid-cols-9 '> 
-        <RequestAddForm refresh={refresh} setRefresh={setRefresh} className='col-span-4 justify-self-center w-fit min-w-[30rem] h-fit relative'/>
+    <div className='w-full grid grid-cols-1 gap-5 md:grid-flow-row md:grid-cols-9 px-5 '> 
+
+        <RequestAddForm refresh={refresh} setRefresh={setRefresh} className='md:col-span-4 justify-self-center w-full md:min-w-[30rem] h-fit relative'/>
 
         {
             auth.role === "OWNER" || auth.role === "MANAGER" ? 
             <>
-                <RequestHandling refresh={refresh} setRefresh={setRefresh} className='col-span-5 place-self-center max-w-[45rem] max-h-[450px] h-fit min-h-[100px] relative'/>
+                <RequestHandling refresh={refresh} setRefresh={setRefresh} className='md:col-span-5 place-self-center max-w-[45rem] max-h-[450px] h-fit min-h-[100px] relative'/>
             </>
             :
             null
         }
-        <RequestTable refresh={refresh} setRefresh={setRefresh} className='col-span-9 place-self-center h-fit min-h-[100px] relative'/>
+        <RequestTable refresh={refresh} setRefresh={setRefresh} className='md:col-span-9 place-self-center h-fit min-h-[100px] relative'/>
 
      </div>);
 }

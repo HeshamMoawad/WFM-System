@@ -8,7 +8,7 @@ interface EditUserProps {}
 const EditUser: FC<EditUserProps> = () => {
     const {user_uuid} = useParams()
     return (
-    <div className='edit-user'>
+    <div className='edit-user flex flex-col justify-center items-center'>
         {
             user_uuid ? (
                 <>

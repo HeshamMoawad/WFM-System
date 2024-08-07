@@ -12,7 +12,7 @@ interface LeadFormProps {}
 const LeadForm: FC<LeadFormProps> = () => {
     
     return (
-    <Container className='col-span-2 w-[120%] h-fit relative'>
+    <Container className='md:col-span-3 w-[100%] h-fit relative place-self-center'>
         <h1 className='text-2xl text-btns-colors-primary text-center w-full'>Add Lead</h1>
 
         <form action="" className='grid grid-cols-3 gap-5 my-4' onSubmit={e=>{
