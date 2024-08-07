@@ -34,7 +34,6 @@ class AdvancesAPIView(APIViewSet):
     requiered_fields = ["user","creator","amount"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "GET": [],
         "POST": [IsSuperUser | IsOwner],
         "PUT": [IsSuperUser | IsOwner],
         "DELETE": [IsSuperUser | IsOwner],
@@ -42,7 +41,7 @@ class AdvancesAPIView(APIViewSet):
 
 
 class OutcomeAPIView(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser | IsOwner]
     allowed_methods = ["GET","POST","DELETE"]
     pagination_class = DefaultPagination
     model = TreasuryOutcome
@@ -52,16 +51,11 @@ class OutcomeAPIView(APIViewSet):
     creating_filters = ["details","creator","amount"]
     requiered_fields = ["details","creator","amount"]
     unique_field:str = 'uuid'
-    permissions_config = {
-        "GET": [IsSuperUser | IsOwner],
-        "POST": [IsSuperUser | IsOwner],
-        "PUT": [IsSuperUser | IsOwner],
-        "DELETE": [IsSuperUser | IsOwner],
-    }
+
 
 
 class IncomeAPIView(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser | IsOwner]
     allowed_methods = ["GET","POST","DELETE"]
     pagination_class = DefaultPagination
     model = TreasuryIncome
@@ -71,8 +65,20 @@ class IncomeAPIView(APIViewSet):
     creating_filters = ["details","creator","amount"]
     requiered_fields = ["details","creator","amount"]
     unique_field:str = 'uuid'
+
+
+class NotificationAPIView(APIViewSet):
+    permission_classes = [IsAuthenticated]
+    allowed_methods = ["GET","POST","DELETE"]
+    pagination_class = DefaultPagination
+    model = Notification
+    model_serializer= NotificationSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid",'creator',"message"]
+    creating_filters = ["creator","message","for_users","deadline"]
+    requiered_fields = ["creator","message","for_users","deadline"]
+    unique_field:str = 'uuid'
     permissions_config = {
-        "GET": [IsSuperUser | IsOwner],
         "POST": [IsSuperUser | IsOwner],
         "PUT": [IsSuperUser | IsOwner],
         "DELETE": [IsSuperUser | IsOwner],

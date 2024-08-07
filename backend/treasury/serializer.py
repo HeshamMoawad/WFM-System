@@ -33,6 +33,7 @@ class TreasuryOutcomeSerializer(ModelSerializer):
             "details",
             "from_advance",
             "from_basic",
+            "from_salary",
             "created_at",
             "updated_at",
         ]
@@ -79,7 +80,9 @@ class NotificationSerializer(ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
+        foreign_models = {
+            "creator" : ForeignField("creator",User,"uuid") ,
+        }
         many_to_many_models = {
             "for_users" : ManyToManyField("for_users",User,"uuid") ,
             "seen_by_users" : ManyToManyField("seen_by_users",User,"uuid"),
