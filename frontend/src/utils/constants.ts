@@ -12,6 +12,8 @@ export const WEEK_DAYS = [
   t("السبت","Sat")
 ]
 
+export const LANGS = t("ar-EG","en-US")
+
 export const numbersOptions = {
   minimumFractionDigits: 0,
   maximumFractionDigits: 2,
@@ -19,12 +21,54 @@ export const numbersOptions = {
 }
 
 export const TRANSLATIONS = {
+  Direction:t('rtl','ltr'),
+  Date:t("التاريخ","Date") ,
+  Delete:t("مسح","Delete"),
+  User:t("المستخدم" , "User"),
+
+  SideBar:{
+    DashBoard:{
+      title:t("الرئيسية","Dashboard"),
+    },
+    FPDetails :{
+      title:t("تفاصيل الحضور","FP Details"),
+      Requests : t("الطلبات","Requests"),
+      AttendanceDetails : t("تفاصيل الحضور","Attendance Details"),
+      SalaryList:t("قائمة القبض","Salary List"),
+    },
+    Basic:{
+      title:t("الأساسي","Basic"),
+    },
+    Commission:{
+      title:t("كوميشن","Commission"),
+      Marketing:t("ماركت","Marketing")  ,
+      Sales:t("سيلز","Sales"),
+      Technical:t("تيكنكال","Technical"),
+      General:t("جينرال","General"),
+      All:t("الكل","All"),
+      CoinChanger:t("سعر العملة","Coin Changer"),
+      Leads:t("العملاء","Leads"),
+    },
+    Users:{
+      title:t("المستخدمين","Users"),
+      AddUser:t("اضافة مستخدم","Add User"),
+      UsersList:t("قائمة المستخدمين","Users List"),
+      DeviceAccess:t("الاجهزة المسموحة","Device Access"),
+      Teams:t("الفرق","Teams"),
+    },
+    General:{
+      title:t("العام","General"),
+      Notification:t("التنبيهات","Notification"),
+    },
+    Treasury:{
+      title:t("الخزنة","Treasury"),
+      Advance:t("السلف","Advance"),
+    },
+  },
   Labels:[
     {label:"العربية",value:"ar"} ,
     {label:"English",value:"en"} ,
   ],
-  Direction:t('rtl','ltr'),
-  Date:t("التاريخ","Date") ,
   Request:{
     Type:t("نوع الطلب","Request Type"),
     Types:[
@@ -45,6 +89,11 @@ export const TRANSLATIONS = {
         translate:t("تأخير","Late")
       },
     ],
+    Status:{
+      PENDING : t("معلق","PENDING"),
+      REJECTED : t("مرفوض","REJECTED"),
+      ACCEPTED : t("مقبول","ACCEPTED"),
+    },
     Details:t("التفاصيل","Details"),
     Date:t("التاريخ","Date"),
     Submit:t("ارسال","Send")
@@ -92,19 +141,224 @@ export const TRANSLATIONS = {
       headers: {
         ar:["التاريخ","يوم الاسبوع","حضور","انصراف","مدة الشيفت" , "التاخير" , "الانصراف مبكرا","الخصم"],
         en:["date","DayOfWeek","arrived at","leaving at","deuration" , "late" , "departure","deduction"],
-      }
+      },
     },
     bottomBar:{
       lateCount:t("عدد التاخيرات","Late Count"), 
       departureCount:t(" الانصراف مبكرا","Departure Count"), 
       AttendanceCount:t("عدد ايام الحضور","Attendance Count"), 
+      DaysCount:t("عدد الايام","Days Count"), 
       deuctionCount:t("عدد ايام الخصم","Deduction Count (Days)"), 
       percentageCount:t("نسبة التاخير","Late Percentage")
     }
   },
   Advance:{
+    title:t("السلف","Advances"),
+    table:{
+      headers: {
+        ar:["المستخدم","اسم المستخدم","المبلغ","تاريخ الانشاء"],
+        en:["user","username","amount","created_at"],
+      },
+    },
+    form:{
+      taker:t("المُستَلِف","Taker"),
+      amount:t("القيمة","Amount"),
+      submit:t("تاكيد","Submit")
+    } ,
     bottom:{
-      total:t("اجمالى السلف","Total Advance")
+      request:t("طلب سلف","Request Advance"),
+      totalCount:t("اجمالى عدد السلف","Total Advance count") ,
+      total:t("اجمالى قيمة السلف","Total Advance") ,
     }
-  }
+  },
+  SpeedoMeter:{
+    title:t("نسبة التاخيرات","Late Percentage")
+  },
+  Requests:{
+    title:t("الطلبات","Requests"),
+    table:{
+      headers: {
+        ar:["اسم المستخدم","نوع الطلب","الحالة","التفاصيل","التاريخ","ملاحظة","تاريخ الانشاء"],
+        en:["username","type","status","details","date","note","created_at"],
+      },
+      headers2:{
+        ar:["النوع","الحالة","التفاصيل","التاريخ","ملاحظة","اُنشئ فى"] ,
+        en:["type","status","details","date","note","created_at"],
+      }
+    },
+    bottom:{
+      total:t("اجمالى عدد الطلبات","Total Requests"),
+    },
+  },
+  Treasury:{
+    total:t("قيمة الخزنة الحالية","Total Treasury"),
+    outform:{
+      title:t("المصروفات","Outcome"),
+      details:t("التفاصيل","Details"),
+      amount:t("القيمة","Amount"),
+      submit:t("تاكيد","Submit") ,
+    },
+    inform:{
+      title:t("الايرادات","Income"),
+      details:t("التفاصيل","Details"),
+      amount:t("القيمة","Amount"),
+      submit:t("تاكيد","Submit") ,
+      delete:t("مسح","Delete") ,
+    },
+    outtable:{
+      title:t("جدول الصادرات","Outcome Table"),
+      headers:{
+        ar:["المستخدم","اسم المستخدم","القيمة","التفاصيل","مسح"],
+        en:["creator","username","amount","details","delete"],
+      },
+    },
+    intable:{
+      title:t("جدول الواردات","Income Table"),
+      headers:{
+        ar:["المستخدم","اسم المستخدم","القيمة","التفاصيل","مسح"],
+        en:["creator","username","amount","details","delete"],
+      },
+    },
+  },
+  Notification:{
+    form:{
+      title:t("اضافة تنبيه","Add Notification"),
+      message:t("الرسالة","Message"),
+      sendto:t("ارسال الى","Send To") ,
+      deadline:t("تاريخ الانتهاء","Deadline") ,
+      send:t("ارسال","Send") ,
+    },
+    table:{
+      title:t("جدول التنبيهات","Notification Table"),
+      headers:{
+        ar:["المستخدم","الرسالة","عدد المشاهدات","التاريخ الانتهاء"],
+        en:["creator","message","seen count","deadline"],
+      },
+    }
+  },
+  Teams:{
+    form:{
+      title:t("اضافة فريق","Add Team"),
+      name:t("اسم الفريق","Team Name"),
+      leader:t("القائد","Leader"),
+      members:t("الاعضاء","Members"),
+      commission:t("شرائح التارجت","Commission Rules"),
+      submit:t("تاكيد","Submit") ,
+    },
+    table:{
+      title:t("جدول الفرق","Team Table"),
+      headers:{
+        ar:["القائد","الاسم","عدد الاعضاء"],
+        en:["leader","name","members count"],
+      },
+    }
+  },
+  DeviceAccess:{
+    form:{
+      title:t("اضافة جهاز","Add Device"),
+      user:t("المستخدم","User"),
+      name:t("اسم الجهاز","Device Name"),
+      id:t("كود الجهاز","Device ID"),
+      add:t("اضافة","Add") ,
+    },
+    table:{
+      title:t("جدول الأجهزة","Device Table"),
+      headers:{
+        ar:["اسم المستخدم","اسم الجهاز","كود الجهاز"],
+        en:["username","name","device-id"],
+      },
+    }
+  },
+  UsersList: {
+    title:t("قائمة المستخدمين","Users List"),
+    headers:{
+      ar:["صورة","اسم المستخدم","crm_username","كلمة السر","مُفَعّل","الصلاحيات","title","القسم","البروجيكت","رقم الهاتف","",""],
+      en:["picture","username","crm_username","password","is active","role","title","department","project","Phone","",""],
+    },
+    filters:{
+      department:t("القسم","Department"),
+      project:t("البروجيكت","Project"),
+      role:t("الصلاحيات","Role"),
+
+    },
+  },
+  AddUser:{
+    form:{
+      title:t("اضافة مستخدم","Add User"),
+      username:t("اسم المستخدم","Username"),
+      password:t("كلمة السر","Password"),
+      first:t("الاسم الاول","First Name"),
+      last:t("الاسم الاخير","Last Name"),
+      usertitle:t("لقب","Title"),
+      role:t("الصلاحيات","Role"),
+      department:t("القسم","Department"),
+      project:t("البروجيكت","Project"),
+      crm_username:t("CRM Username","CRM Username"),
+      create:t("انشاء","Create"),
+      cancel:t("الغاء","Cancel"),
+    },
+    commissionform:{
+      title:t("تفاصيل المرتب","User Commission Details"),
+      basic:t("الاساسى [EGP]","Basic in [ EGP ]"),
+      setdeduction:t("تفعيل الخصومات العامة","Set Deduction Rules (Global)"),
+      setcommission:t("تفعيل التارجت العام","Set Commission Rules (Global)"),
+      deductionrules:t("الخصومات المخصصة","Deduction Rules (Custom)"),
+      commissionrules:t("التارجت المخصص","Commission Rules (Custom)"),
+      arrive:t("موعد الوصول","Arrive At"),
+      leave:t("موعد المغادرة","Leave At"),
+      save:t("حفظ","Save"),
+      cancel:t("الغاء","Cancel"),
+    }
+  },
+  Salary:{
+    title:t("الرواتب","Salary"),
+    table:{
+      title:t("جدول الرواتب","Salary Table"),
+      headers:{
+        ar:["الصورة","اسم المستخدم","الصلاحيات","اللقب","القسم","البروجيكت","الاساسى","المرتب كامل"],
+        en:["picture","username","role","title","department","project","basic","total-salary"],
+      },
+    },
+    form:{
+      title:t("الراتب","Salary"),
+      target:t("التارجت","Target"),
+      targetteam:t("تارجت الفريق","Target Team"),
+      plus:t("بلس +2","Plus +2"),
+      american:t("العملاء الامريكى","American Leads"),
+      subscription:t("اشتراكات","Subscription"),
+      deduction:t("خصم","Deduction"),
+      gift:t("مكافأة","Gift"),
+      update:t("تحديث","Update"),
+      give:t("اعطاء","Give"),
+    }
+  },
+  Basic:{
+    title:t("الاساسى","الاساسى"),
+    table:{
+      title:t("جدول الاساسى","Basic Table"),
+      headers:{
+        ar:["الصورة","اسم المستخدم","الصلاحيات","اللقب","القسم","البروجيكت","",""],
+        en:["picture","username","role","title","department","project","basic","",""],
+      },
+    },
+    form:{
+      deductiondays:t("خصم بالايام","Deduction Days"),
+      deductionmoney:t("خصم بالقيمة","Deduction Money"),
+      kpi:t("KPI","KPI"),
+      gift:t("علاوة (مكافأة)","Additional Gift"),
+      give:t("اعطى","Give")
+    }
+
+  },
+  TargetSliceCalc:{
+    target : t("التارجت","Target"),
+    title:t("تارجت فردى","Target Personal"),
+    title2:t("تارجت الفريق","Target Team"),
+    table:{
+      headers:{
+        ar:["اقل قيمة","اعلى قيمة","المقابل"],
+        en:["min-value","max-value","cost"],
+      }
+    }
+  },
 }
