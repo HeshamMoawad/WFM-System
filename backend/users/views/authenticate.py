@@ -16,7 +16,9 @@ def login(request: Request):
         data = login_class.login(request)
         uuid = data.get("uuid",None)
         is_superuser = data.get("is_superuser",False)
-        if uuid :
+        if is_superuser : 
+            data.update({"unique_id":"SuperUser"})
+        elif uuid :
             finger = FingerPrintID.objects.filter(user__uuid=uuid , unique_id=request.query_params.get("unique_id",request.data.get("unique_id",None))).first()
             if not finger :
                 raise NotImplementedError("No Devices ID added Please add one !")

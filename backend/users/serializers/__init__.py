@@ -55,16 +55,14 @@ class UserSerializer(ModelSerializer):
     profile = ProfileSerializer(read_only=True)
 
     has_basic = SerializerMethodField()
-    _password = SerializerMethodField("get_pwd")
-
-    def get_pwd(self,obj):
-        if obj.is_superuser or (obj.role == "OWNER") :
-            return None
-        return obj._password
+    has_commission = SerializerMethodField()
 
     def get_has_basic(self,obj):
         return getattr(obj,"has_basic",None)
-        
+    
+    def get_has_commission(self,obj):
+        return getattr(obj,"has_commission",None)
+            
     class Meta:
         model = User
         fields = [
@@ -79,8 +77,10 @@ class UserSerializer(ModelSerializer):
             "is_superuser",
             "is_active",
             "has_basic",
-            "_password",
+            "has_commission",
+            "password_normal",
             "profile",
+            "crm_username",
         ]
         foreign_models = {
             "department": ForeignField("department",Department,'uuid') ,
@@ -101,28 +101,35 @@ class ArrivingLeavingSerializer(ModelSerializer):
     deduction = SerializerMethodField()
 
     def get_late(self,obj:ArrivingLeaving):
-        calculator = Calculator()
-        return calculator.calc_late(obj)
-
+        if obj.arriving_at:
+            calculator = Calculator()
+            return calculator.calc_late(obj)
+        return 0
+    
     def get_departure(self,obj:ArrivingLeaving):
-        calculator = Calculator()
-        return calculator.calc_departure(obj)
-
+        if obj.leaving_at:
+            calculator = Calculator()
+            return calculator.calc_departure(obj)
+        return 0
+    
     def get_deuration(self,obj:ArrivingLeaving):
-        calculator = Calculator()
-        return calculator.calc_deuration(obj)
-
+        if obj.leaving_at:
+            calculator = Calculator()
+            return calculator.calc_deuration(obj)
+        return 0
+    
     def get_deduction(self,obj:ArrivingLeaving):
-        calculator = Calculator()
-        late_time = calculator.calc_late(obj)
-        details:UserCommissionDetails = obj.user.usercommissiondetails
-        total= 0 
-        if details.set_deduction_rules :
-            total += calculator.calc_global_deduction(late_time)
-        else :
-            total += calculator.calc_custom_deduction(late_time,details)
-        return total 
-
+        if obj.arriving_at:
+            calculator = Calculator()
+            late_time = calculator.calc_late(obj)
+            details:UserCommissionDetails = obj.user.usercommissiondetails
+            total= 0 
+            if details.set_deduction_rules :
+                total += calculator.calc_global_deduction(late_time)
+            else :
+                total += calculator.calc_custom_deduction(late_time,details)
+            return total 
+        return 1
 
     class Meta:
         model = ArrivingLeaving
@@ -139,17 +146,25 @@ class ArrivingLeavingSerializer(ModelSerializer):
         ]
 
 
-
 class LeadSerializer(ModelSerializer):
+    user = SerializerMethodField()
+    
+    def get_user(self,obj):
+        return getattr(obj.user,"username",None)
+    
     class Meta:
         model = Lead
         fields = [
             "uuid",
+            "user",
             "phone",
             "name",
             "date",
             "project",
         ]
+        foreign_models = {
+            "user": ForeignField("user",User,'uuid') ,
+        }
 
 class FingerPrintIDSerializer(ModelSerializer):
     user = UserSerializer(read_only=True)

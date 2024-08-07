@@ -1,6 +1,7 @@
 from django.contrib import admin
-from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from import_export import resources, fields
+from import_export.widgets import ForeignKeyWidget
 
 from .models import (
     User , 
@@ -16,15 +17,56 @@ from .models import (
 from utils.admin_utils import FieldSets
 
 class UserResource(resources.ModelResource):
+    project_name = fields.Field(
+        column_name='project',
+        attribute='project',
+        widget=ForeignKeyWidget(Project, 'name')
+    )
+    department_name = fields.Field(
+        column_name='department',
+        attribute='department',
+        widget=ForeignKeyWidget(Department, 'name')
+    )
+    
+    basic_salary = fields.Field(
+        column_name='basic_salary',
+        attribute='usercommissiondetails__basic'
+    )
+    set_deduction_rules = fields.Field(
+        column_name='set_deduction_rules',
+        attribute='usercommissiondetails__set_deduction_rules'
+    )
+    set_global_commission_rules = fields.Field(
+        column_name='set_global_commission_rules',
+        attribute='usercommissiondetails__set_global_commission_rules'
+    )
+    will_arrive_at = fields.Field(
+        column_name='will_arrive_at',
+        attribute='usercommissiondetails__will_arrive_at'
+    )
+    will_leave_at = fields.Field(
+        column_name='will_leave_at',
+        attribute='usercommissiondetails__will_leave_at'
+    )
+
     class Meta:
-        model = User  
-
-
+        model = User
+        fields = (
+            'username', 'password_normal','profile__phone', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
+            'basic_salary', 'set_deduction_rules', 'set_global_commission_rules', 'will_arrive_at', 'will_leave_at'
+        )
+        export_order = (
+            'username', 'password_normal','profile__phone', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
+            'basic_salary', 'set_deduction_rules', 'set_global_commission_rules', 'will_arrive_at', 'will_leave_at'
+        )
+        
+    def export(self, *args, queryset=None, **kwargs):
+        return super().export(*args, queryset=queryset.filter(is_superuser=False), **kwargs)
 
 # Register your models here..
 class UserAdminSite(ImportExportModelAdmin):
-    resource_classes = [UserResource]
-    list_display = ("username",'role',"project","is_active","is_staff","is_superuser")
+    resource_class = UserResource
+    list_display = ("username","crm_username",'role',"project","is_active","is_staff","is_superuser")
     list_filter = ("project","role")
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['username' , 'uuid' , 'first_name']  
@@ -35,7 +77,8 @@ class UserAdminSite(ImportExportModelAdmin):
         ],[
             [
                 'username',
-                '_password',
+                'password_normal',
+                'groups',
                 'is_active',
                 'is_staff',
                 'is_superuser',
@@ -48,6 +91,7 @@ class UserAdminSite(ImportExportModelAdmin):
                 "role",
                 "title",
                 "department" ,
+                "crm_username" ,
             ],
             [
                 "uuid" ,
@@ -56,7 +100,7 @@ class UserAdminSite(ImportExportModelAdmin):
             ]
     ]).fieldsets
 
-class ProfileAdminSite(admin.ModelAdmin):
+class ProfileAdminSite(ImportExportModelAdmin):
     list_display = ["user","telegram_id"]
     list_filter = ["user"]
     readonly_fields = ['uuid',"created_at","updated_at"]
@@ -68,6 +112,7 @@ class ProfileAdminSite(admin.ModelAdmin):
             [
                 'user',
                 'picture',
+                'phone',
                 'telegram_id',
                 'about',
             ],[
@@ -105,11 +150,11 @@ class ArrinigLeavingAdminSite(ImportExportModelAdmin):
     ]).fieldsets
 
 
-class LeadAdminSite(admin.ModelAdmin):
+class LeadAdminSite(ImportExportModelAdmin):
     list_display = ["user","phone",'project',"date"]
     list_filter = ["user","date" ,'project']
     readonly_fields = ['uuid',"created_at","updated_at"]
-    search_fields = ['phone' ,'name', 'uuid' , 'date']  
+    search_fields = ['phone' ,'name', 'uuid' , 'date__date']  
     fieldsets = FieldSets([
             'Lead Fields' ,
             'Other Fields'
@@ -128,7 +173,7 @@ class LeadAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 
-class ProjectAdminSite(admin.ModelAdmin):
+class ProjectAdminSite(ImportExportModelAdmin):
     list_display = ["name"]
     # list_filter = ["user","date" ,'project']
     readonly_fields = ['uuid',"created_at","updated_at"]
@@ -148,7 +193,7 @@ class ProjectAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 
-class DepartmentAdminSite(admin.ModelAdmin):
+class DepartmentAdminSite(ImportExportModelAdmin):
     list_display = ["name"]
     # list_filter = ["user","date" ,'project']
     readonly_fields = ['uuid',"created_at","updated_at"]
@@ -169,7 +214,7 @@ class DepartmentAdminSite(admin.ModelAdmin):
 
 
 
-class UpdateHistoryAdminSite(admin.ModelAdmin):
+class UpdateHistoryAdminSite(ImportExportModelAdmin):
     list_display = ["model_uuid","user" ,"model_name", "updated_at"]
     list_filter = ["user" ,  "model_name","updated_at"]
     readonly_fields = ["updated_at"]
@@ -189,7 +234,7 @@ class UpdateHistoryAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 
-class RequestAdminSite(admin.ModelAdmin):
+class RequestAdminSite(ImportExportModelAdmin):
     list_display = ["user" ,"type","status", "department","date"]
     list_filter = ["user" ,  "department","status" , "type"]
     readonly_fields = ['uuid',"created_at","updated_at" , "department" ]
@@ -214,7 +259,7 @@ class RequestAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 
-class FingerPrintIDAdminSite(admin.ModelAdmin):
+class FingerPrintIDAdminSite(ImportExportModelAdmin):
     list_display = ["user","name" ,"unique_id"]
     list_filter = ["user" ]
     readonly_fields = ['uuid',"created_at","updated_at" ]

@@ -46,19 +46,19 @@ class Pagination1K(PageNumberPagination):
 
 class UsersAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
-    pagination_class = DefaultPagination
+    pagination_class = Pagination1K
     model = User
     model_serializer= UserSerializer
-    order_by = ('username',)
-    search_filters = ["uuid",'username','project' ,"department","role","is_active"]
-    creating_filters = ["username","_password","is_active","role","is_staff","title","project","department"]
-    requiered_fields = ['username',"_password"]
-    updating_filters = ["username","_password","is_active","role","is_staff","title","project","department"]
+    order_by = ('role','username')
+    search_filters = ["uuid",'username','project' ,"department","role","is_active","is_superuser","crm_username"]
+    creating_filters = ["username","password_normal","is_active","role","is_staff","title","project","department","crm_username"]
+    requiered_fields = ['username',"password_normal"]
+    updating_filters = ["username","password_normal","is_active","role","is_staff","title","project","department","crm_username"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "GET": [IsSuperUser | IsOwner],
-        "POST": [IsSuperUser | IsOwner],
-        "PUT": [IsSuperUser | IsOwner],
+        "GET": [IsSuperUser | IsOwner | IsManager],
+        "POST": [IsSuperUser | IsOwner | IsManager],
+        "PUT": [IsSuperUser | IsOwner | IsManager],
         "DELETE": [IsSuperUser | IsOwner],
     }
 
@@ -125,10 +125,10 @@ class ProfileAPI(APIViewSet):
 
 class LeadAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
-    pagination_class = Pagination1K
+    pagination_class = DefaultPagination
     model = Lead
     model_serializer= LeadSerializer
-    order_by = ('user',)
+    order_by = ('date',)
     search_filters = ["uuid","user","phone","name","date","project"]
     creating_filters = ["phone","name","user","date","project"]
     requiered_fields = ["user","phone","date","project"]
@@ -147,7 +147,8 @@ class RequestAPI(APIViewSet):
     updating_filters = ["status","details","type","date"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "DELETE": [IsSuperUser | IsOwner],
+        "PUT": [IsSuperUser | IsOwner | IsManager | IsHR ],
+        "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
     }
 
 
@@ -164,7 +165,7 @@ class FingerPrintIDAPI(APIViewSet):
     requiered_fields =  ["user","name","unique_id"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "POST": [IsSuperUser | IsOwner],
-        "PUT": [IsSuperUser | IsOwner],
-        "DELETE": [IsSuperUser | IsOwner],
+        "POST": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
     }

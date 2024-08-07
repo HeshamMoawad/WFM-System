@@ -11,7 +11,7 @@ from utils.models_utils import image_upload_path , validate_lead_number , valida
 from django.db.models.signals import pre_save , post_save
 from core.models import BaseModel
 import json
-# from django.utils import timezone
+from django.utils.timezone import now
 from django.urls import reverse
 
 
@@ -38,18 +38,19 @@ class User(AbstractUser , BaseModel):
 
     ### other normal fields
 
-    _password = models.CharField(verbose_name='Password Without Hash (Required)', max_length=128)
+    password_normal = models.CharField(verbose_name='Password Without Hash (Required)', max_length=128)
     project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
     role = models.CharField(max_length=100 , verbose_name="Role" , choices=UserTypes.choices , default=UserTypes.AGENT, validators=[validate_role])
     title = models.CharField(max_length=100 , verbose_name="Title" , default='Agent')
     department = models.ForeignKey( Department,verbose_name="Department", on_delete=models.SET_NULL, null=True)
+    crm_username = models.CharField(max_length=200 , verbose_name="CRM Username" , blank=True  )
 
     def __str__(self):
         return f"{self.username}"
     
     def save(self,*args,**kwargs):
-        self.set_password(self._password)
-        kwargs.pop("user",None)
+        
+        self.set_password(self.password_normal)
         return super().save(*args,**kwargs)
 
     class Meta:
@@ -97,9 +98,9 @@ class Profile(BaseModel):
 
 class Lead(BaseModel):
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.SET_NULL , null=True )
-    phone = models.CharField(max_length=13 ,verbose_name="Phone Number" , validators=[validate_lead_number])
+    phone = models.CharField(max_length=20 ,verbose_name="Phone Number" ) # validators=[validate_lead_number]
     name = models.CharField(verbose_name="Lead Name", max_length=100)
-    date = models.DateField(verbose_name="Day Date", null=True )
+    date = models.DateTimeField(verbose_name="Day Date", null=True,default=now )
     project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
     class Meta:
         unique_together = ['user','phone']
