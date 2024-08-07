@@ -28,7 +28,7 @@ interface User {
     last_name:string ,
     is_superuser:boolean ,
     is_active:boolean ,
-    _password?:string,
+    password_normal?:string,
 
 }
 interface Authintication extends User {
@@ -47,7 +47,7 @@ interface TargetSlice{
     min_value:number;
     max_value:number;
     money:string;
-    is_monay_percentage:boolean;
+    is_money_percentage:boolean;
     is_global:boolean;
     department:Department;
 }
@@ -157,6 +157,22 @@ interface Lead {
     phone:string;
 }
 
+interface Team {
+    uuid:string;
+    created_at:string;
+    updated_at:string;
+    name:string;
+    leader:User;
+    agents:User[];
+    commission_rules: TargetSlice[];
+}
+interface Subscription {
+    uuid: string;
+    count: number;
+    value: number;
+}
+
+
 const DefaultAuthintication = {
     uuid:"",
     username:'' ,
@@ -207,5 +223,8 @@ export type {
     DeviceAccessDetails ,
     BasicDetails ,
     CoinChangerType ,
-    Lead
+    Lead ,
+    Team ,
+    Subscription
+
 };

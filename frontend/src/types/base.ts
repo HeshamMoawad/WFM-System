@@ -5,6 +5,8 @@ type DarkModeType = boolean// "light"|'dark'
 
 type Language = 'en'|'ar';
 
+type Status = "PENDING" | "REJECTED" | "ACCEPTED"
+
 interface ChildrenType {
     children?: Childrens;
 }
@@ -23,5 +25,6 @@ export type {
     DarkModeType ,
     Language ,
     Base , 
-    PageinationDetails
+    PageinationDetails ,
+    Status
 }
