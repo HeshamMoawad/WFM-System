@@ -12,17 +12,33 @@ interface ProfileProps {}
 
 const Profile: FC<ProfileProps> = () => {
     const{lang} = useContext(LanguageContext);
-    const [disabled , setDisabled] = useState(true);
+    const [disabled , setDisabled] = useState(false);
     const [loading , setLoading] = useState(false);
     const {auth} = useAuth()
     const navigate = useNavigate()
     const [profile,setProfile] = useState({...auth.profile})
+    const [imageSrc, setImageSrc] = useState<string>(getFullURL(profile.picture))
     const onChangeInputs = (e:any)=>{setProfile((prev)=>{
                             return {
                                ...prev,
                                 [e.target.name] : e.target.value
                             }
                         })}
+    const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files){
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                setImageSrc(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            }
+            };
+
+
+        }
+                        
     return (
     <div className='flex justify-center'>
         {
@@ -31,15 +47,17 @@ const Profile: FC<ProfileProps> = () => {
         <Container className='h-fit flex flex-col md:flex-row gap-7'>
             <div className='flex justify-center items-center md:justify-start mt-4 md:mx-4 md:mt-0'>
                 <div className='flex flex-col md:flex-row  rounded-full w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-btns-colors-primary'>
-                    <img src={getFullURL(profile.picture)} alt='profile' className='rounded-full w-[100%] h-[100%] p-1'/>
+                    <img src={imageSrc} alt='profile' className='rounded-full w-[100%] h-[100%] p-1'/>
                 </div>
             </div>
             <div className='w-full h-full md:p-3'>
                 <h1 className='text-3xl md:text-5xl font-bold text-center'>Profile</h1>
-                <form className='mt-10 grid grid-cols-1 md:grid-cols-2 gap-3 content-start' onSubmit={(e)=>{onSubmitProfileForm(e,lang,auth.profile.uuid,setLoading)}}>
+                <form className='mt-10 grid grid-cols-1 md:grid-cols-2 gap-3 content-start' onSubmit={(e)=>{
+                    onSubmitProfileForm(e,lang,auth.profile.uuid,setLoading)
+                    }}>
                     <div className='flex flex-row md:p-3 gap-5 md:col-span-2'>
                         <label htmlFor="picture" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Picture[lang]} : </label>
-                        <input disabled={disabled} type="file" name="picture" id="picture"  className='w-[100%] outline-none px-4 rounded-lg bg-[transparent] '/>
+                        <input accept="image/*" onChange={handleFileChange} disabled={disabled} type="file" name="picture" id="picture"  className='w-[100%] outline-none px-4 rounded-lg bg-[transparent] '/>
                     </div>
                     <div className='flex flex-row md:p-3 gap-5'>
                         <label htmlFor="phone" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Phone[lang]} : </label>
@@ -59,11 +77,10 @@ const Profile: FC<ProfileProps> = () => {
                             navigate("/dashboard");
                             }}> Cancel </button>
                         <button type="submit" disabled={disabled} className={`${disabled?"bg-[gray]":"bg-btns-colors-primary"} w-24 h-8 md:w-36 md:h-12 rounded-lg`}> Save </button>
-
-                        <button className={`${disabled?"bg-[gray]":null} w-24 h-8 md:w-36 md:h-12 rounded-lg`} onClick={(e)=>{
+                        {/* <button className={`${disabled?"bg-[gray]":null} w-24 h-8 md:w-36 md:h-12 rounded-lg`} onClick={(e)=>{
                             e.preventDefault();
                             setDisabled(!disabled)
-                        }}> {disabled ? "View":"Edit"} </button>
+                        }}> {disabled ? "View":"Edit"} </button> */}
 
                     </div>
                 </form>
