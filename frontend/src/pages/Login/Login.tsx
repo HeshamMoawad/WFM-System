@@ -11,15 +11,22 @@ import { useAuth } from '../../hooks/auth';
 import { onSubmitLoginForm , onForgetPassword } from '../../calls/Login/Login';
 import { getFingerprint } from '../../utils/fingerprint';
 import { load, loadID, save, saveID } from '../../utils/storage';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginProps {}
 
 const Login: FC<LoginProps> = () => {
     const {lang} = useContext(LanguageContext)
     const [loading , setLoading] = useState(false)
+    const {auth} = useAuth()
     const [clientID , setClientID] = useState<string|null>(loadID())
     const {setAuth} = useAuth()
+    const navigate = useNavigate()
     useEffect(()=>{
+        if (auth.Authorization && auth.expire){
+            navigate('/dashboard')
+            return
+        }
         if (!clientID){
             getFingerprint()
                 .then(
@@ -61,7 +68,11 @@ const Login: FC<LoginProps> = () => {
                 <label className='sign'>{TRANSLATIONS.Login.SignIn[lang]}</label>
                 <div className="form">
                     
-                    <form action="" method='' className='form' onSubmit={(e)=>{e.preventDefault();onSubmitLoginForm(e,lang,setLoading,setAuth)}}>
+                    <form action="" method='' className='form' onSubmit={(e)=>{
+                        e.preventDefault();
+                        onSubmitLoginForm(e,lang,setLoading,setAuth , navigate)
+
+                        }}>
                         <div className="section">
                             <label htmlFor="username">{TRANSLATIONS.Login.username[lang]}</label>
                             <input name='username' type="text" placeholder={TRANSLATIONS.Login.username[lang]} required/>
