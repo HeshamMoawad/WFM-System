@@ -1,6 +1,6 @@
 from api_views.models import APIViewSet
 from permissions.users import IsSuperUser ,IsOwner
-from users.views import DefaultPagination , IsAuthenticated 
+from users.views import DefaultPagination , IsAuthenticated , Pagination1K
 from commission.models import (
     UserCommissionDetails , 
     DeductionRules,
@@ -8,6 +8,8 @@ from commission.models import (
     BasicRecord,
     Commission ,
     CoinChanger ,
+    Team ,
+    Subscription,
     )
 from commission.serializers import (
     UserCommissionDetailsSerializer , 
@@ -16,12 +18,14 @@ from commission.serializers import (
     BasicRecordSerializer ,
     CommissionSerializer ,
     CoinChangerSerializer,
+    TeamSerializer , 
+    SubscriptionSerializer
     )
 
 
 class UserCommissionDetailsAPI(APIViewSet):
     allowed_methods = ["GET","PUT"]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser ,IsOwner]
     pagination_class = DefaultPagination
     model = UserCommissionDetails
     model_serializer= UserCommissionDetailsSerializer
@@ -32,15 +36,27 @@ class UserCommissionDetailsAPI(APIViewSet):
 
 
 class DeductionRulesAPI(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser ,IsOwner]
     pagination_class = DefaultPagination
     model = DeductionRules
     model_serializer= DeductionRulesSerializer
     order_by = ('late_time',)
-    search_filters = ["uuid"]
+    search_filters = ["uuid","is_global"]
     creating_filters = ["late_time","deduction_days","is_global","department"]
     requiered_fields = ["late_time","deduction_days"]
     updating_filters = ["late_time","deduction_days","is_global","department"]
+    unique_field:str = 'uuid'
+
+class TeamAPI(APIViewSet):
+    permission_classes = [IsSuperUser ,IsOwner]
+    pagination_class = DefaultPagination
+    model = Team
+    model_serializer= TeamSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid","leader"]
+    creating_filters = ["name","leader","agents","commission_rules"]
+    requiered_fields = ["name","leader","agents","commission_rules"]
+    updating_filters = ["name","leader","agents","commission_rules"]
     unique_field:str = 'uuid'
 
 class CoinChangerAPI(APIViewSet):
@@ -57,19 +73,19 @@ class CoinChangerAPI(APIViewSet):
 
 
 class TargetSlicesAPI(APIViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser ,IsOwner]
     pagination_class = DefaultPagination
     model = TargetSlice
     model_serializer= TargetSliceSerializer
     order_by = ('-created_at',)
-    search_filters = ["uuid"]
-    creating_filters = ["min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
-    requiered_fields = ["min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
-    updating_filters = ["min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
+    search_filters = ["uuid","is_global"]
+    creating_filters = ["name","min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
+    requiered_fields = ["name","min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
+    updating_filters = ["name","min_value","max_value","money","is_money_percentage" , "is_global" , "department"]
     unique_field:str = 'uuid'
 
 
-class BasicRecordAPI(APIViewSet):
+class  BasicRecordAPI(APIViewSet):
     permission_classes = [IsSuperUser , IsOwner]
     allowed_methods = ["GET","PUT","POST","DELETE"]
     pagination_class = DefaultPagination
@@ -81,6 +97,16 @@ class BasicRecordAPI(APIViewSet):
     requiered_fields = ["user","deduction_days","deduction_money","kpi" , "gift" , "basic" , "date"]
     updating_filters = ["deduction_days","deduction_money","kpi" , "gift" , "basic"]
     unique_field:str = 'uuid'
+    
+    
+class SubscriptionAPI(APIViewSet):
+    permission_classes = [IsSuperUser , IsOwner]
+    allowed_methods = ["GET"]
+    pagination_class = Pagination1K
+    model = Subscription
+    model_serializer= SubscriptionSerializer
+    search_filters = ["uuid","count","value"]
+    unique_field:str = 'uuid'
 
 
 class CommissionAPI(APIViewSet):
@@ -90,27 +116,48 @@ class CommissionAPI(APIViewSet):
     model = Commission
     model_serializer= CommissionSerializer
     order_by = ('-created_at',)
-    search_filters = ["uuid","basic","date"]
+    search_filters = ["uuid","basic","date", "user" ]
     creating_filters = [
-            "basic",
-            "commission_team",
-            "target",
-            "gift",
-            "commission",
-            "date",
+                "user" ,
+                "basic"  ,
+                "target" ,
+                "target_Team" ,
+                "plus"  ,
+                "american"  ,
+                "american_count"  ,
+                "subscriptions"  ,
+                "subscriptions_count"  ,
+                "deduction" ,
+                "gift"  ,
+                "salary" ,
+                "date"   ,
+                
         ]
     requiered_fields = [
-            "basic",
-            "commission_team",
-            "target",
-            "gift",
-            "commission",
-            "date",
+                "user" ,
+                "basic"  ,
+                "target" ,
+                "target_Team" ,
+                "plus"  ,
+                "american"  ,
+                "american_count"  ,
+                "subscriptions"  ,
+                "subscriptions_count"  ,
+                "deduction" ,
+                "gift"  ,
+                "salary" ,
+                "date"   ,
         ]
     updating_filters = [
-            "commission_team",
-            "target",
-            "gift",
-            "commission",
+                "target" ,
+                "target_Team" ,
+                "plus"  ,
+                "american"  ,
+                "american_count"  ,
+                "subscriptions"  ,
+                "subscriptions_count"  ,
+                "deduction" ,
+                "gift"  ,
+                "salary" ,
         ]
     unique_field:str = 'uuid'

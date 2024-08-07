@@ -11,6 +11,8 @@ from commission.models import (
     UserCommissionDetails,
     BasicRecord ,
     Commission ,
+    Subscription ,
+    Additional
 )
 from users.serializers import UserSerializer , DepartmentSerializer
 
@@ -45,6 +47,7 @@ class TargetSliceSerializer(ModelSerializer):
         model = TargetSlice
         fields = [
             "uuid",
+            "name",
             "min_value",
             "max_value",
             "money",
@@ -55,9 +58,9 @@ class TargetSliceSerializer(ModelSerializer):
 
 
 class TeamSerializer(ModelSerializer):
-    commission_rules = TargetSliceSerializer(many=True)
-    leader = UserSerializer()
-    agents = UserSerializer(many=True)
+    commission_rules = TargetSliceSerializer(many=True , read_only=True)
+    leader = UserSerializer(read_only=True)
+    agents = UserSerializer(many=True , read_only=True)
     class Meta:
         model = Team
         fields = [
@@ -67,6 +70,14 @@ class TeamSerializer(ModelSerializer):
             "agents",
             "commission_rules",
         ]
+        many_to_many_models = {
+            "commission_rules": ManyToManyField("commission_rules",TargetSlice,'uuid') ,
+            "agents": ManyToManyField("agents",User,'uuid') ,
+        }
+        foreign_models = {
+            "leader": ForeignField("leader",User,'uuid') ,
+        }
+
 
 class UserCommissionDetailsSerializer(ModelSerializer):
     deduction_rules = DeductionRulesSerializer(many=True, read_only=True)
@@ -89,6 +100,7 @@ class UserCommissionDetailsSerializer(ModelSerializer):
             "deduction_rules": ManyToManyField("deduction_rules",DeductionRules,'uuid') ,
             "commission_rules": ManyToManyField("commission_rules",TargetSlice,'uuid') ,
         }
+        
 
 
 class BasicRecordSerializer(ModelSerializer):
@@ -106,7 +118,7 @@ class BasicRecordSerializer(ModelSerializer):
             "basic",
         ]
         foreign_models = {
-            "user_commission_details": ForeignField("user_commission_details",UserCommissionDetails,'uuid') ,
+            "user": ForeignField("user",User,'uuid') ,
         }
 
 
@@ -114,17 +126,47 @@ class BasicRecordSerializer(ModelSerializer):
 
 class CommissionSerializer(ModelSerializer):
     basic = BasicRecordSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
     class Meta :
         model = Commission
         fields = [
             "uuid",
+            "user",
             "basic",
-            "commission_team",
             "target",
-            "gift",
-            "commission",
-            "date",
+            "target_Team" ,
+            "plus" ,
+            "american" ,
+            "american_count" ,
+            "subscriptions" ,
+            "subscriptions_count",
+            "deduction" ,
+            "gift" ,
+            "salary" ,
+            "date" ,
         ]
         foreign_models = {
+            "user": ForeignField("user",User,'uuid') ,
             "basic": ForeignField("basic",BasicRecord,'uuid') ,
         }
+        
+        
+        
+class SubscriptionSerializer(ModelSerializer):
+    class Meta :
+        model = Subscription
+        fields = [
+            "uuid",
+            "count",
+            "value",
+        ]
+        
+        
+class AdditionalSerializer(ModelSerializer):
+    class Meta :
+        model = Additional
+        fields = [
+            "uuid",
+            "plus",
+            "american_leads",
+        ]

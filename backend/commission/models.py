@@ -10,12 +10,14 @@ from treasury.models import TreasuryOutcome
 
 
 class TargetSlice(BaseModel):
+    name = models.CharField(verbose_name="Name", max_length=150)
     min_value = models.PositiveIntegerField(verbose_name="Min Value")
     max_value = models.PositiveIntegerField(verbose_name="Max Value" )
     money = models.CharField(verbose_name="Commission", max_length=100)
     is_money_percentage = models.BooleanField(verbose_name="Set Commession as Percentage")
     is_global = models.BooleanField(verbose_name="Set Global Rule")
-    department = models.ForeignKey(Department, verbose_name="", on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, verbose_name="Department", on_delete=models.CASCADE)
+    
     class Meta:
         verbose_name = "Target Slice"
         verbose_name_plural = "Target Slices"
@@ -54,9 +56,9 @@ class UserCommissionDetails(BaseModel):
     user = models.OneToOneField(User,verbose_name="User" , on_delete=models.CASCADE)
     basic = models.PositiveIntegerField(verbose_name="Basic Salary"  , default= 0)
     set_deduction_rules = models.BooleanField(verbose_name="Set Deduction Rules" , default=True)
-    deduction_rules = models.ManyToManyField(DeductionRules,verbose_name="Deduction Rules" , blank=True )
+    deduction_rules = models.ManyToManyField(DeductionRules,verbose_name="Deduction Rules" , blank=True , limit_choices_to={"is_global":False})
     set_global_commission_rules = models.BooleanField(verbose_name="Set Global Rule" , default=True)
-    commission_rules = models.ManyToManyField(TargetSlice,verbose_name="Commission Target Slices" , blank=True)
+    commission_rules = models.ManyToManyField(TargetSlice,verbose_name="Commission Target Slices" , blank=True , limit_choices_to={"is_global":False})
     will_arrive_at = models.TimeField(verbose_name="Must Arrive At",default=datetime.time(9,0,0))
     will_leave_at = models.TimeField(verbose_name="Must Leave At",default=datetime.time(17,0,0))
 
@@ -113,24 +115,36 @@ class BasicRecord(BaseModel):
 
 
 class Commission(BaseModel):
-    basic = models.ForeignKey(BasicRecord, verbose_name="Basic", on_delete=models.SET_NULL , null=True)
-    commission_team = models.IntegerField(verbose_name="Commission From Team" , default=0)
+    user = models.ForeignKey(User, verbose_name="User", on_delete=models.SET_NULL , null=True)
+    basic = models.ForeignKey(BasicRecord,verbose_name="Basic" , on_delete=models.SET_NULL , null=True)
     target = models.FloatField(verbose_name="Target" , default=0 )
+    target_Team = models.FloatField(verbose_name="Target Team" , default=0)
+    plus = models.FloatField(verbose_name="Plus +2" , default=0)
+    american = models.FloatField(verbose_name="American Leads" , default=0)
+    american_count = models.IntegerField(verbose_name="American Leads Count" , default=0)
+    subscriptions = models.FloatField(verbose_name="Subscriptions" , default=0)
+    subscriptions_count = models.IntegerField(verbose_name="Subscriptions Count" , default=0)
+    deduction = models.FloatField(verbose_name="Deduction" , default=0)
     gift = models.FloatField(verbose_name="Gift" , default=0)
-    commission = models.FloatField(verbose_name="Commission" , default=0)
-    date  = models.DateField(verbose_name="Date" , default=now )
+    salary = models.FloatField(verbose_name="Total of Salary" , default=0)
+    date  = models.DateField(verbose_name="Date" , default=now().date() )
 
     def __str__(self):
         return self.date.strftime("%Y/%m")
 
-    def total_salary(self):
-        return self.commission + self.basic.basic  
-
-    def get_username(self):
-        return self.basic.user_commission_details.user.username
-
     class Meta:
-        unique_together = ["date","basic"]
+        unique_together = ["date","user"]
+        
+        
+
+class Subscription(BaseModel):
+    count = models.IntegerField(verbose_name="Subscriptions Count",unique=True)
+    value = models.IntegerField(verbose_name="Money" )
+
+
+class Additional(BaseModel):
+    plus = models.IntegerField(verbose_name="Plus +2 Price")
+    american_leads = models.IntegerField(verbose_name="American Leads Price" )
 
 
 def create_user_commission_details(sender, instance:User, created ,**kwargs):
@@ -159,6 +173,23 @@ def create_Outcome_record(sender, instance:BasicRecord, created ,**kwargs):
         details.amount = instance.basic
         details.details = f"Basic Record {instance.user} Amount {int(instance.basic)}"
         details.save()
+        
+
+def create_Outcome_record_salary(sender, instance:Commission, created ,**kwargs):
+    if created :
+        details = TreasuryOutcome.objects.create(
+            amount = instance.salary ,
+            from_salary =  instance ,
+            details = f"Salary {instance.user} Amount {int(instance.salary)}"
+        )
+        details.save()
+    else :
+        details = TreasuryOutcome.objects.get(
+            from_salary =  instance ,
+        )
+        details.amount = instance.salary
+        details.details = f"Salery {instance.user} Amount {int(instance.salary)}"
+        details.save()
 
 
 
@@ -172,4 +203,5 @@ pre_save.connect(create_update_history, sender=CoinChanger)
 pre_save.connect(create_update_history, sender=BasicRecord)
 pre_save.connect(create_update_history, sender=Commission)
 post_save.connect(create_user_commission_details,sender=User)
-post_save.connect(create_Outcome_record,sender=BasicRecord)
+# post_save.connect(create_Outcome_record,sender=BasicRecord)
+post_save.connect(create_Outcome_record_salary,sender=Commission)

@@ -6,7 +6,9 @@ from .models import (
     TargetSlice , 
     UserCommissionDetails , 
     BasicRecord,
-    Commission
+    Commission , 
+    Subscription ,
+    Additional,
     )
 from utils.admin_utils import FieldSets
 
@@ -36,15 +38,16 @@ class DedactionRulesAdminSite(admin.ModelAdmin):
 
 
 class TargetSliceAdminSite(admin.ModelAdmin):
-    list_display = ["min_value","max_value", "money" , "is_global" , 'is_money_percentage' , 'department']
+    list_display = ["name","min_value","max_value", "money" , "is_global" , 'is_money_percentage' , 'department']
     list_filter = ["is_global" , "department" , "is_money_percentage"]
     readonly_fields = ['uuid',"created_at","updated_at"]
-    search_fields = ['min_value', 'max_value' , "money"]  + ['uuid',"created_at","updated_at"]
+    search_fields = ['min_value', 'max_value' , "money"] + ["name"] + ['uuid',"created_at","updated_at"]
     fieldsets = FieldSets([
             'TargetSlice Fields' ,
             'Other Fields'
         ],[
             [
+                "name",
                 'min_value',
                 'max_value',
                 'money',
@@ -151,21 +154,64 @@ class BasicRecordAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 class CommissionAdminSite(admin.ModelAdmin):
-    list_display = ["uuid","date","commission","basic"]
+    list_display = ["user","date","basic","salary"]
     list_filter = ["date"]
     readonly_fields = ['uuid',"created_at","updated_at"]
-    search_fields = ['basic',"date","commission"]  + ['uuid',"created_at","updated_at"]
+    search_fields = ['basic',"date","salary","user"]  + ['uuid',"created_at","updated_at"]
     fieldsets = FieldSets([
             'Commission Fields' ,
             'Other Fields'
         ],[
             [
+                "user",
                 "basic",
-                "commission_team",
                 "target",
-                "gift",
-                "commission",
-                "date",
+                "target_Team" ,
+                "plus" ,
+                "american" ,
+                "american_count" ,
+                "subscriptions" ,
+                "subscriptions_count",
+                "deduction" ,
+                "gift" ,
+                "salary" ,
+                "date" ,
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at",
+            ]
+    ]).fieldsets
+    
+    
+class SubscriptionAdminSite(admin.ModelAdmin):
+    list_display = ["count","value"]
+    readonly_fields = ['uuid',"created_at","updated_at"]
+    fieldsets = FieldSets([
+            'Subscription Fields' ,
+            'Other Fields'
+        ],[
+            [
+                "count",
+                "value",
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at",
+            ]
+    ]).fieldsets
+    
+    
+class AdditionalAdminSite(admin.ModelAdmin):
+    list_display = ["plus","american_leads"]
+    readonly_fields = ['uuid',"created_at","updated_at"]
+    fieldsets = FieldSets([
+            'Subscription Fields' ,
+            'Other Fields'
+        ],[
+            [
+                "plus",
+                "american_leads",
             ],[
                 "uuid" ,
                 "created_at",
@@ -181,3 +227,5 @@ admin.site.register(TargetSlice , TargetSliceAdminSite)
 admin.site.register(UserCommissionDetails , UserCommissionDetailsAdminSite)
 admin.site.register(BasicRecord , BasicRecordAdminSite)
 admin.site.register(Commission , CommissionAdminSite)
+admin.site.register(Subscription , SubscriptionAdminSite)
+admin.site.register(Additional , AdditionalAdminSite)
