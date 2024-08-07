@@ -1,19 +1,26 @@
-import type { FC } from 'react';
+import type { FC, SetStateAction } from 'react';
 import Container from '../../layouts/Container/Container';
 import { useAuth } from '../../hooks/auth';
 import SelectComponent from '../SelectComponent/SelectComponent';
-import { User } from '../../types/auth';
+import { Department, User } from '../../types/auth';
 import { parseFormData } from '../../utils/converter';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
+import React, { useContext, useState } from 'react';
+import { LanguageContext } from '../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../utils/constants';
 
-interface NotificationsFormProps {}
+interface NotificationsFormProps {
+    setRefresh:React.Dispatch<SetStateAction<boolean>>;
+}
 
-const NotificationsForm: FC<NotificationsFormProps> = () => {
+const NotificationsForm: FC<NotificationsFormProps> = ({setRefresh}) => {
     const {auth} = useAuth()
+    const {lang} = useContext(LanguageContext)
+    const [search , setSearch] = useState("")
     return (
     <Container className='relative w-[500px] h-fit'>
-        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>Add Notifications</h1>
+        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.Notification.form.title[lang]}</h1>
         <form action="" className='grid grid-cols-3 gap-4 my-5' onSubmit={e=>{
             e.preventDefault();
             // TODO: send request to save lead
@@ -36,7 +43,7 @@ const NotificationsForm: FC<NotificationsFormProps> = () => {
                 Swal.fire({
                     position: "center",
                     icon: "success",
-                    title: "Successfully Created Lead",
+                    title: "Successfully Created Notification",
                     showConfirmButton: false,
                     timer: 1000
                   })
@@ -44,39 +51,60 @@ const NotificationsForm: FC<NotificationsFormProps> = () => {
             .catch((error)=>{
                 Swal.fire({
                     icon: "error",
-                    title: "Failed to Add Lead",
+                    title: "Failed to Add Notification",
                     showConfirmButton: false,
                     timer: 1000
                   })
-    
+
             })
-            .finally()
+            .finally(()=>{
+                setRefresh(prev=>!prev)
+            })
             }}>
             <input type="hidden" name="creator" value={auth.uuid} />
             {/* Notification Fields */}
 
-            <label htmlFor="message">Message </label>
-            <textarea dir='rtl' name="message" id="message" className='col-span-2 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'></textarea>
-
+            <label htmlFor="message" className='place-self-center'>{TRANSLATIONS.Notification.form.message[lang]} </label>
+            <textarea required dir='rtl' name="message" id="message" className='col-span-2 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'></textarea>
+            
+            <SelectComponent<Department>
+                    name=""
+                    LabelName={TRANSLATIONS.AddUser.form.department[lang]}
+                    url="api/users/department"
+                    LabelClassName="col-span-1 place-self-center"
+                    selectClassName="col-span-2 w-full rounded-lg overflow-auto"
+                    config={{
+                        value: "uuid",
+                        label: "name",
+                    }}
+                    moreOptions={[{
+                        label:"All",
+                        value:""
+                    }]}
+                    required={true}
+                    setSelection={setSearch}
+                />
 
             <SelectComponent<User>
                     name="for_users"
-                    LabelName="Send To"
+                    LabelName={TRANSLATIONS.Notification.form.sendto[lang]}
                     url="api/users/user"
                     multiple={true}
-                    LabelClassName="col-span-1"
+                    LabelClassName="col-span-1 place-self-center"
                     selectClassName="col-span-2 w-full rounded-lg overflow-auto"
                     config={{
                         value: "uuid",
                         label: "username",
                         
                     }}
+                    params={search ? {department__uuid:search} : undefined}
+                    required={true}
                 />
 
-            <label htmlFor="message">DeadLine </label>
-            <input type="datetime-local" name="deadline" id="deadline"  className='col-span-2 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+            <label htmlFor="message" className='place-self-center'>{TRANSLATIONS.Notification.form.deadline[lang]} </label>
+            <input required type="datetime-local" name="deadline" id="deadline"  className='col-span-2 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
 
-            <button type="submit" className="bg-btns-colors-primary col-span-3 h-[35px] w-2/3 place-self-center rounded-lg">Send</button>
+            <button type="submit" className="bg-btns-colors-primary col-span-3 h-[35px] w-2/3 place-self-center rounded-lg">{TRANSLATIONS.Notification.form.send[lang]}</button>
 
 
         </form>

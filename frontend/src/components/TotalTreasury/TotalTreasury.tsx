@@ -1,9 +1,10 @@
-import { useEffect, useState, type FC } from 'react';
+import { useContext, useEffect, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import { sendRequest } from '../../calls/base';
 import {FaArrowCircleDown , FaArrowCircleUp} from 'react-icons/fa';
-import { numbersOptions } from '../../utils/constants';
+import { numbersOptions, TRANSLATIONS } from '../../utils/constants';
+import { LanguageContext } from '../../contexts/LanguageContext';
 
 interface TotalTreasuryProps {
     refresh: boolean;
@@ -18,6 +19,7 @@ interface TotalResponse{
 
 const TotalTreasury: FC<TotalTreasuryProps> = ({refresh , setRefresh}) => {
     const [loading , setLoading] = useState(false)
+    const {lang} = useContext(LanguageContext)
     const [totalInfo , setTotalInfo] = useState<TotalResponse>({total:0 , income:0 , outcome:0 })
     useEffect(()=>{
         setLoading(true)
@@ -35,7 +37,7 @@ const TotalTreasury: FC<TotalTreasuryProps> = ({refresh , setRefresh}) => {
             {
                 loading ? <LoadingComponent/> : <></>
             }
-            <span className={`text-4xl md:text-5xl ${totalInfo?.total > 0 ? 'text-btns-colors-primary' : 'text-btns-colors-secondry'}`}>Total Treasury</span>
+            <span className={`text-4xl md:text-5xl ${totalInfo?.total > 0 ? 'text-btns-colors-primary' : 'text-btns-colors-secondry'}`}>{TRANSLATIONS.Treasury.total[lang]}</span>
             <span className="text-4xl md:text-7xl">
                 {totalInfo?.total?.toLocaleString("en-UK",numbersOptions )}
             </span>

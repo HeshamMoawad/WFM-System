@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState, type FC } from "react";
+import React, { SetStateAction, useContext, useState, type FC } from "react";
 import Container from "../../layouts/Container/Container";
 import Table from "../Table/Table";
 import { convertObjectToArrays, getFullURL } from "../../utils/converter";
@@ -10,6 +10,9 @@ import { FiRefreshCw } from "react-icons/fi";
 import { sendRequest } from "../../calls/base";
 import Swal from "sweetalert2";
 import Pagination from "../Pageination/Pageination";
+import { LanguageContext } from "../../contexts/LanguageContext";
+import { TRANSLATIONS } from "../../utils/constants";
+import { Status } from "../../types/base";
 
 interface RequestTableProps {
     className?: string;
@@ -22,16 +25,30 @@ const RequestTable: FC<RequestTableProps> = ({
     refresh,
     setRefresh,
 }) => {
-    const { auth } = useAuth();
+
     const [currentPage,setCurrentPage] = useState(1);
+    const {lang}= useContext(LanguageContext)
+    const { auth } = useAuth();
+
+    const additionalFilter = ()=>{
+        let result = {page:currentPage}
+        if (auth.role === "OWNER" || auth.is_superuser || auth.role === "HR") {
+            return result
+        }
+        if (auth.role === "MANAGER") {
+            return {...result , user__department__name:auth.department.name}
+        }
+        if (auth.role === "AGENT"){
+            return {user__uuid:auth.uuid}
+        }
+        return result
+    }
+
     const { data, loading } = useRequest<RequestType>(
         {
             url: "api/users/request",
             method: "GET",
-            params:
-                auth.role === "OWNER" || auth.role === "MANAGER"
-                    ? {page:currentPage}
-                    : { user__uuid: auth.uuid , page:currentPage },
+            params:additionalFilter()
         },
         [refresh , currentPage]
     );
@@ -41,7 +58,7 @@ const RequestTable: FC<RequestTableProps> = ({
 
             <div className="flex flex-row justify-between items-center">
                 <label className="text-2xl text-btns-colors-primary">
-                    Request Table
+                    {TRANSLATIONS.Requests.title[lang]}
                 </label>
                 <button
                     onClick={(e) => setRefresh({ data: {} })}
@@ -55,15 +72,7 @@ const RequestTable: FC<RequestTableProps> = ({
                     <Table
                         className="mb-5"
                         key={Math.random()}
-                        headers={[
-                            "username",
-                            "type",
-                            "status",
-                            "details",
-                            "date",
-                            "note",
-                            "created_at",
-                        ]}
+                        headers={TRANSLATIONS.Requests.table.headers[lang]}
                         data={convertObjectToArrays<RequestType>(data.results, [
                             // {
                             //     key:"user",
@@ -79,30 +88,33 @@ const RequestTable: FC<RequestTableProps> = ({
                                 key: "user",
                                 method: (_) => {
                                     const item = _ as any;
-                                    return item ? item.username : "-";
+                                    return item ? item?.username : "-";
                                 },
                             },
                             {
                                 key: "type",
-                                method: null,
+                                method: (type_)=>{
+                                    return TRANSLATIONS.Request.Types.filter((d)=>d.value === type_)[0].translate[lang]
+                                },
                             },
                             {
                                 key: "status",
                                 method: (_) => {
+                                    const status : Status = _ as any
                                     return (
                                         <td
                                             key={Math.random()}
                                             className={`px-3 py-1 ${
-                                                _ === "PENDING"
+                                                status === "PENDING"
                                                     ? "text-[rgb(234,179,8)]"
-                                                    : _ === "REJECTED"
+                                                    : status === "REJECTED"
                                                     ? "text-[red]"
-                                                    : _ === "ACCEPTED"
+                                                    : status === "ACCEPTED"
                                                     ? "text-[green]"
                                                     : ""
                                             }`}
                                         >
-                                            {_}
+                                            {TRANSLATIONS.Request.Status[status][lang]}
                                         </td>
                                     );
                                 },
@@ -132,6 +144,8 @@ const RequestTable: FC<RequestTableProps> = ({
                             },{
                                 key: "uuid",
                                 method: (uuid) => {
+                                    if (auth.role !== "AGENT"){
+
                                     return (
                                         <td
                                             key={Math.random()}
@@ -178,13 +192,16 @@ const RequestTable: FC<RequestTableProps> = ({
                                             </button>
                                         </td>
                                     );
-                                },
+                                }else {
+                                    return null;
+                                }
+                            },
                             },
                         ])}
                     />
                     <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} page={data} />
                     <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                        <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                        <label htmlFor="" className='text-center'>{TRANSLATIONS.Requests.bottom.total[lang]} : {data?.total_count}</label>
                     </div>
 
                 </>

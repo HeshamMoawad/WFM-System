@@ -1,9 +1,11 @@
-import type { EventHandler, FC, SetStateAction } from 'react';
+import { useContext, type EventHandler, type FC, type SetStateAction } from 'react';
 import { RequestType } from '../../types/auth';
 import { getFullURL } from '../../utils/converter';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
 import { error } from 'console';
+import { TRANSLATIONS } from '../../utils/constants';
+import { LanguageContext } from '../../contexts/LanguageContext';
 
 interface RequestCardProps {
     request:RequestType;
@@ -14,6 +16,7 @@ interface RequestCardProps {
 
 const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => {
     const created_at = new Date(request.created_at)
+    const {lang} = useContext(LanguageContext)
     // const updated_at = request.created_at === request.updated_at ? null : new Date(request.updated_at)
     const onAccept = (e:React.MouseEvent<HTMLButtonElement>)=>{
         e.preventDefault();
@@ -80,7 +83,15 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
             }
         })
         }
-    
+    // let type = ""
+    // for (let index = 0; index < TRANSLATIONS.Request.Types.length; index++) {
+    //     const element = TRANSLATIONS.Request.Types[index];
+    //     if(element.value === request.type){
+    //         type = element.translate[lang];
+    //         break;
+    //     }
+        
+    // }
     return (
         <div className='flex flex-row w-[100%] md:w-full h-fit gap-1 md:gap-6 items-center border-b p-2 rounded-lg shadow-lg md:m-1' id='card'>
                  
@@ -93,7 +104,7 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
                     <button onClick={onReject} className='rounded-md bg-btns-colors-secondry w-1/3 md:w-1/5 h-[35px]'> Reject </button>
                 </div>
                 <div className='flex flex-col md:flex-row justify-between w-full opacity-45 text-sm md:text-base'>
-                    <span className='block'>Type : {request.type}</span>
+                    <span className='block'>Type : {TRANSLATIONS.Request.Types.filter((d)=>d.value === request.type)[0].translate[lang]}</span>
                     <span className='block'>Created : {created_at.toLocaleDateString("en-UK",{dateStyle:"medium"})} {created_at.toLocaleTimeString("en-UK",{hour12:true ,hour:"2-digit",minute:"2-digit"})}</span>
                     {/* <span className='block'>Updated : {
                         updated_at  ? `${updated_at.toLocaleDateString("en-UK",{dateStyle:"medium"})} ${updated_at.toLocaleTimeString("en-UK",{hour12:true ,hour:"2-digit",minute:"2-digit"})}` : " - "

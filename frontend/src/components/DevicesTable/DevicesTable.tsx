@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import { useContext, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import Table from '../Table/Table';
 import useRequest from '../../hooks/calls';
@@ -8,6 +8,9 @@ import { convertObjectToArrays } from '../../utils/converter';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
 import Pagination from '../Pageination/Pageination';
+import { useAuth } from '../../hooks/auth';
+import { LanguageContext } from '../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../utils/constants';
 
 interface DevicesTableProps {
     refresh:number,
@@ -15,12 +18,17 @@ interface DevicesTableProps {
 }
 
 const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
+    const {lang} = useContext(LanguageContext)
     const [currentPage,setCurrentPage] = useState(1)
+    const {auth} = useAuth()
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {user__department__name : auth.department.name}
     const {data , loading } = useRequest<DeviceAccessDetails>({
         url: 'api/users/device-access' ,
         method: 'GET',
         params: {
-            page:currentPage
+            page:currentPage ,
+            ...additionalFilter
+
         }
     },[refresh,currentPage])
 
@@ -34,13 +42,13 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
                 (<>
                 <Table
                     className='mb-2'
-                    headers={["username","name","device-id" , ""]}
+                    headers={TRANSLATIONS.DeviceAccess.table.headers[lang]}
                     data={convertObjectToArrays(data?.results,[
                         {
                             key:"user",
                             method : (_)=>{
                                 const item = _ as any; 
-                                return item.username
+                                return item?.username
                             }
                         },
                         {
@@ -83,7 +91,7 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
                                                                 })
                                                             })
                                                                                     
-                                        }} className='rounded-md bg-btns-colors-secondry w-2/3'>
+                                        }} className='rounded-md bg-btns-colors-secondry min-w-[70px] md:w-2/3'>
                                                 Delete
                                             </button>
                                     </td>
@@ -95,7 +103,7 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
                 />
                 <Pagination  currentPage={currentPage} setCurrentPage={setCurrentPage} page={data}/>
                 <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                    <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                    <label htmlFor="" className='text-center'>Total : {data?.total_count}</label>
                 </div>
 
                 </>):<></>

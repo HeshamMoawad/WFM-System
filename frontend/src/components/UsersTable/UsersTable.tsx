@@ -1,4 +1,4 @@
-import  {type FC , useState, useEffect} from 'react';
+import  {type FC , useState, useEffect, useContext} from 'react';
 import Container from '../../layouts/Container/Container';
 import useRequest from '../../hooks/calls';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
@@ -12,13 +12,18 @@ import TableFilters from './TableFilters/TableFilters';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/auth';
+import { LanguageContext } from '../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../utils/constants';
 
 
 
 interface UsersTableProps {}
 
 const UsersTable: FC<UsersTableProps> = () => {
+    const {lang} = useContext(LanguageContext)
     const [filters,setFilters] = useState<object>({})
+    const {auth} = useAuth()
     const deleteUser = (uuid:string)=>{
         sendRequest({url:"api/users/user",method:"DELETE",params:{uuid}})
             .then(data=>{
@@ -40,38 +45,38 @@ const UsersTable: FC<UsersTableProps> = () => {
             })
 
     }
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
     const {data , loading } = useRequest<User>({
         url: 'api/users/user' ,
         method: 'GET',
-        params: filters
+        params: {...filters , ...additionalFilter , is_superuser:"False" }
     },[filters])
     useEffect(()=>{
         console.log(filters)
     },[filters])
 
     return (
-    <Container className='w-fit md:w-screen h-fit min-h-[300px] relative flex flex-col gap-3 justify-center items-center'>
-        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>Users</h1>
+    <Container className='w-fit md:w-screen h-fit min-h-[300px] relative gap-3 justify-center items-center'>
+        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.UsersList.title[lang]}</h1>
         <TableFilters setFilters={setFilters}/>
         {
             loading? <LoadingComponent/> : <></>
         }
-
         {
             data ? (
                 <>
                 <Table
                     className='mb-2'
-                    headers={["picture","username","password","is active","role","title","department","project","Phone",""]}
+                    headers={TRANSLATIONS.UsersList.headers[lang]}
                     data={convertObjectToArrays(data?.results,[
                         {
                             key:"profile",
                             method : (_)=>{
                                 const item = _ as any; 
                                 return (
-                                    item.picture ? 
+                                    item?.picture ? 
                                         <td key={Math.random()} className='flex justify-center items-center px-3 py-1'>
-                                            <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/>
+                                            <img src={getFullURL(item?.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/>
                                         </td>
                                         : 
                                         <td key={Math.random()} className='text-center w-[40px] h-[40px] px-3 py-1'>
@@ -85,10 +90,13 @@ const UsersTable: FC<UsersTableProps> = () => {
                             key:"username",
                             method:null
                         },{
-                            key:["_password" , "is_superuser" , "role"],
+                            key:"crm_username",
+                            method:null
+                        },{
+                            key:["password_normal" , "is_superuser" , "role"],
                             method:(_)=>{
-                                const { _password , is_superuser , role} = _ as any;
-                                return !(is_superuser || role === "OWNER") ? <PwdComponent content={_password}/> : <td className={``} ></td>
+                                const { password_normal , is_superuser = false , role = "AGENT"} = _ as any;
+                                return !(is_superuser || role === "OWNER" || role === "MANAGER") ? <PwdComponent content={password_normal}/> : <td className={``} ></td>
                             }
                         },{
                             key:"is_active",
@@ -108,27 +116,27 @@ const UsersTable: FC<UsersTableProps> = () => {
                             key:"department",
                             method:(item)=>{
                                 const depart = item as any; 
-                                return depart.name
+                                return depart?.name
                             }
                         },{
                             key:"project",
                             method:(item)=>{
                                 const project = item as any; 
-                                return project.name
+                                return project?.name
                             }
                         },{
                             key:"profile",
                             method:(item)=>{
                                 const profile = item as any; 
-                                return profile.phone ? profile.phone :"-"
+                                return profile?.phone ? profile?.phone :"-"
                             }
                         },{
                             key:["uuid" , "is_superuser" , "role"],
                             method : (args)=>{
-                                const {uuid,is_superuser,role} = args as any;
+                                const {uuid,is_superuser=false,role = "AGENT"} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            {!(is_superuser || role === "OWNER") ? (
+                                            {!(is_superuser || role === "OWNER" || role === "MANAGER") ? (
                                                 <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
                                                     <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
                                                 </Link>
@@ -140,11 +148,11 @@ const UsersTable: FC<UsersTableProps> = () => {
                         },{
                             key:["uuid" , "is_superuser" , "role"],
                             method : (args)=>{
-                                const {uuid,is_superuser,role} = args as any;
+                                const {uuid,is_superuser=false,role = "AGENT"} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
                                         {
-                                            !(is_superuser || role === "OWNER") ? (
+                                            !(is_superuser || role === "OWNER" || role === "MANAGER") ? (
                                                 <a onClick={(e)=>{
                                                         e.preventDefault();
                                                         Swal.fire({

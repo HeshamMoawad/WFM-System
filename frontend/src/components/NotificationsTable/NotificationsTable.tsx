@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import { SetStateAction, useContext, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import useRequest from '../../hooks/calls';
 import { NotificationType } from '../../types/auth';
@@ -8,25 +8,32 @@ import { convertObjectToArrays } from '../../utils/converter';
 import Pagination from '../Pageination/Pageination';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
+import { LanguageContext } from '../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../utils/constants';
 
-interface NotificationsTableProps {}
+interface NotificationsTableProps {
+    setRefresh:React.Dispatch<SetStateAction<boolean>>;
+    refresh:boolean
+}
 
-const NotificationsTable: FC<NotificationsTableProps> = () => {
+const NotificationsTable: FC<NotificationsTableProps> = ({setRefresh , refresh }) => {
+    const {lang} = useContext(LanguageContext)
     const [currentPage,setCurrentPage] = useState(1)
-    const {data , loading} = useRequest<NotificationType>({url:"api/treasury/notifications",method:"GET",params:{page:currentPage}},[currentPage])
+    const {data , loading} = useRequest<NotificationType>(
+        {url:"api/treasury/notifications",method:"GET",params:{page:currentPage}},[currentPage,refresh])
 
     return (
     <Container className='relative w-5/6 h-fit'>
         {
             loading ? <LoadingComponent /> : <></>
         }
-        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>Notifications Table</h1>
+        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.Notification.table.title[lang]}</h1>
 
         {
             data?(
                 <>
                 <Table 
-                    headers={["creator","message","seen count","deadline",""]}
+                    headers={TRANSLATIONS.Notification.table.headers[lang]}
                     data={convertObjectToArrays(data?.results,[
                         {
                             key:"creator",
@@ -40,7 +47,7 @@ const NotificationsTable: FC<NotificationsTableProps> = () => {
                         },
                         {
                             key: "seen_by_users",
-                            method: (_) => (_ as Array<string>).length ? (_ as Array<string>).length : "0",
+                            method: (_) => (_ as Array<string>)?.length ? (_ as Array<string>)?.length : "0",
                         },
                         {
                             key:"deadline",
@@ -87,8 +94,12 @@ const NotificationsTable: FC<NotificationsTableProps> = () => {
                                                             showConfirmButton:
                                                                 false,
                                                             timer: 1000,
-                                                        });
-                                                    });
+                                                        })
+                                                    })
+                                                    .finally(()=>{
+                                                        setRefresh(prev=>!prev)
+                                                    })
+
                                             }}
                                             className="rounded-md bg-btns-colors-secondry w-2/3"
                                         >
@@ -102,7 +113,7 @@ const NotificationsTable: FC<NotificationsTableProps> = () => {
                 />
                 <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} page={data} />
                 <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                    <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                    <label htmlFor="" className='text-center'>Total : {data?.total_count}</label>
                 </div>
 
                 </>

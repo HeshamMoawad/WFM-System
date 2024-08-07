@@ -1,20 +1,26 @@
-import { SetStateAction, useState, type FC } from 'react';
+import { SetStateAction, useContext, useState, type FC } from 'react';
 import SelectComponent from '../../SelectComponent/SelectComponent';
 import { FaFilterCircleXmark } from "react-icons/fa6";
 import { Filters } from '../../../types/auth';
+import { LanguageContext } from '../../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../../utils/constants';
 
 interface TableFiltersProps {
     setFilters:React.Dispatch<SetStateAction<Filters>>;
 }
 
 const TableFilters: FC<TableFiltersProps> = ({setFilters}) => {
+    const {lang} = useContext(LanguageContext)
     const [refresh , setRefresh] = useState<boolean>(false)
     return (
-    <div className='flex flex-row w-2/3 gap-3 justify-evenly'>
-        <div className='w-full flex justify-evenly items-center'>
+    <div className='flex flex-row w-[1000px] md:w-full gap-3 justify-evenly md:px-16'>
+        <div className='w-full flex justify-evenly gap-3 items-center'>
+            <input type="text" className='' placeholder='Search' onChange={e=>{
+                setFilters(prev => ({...prev, username__contains: e.target.value}))
+            }} />
             <SelectComponent 
                 url='api/users/department'
-                LabelName='Department'
+                LabelName={TRANSLATIONS.UsersList.filters.department[lang]}
                 config={{label: 'name' , value: 'uuid'}}
                 name='user'
                 setSelection={(department__uuid:string)=>{
@@ -35,10 +41,10 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters}) => {
         </div>
 
 
-        <div className='w-full flex justify-evenly items-center'>
+        <div className='w-full flex justify-evenly gap-3 items-center'>
             <SelectComponent 
                 url='api/users/project'
-                LabelName='Project'
+                LabelName={TRANSLATIONS.UsersList.filters.project[lang]}
                 config={{label: 'name' , value: 'uuid'}}
                 name='project'
                 setSelection={(project__uuid:string)=>{
@@ -56,10 +62,10 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters}) => {
                 />
         </div>
 
-        <div className='w-full flex justify-evenly items-center'>
+        <div className='w-full flex justify-evenly gap-3 items-center'>
         <SelectComponent 
             url='api/users/role'
-            LabelName='Role'
+            LabelName={TRANSLATIONS.UsersList.filters.role[lang]}
             config={{label: 'name' , value: 'uuid'}}
             name='role'
             moreOptions={[

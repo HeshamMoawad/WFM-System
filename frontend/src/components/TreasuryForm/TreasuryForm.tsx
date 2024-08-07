@@ -1,4 +1,4 @@
-import React, { SetStateAction, useRef, useState, type EventHandler, type FC, type FormEventHandler } from 'react';
+import React, { SetStateAction, useContext, useRef, useState, type EventHandler, type FC, type FormEventHandler } from 'react';
 import Container from '../../layouts/Container/Container';
 // import SelectComponent from '../SelectComponent/SelectComponent';
 import { DEFAULT_INPUT_STYLE } from '../../utils/styles';
@@ -6,6 +6,8 @@ import { sendRequest } from '../../calls/base';
 import { parseFormData } from '../../utils/converter';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import Swal from 'sweetalert2';
+import { TRANSLATIONS } from '../../utils/constants';
+import { LanguageContext } from '../../contexts/LanguageContext';
 
 interface TreasuryFormProps {
     creator_uuid: string;
@@ -18,6 +20,7 @@ interface TreasuryFormProps {
 
 
 const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header , setRefresh}) => {
+    const {lang} = useContext(LanguageContext)
     const [loading,setLoading] = useState<boolean>(false)
     const formRef = useRef<HTMLFormElement>(null);
     const onSubmit:FormEventHandler<HTMLFormElement> = (e) => {
@@ -61,14 +64,14 @@ const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header 
         <form ref={formRef} action="" method="post" className='grid grid-cols-5 space-y-4 mb-4' onSubmit={onSubmit}>
             <input type="hidden" name="creator" value={creator_uuid} readOnly/>
 
-            <label className='col-span-1' htmlFor="details">Details</label>
+            <label className='col-span-1 place-self-center' htmlFor="details">{TRANSLATIONS.Treasury.inform.details[lang]}</label>
             <textarea className={`col-span-4 ${DEFAULT_INPUT_STYLE}`} name="details" id="details" minLength={3} required/>
 
 
-            <label className= 'col-span-1' htmlFor="amount">Amount</label>
+            <label className= 'col-span-1 place-self-center' htmlFor="amount">{TRANSLATIONS.Treasury.inform.amount[lang]}</label>
             <input className={`col-span-2 ${DEFAULT_INPUT_STYLE}`} inputMode='numeric' min={10} type="number" name="amount" id="amount" required/>
 
-            <button type='submit' className={`bg-${color} rounded-xl w-3/6 h-9 justify-self-center col-span-5 font-bold`}>Submit</button>
+            <button type='submit' className={`bg-${color} rounded-xl w-3/6 h-9 justify-self-center col-span-5 font-bold`}>{TRANSLATIONS.Treasury.inform.submit[lang]}</button>
 
         </form>
     </Container>

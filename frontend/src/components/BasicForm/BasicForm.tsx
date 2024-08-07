@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import { useContext, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import { parseDateFromParams, parseFormData } from '../../utils/converter';
 import { BasicDetails, CommissionDetails } from '../../types/auth';
@@ -6,15 +6,19 @@ import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import { useNavigate } from 'react-router-dom';
+import { LanguageContext } from '../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../utils/constants';
 
 interface BasicFormProps {
     className?: string;
     date: string;
     userCommissionDetails:CommissionDetails ;
     basicDetails?:BasicDetails ,
+    disabled?: boolean;
 }
 
-const BasicForm: FC<BasicFormProps> = ({className , userCommissionDetails , date , basicDetails}) => {
+const BasicForm: FC<BasicFormProps> = ({className , userCommissionDetails , date , basicDetails , disabled=false}) => {
+    const {lang} = useContext(LanguageContext)
     const [loading,setLoading] = useState(false);
     const [basic , setBasic] = useState<BasicDetails>(basicDetails ? basicDetails : {
         deduction_days: 0,
@@ -39,67 +43,72 @@ const BasicForm: FC<BasicFormProps> = ({className , userCommissionDetails , date
         })
     }
     return (
-        <Container className={`${className} relative`}>
+        <Container className={`${className} relative `} disabled={disabled}>
             {
                 loading? <LoadingComponent/> : <></>
             }
-            <form className='grid grid-cols-3 gap-1' onSubmit={e=>{
-                e.preventDefault();
-                setLoading(true)
-                const form = parseFormData(e)
-                const date_parsed = parseDateFromParams(date)
-                form.append("date",`${date_parsed.getFullYear()}-${date_parsed.getMonth()+1}-${date_parsed.getDate()}`)
-                sendRequest({url:"api/commission/basic-details",method:basicDetails ? "PUT" : "POST",data:form, params: basicDetails ? {uuid:basicDetails.uuid} : undefined })
-                    .then((data)=>{
-                        Swal.fire({
-                            position: "center",
-                            icon: "success",
-                            title: "Successfully Gived",
-                            showConfirmButton: false,
-                            timer: 1000
-                        }).then(()=>{
-                            navigate("/basic")
+            <form className='grid grid-cols-3 gap-x-5 md:gap-1 md:w-full' 
+                onSubmit={e=>{
+                    e.preventDefault();
+                    setLoading(true)
+                    const form = parseFormData(e)
+                    const date_parsed = parseDateFromParams(date)
+                    form.append("date",`${date_parsed.getFullYear()}-${date_parsed.getMonth()+1 > 9 ? date_parsed.getMonth() + 1 : "0"+String(date_parsed.getMonth() + 1) }-${date_parsed.getDate()}`)
+                    sendRequest({url:"api/commission/basic-details",method:basicDetails ? "PUT" : "POST",data:form, params: basicDetails ? {uuid:basicDetails.uuid} : undefined })
+                        .then((data)=>{
+                            Swal.fire({
+                                position: "center",
+                                icon: "success",
+                                title: "Successfully Gived",
+                                showConfirmButton: false,
+                                timer: 1000
+                            }).then(()=>{
+                                navigate(-1)
+                            })
+                        }).catch(error =>{
+                            Swal.fire({
+                                position: "center",
+                                icon: "error",
+                                title: "Faild to Give",
+                                showConfirmButton: false,
+                                timer: 1000
+                            })
+                        }).finally(()=>{
+                            setLoading(false)
                         })
-                    }).catch(error =>{
-                        Swal.fire({
-                            position: "center",
-                            icon: "error",
-                            title: "Faild to Give",
-                            showConfirmButton: false,
-                            timer: 1000
-                        })
-                    }).finally(()=>{
-                        setLoading(false)
-                    })
-            }}>
-                <label className='text-2xl text-btns-colors-primary place-self-center col-span-3 mb-1'>Basic</label>
+                }}>
+                <label className='text-2xl text-btns-colors-primary place-self-center col-span-3 mb-1'>{TRANSLATIONS.Basic.title[lang]}</label>
 
-                <input type="hidden" name="user_commission_details" value={userCommissionDetails.uuid} />
+                <input disabled={disabled} type="hidden" name="user" value={userCommissionDetails.user.uuid} />
                 {/* <input type="hidden" name="date" value={parseDateFromParams(date)} /> */}
 
-                <label className='col-span-1 place-self-center' htmlFor="deduction_days">Deduction Days</label>
-                <input onChange={onChange} className='col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-secondry  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="deduction_days" value={basic.deduction_days}/>
+                <label className='col-span-1 place-self-center' htmlFor="deduction_days">{TRANSLATIONS.Basic.form.deductiondays[lang]}</label>
+                <input disabled={disabled} onChange={onChange} onWheel={e=>{e.preventDefault()}} className='w-5/6 col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-secondry  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="deduction_days" value={basic.deduction_days}/>
 
 
-                <label className='col-span-1 place-self-center' htmlFor="deduction_money">Deduction Money</label>
-                <input onChange={onChange} className='col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-secondry  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="deduction_money" value={basic.deduction_money}/>
+                <label className='col-span-1 place-self-center' htmlFor="deduction_money">{TRANSLATIONS.Basic.form.deductionmoney[lang]}</label>
+                <input disabled={disabled} onChange={onChange} className='w-5/6 col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-secondry  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="deduction_money" value={basic.deduction_money}/>
 
 
-                <label className='col-span-1 place-self-center' htmlFor="kpi">KPI</label>
-                <input onChange={onChange} className='col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-primary  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="kpi" value={basic.kpi}/>
+                <label className='col-span-1 place-self-center' htmlFor="kpi">{TRANSLATIONS.Basic.form.kpi[lang]}</label>
+                <input disabled={disabled} onChange={onChange} className='w-5/6 col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-primary  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="kpi" value={basic.kpi}/>
 
 
-                <label className='col-span-1 place-self-center' htmlFor="gift">Additional Gift</label>
-                <input onChange={onChange} className='col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-primary  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="gift" value={basic.gift}/>
+                <label className='col-span-1 place-self-center' htmlFor="gift">{TRANSLATIONS.Basic.form.gift[lang]}</label>
+                <input disabled={disabled} onChange={onChange} className='w-5/6 col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-primary  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="gift" value={basic.gift}/>
 
 
-                <label className='col-span-1 place-self-center' htmlFor="basic">Basic</label>
-                <input className='col-span-2 place-self-center bg-[transparent] outline-none border-none text-center text-2xl' type="number" name="basic"  value={basic.basic}/>
-
-                <button className='col-span-3 h-8 bg-btns-colors-primary rounded-lg w-2/3 place-self-center my-2' type="submit" >Give</button>
+                <label className='col-span-1 place-self-center' htmlFor="basic">{TRANSLATIONS.Basic.title[lang]}</label>
+                <input disabled={disabled} className='w-5/6 col-span-2 place-self-center bg-[transparent] outline-none border-none text-center text-2xl' type="number" name="basic"  value={basic.basic}/>
                 {
-                    basicDetails ? (
-                        <button className='col-span-3 h-8 bg-btns-colors-secondry rounded-lg w-2/3 place-self-center my-2' onClick={e=>{
+                    !disabled ? 
+                    <button className='col-span-3 h-8 bg-btns-colors-primary rounded-lg w-2/3 place-self-center my-2' type="submit" >{TRANSLATIONS.Basic.form.give[lang]}</button>
+                    : null
+                }
+                
+                {
+                    basicDetails && !disabled ? (
+                        <button  className='col-span-3 h-8 bg-btns-colors-secondry rounded-lg w-2/3 place-self-center my-2' onClick={e=>{
                             e.preventDefault();
                             setLoading(true)
                             sendRequest({url:"api/commission/basic-details",method:"DELETE", params:  {uuid:basicDetails.uuid} })
@@ -112,7 +121,7 @@ const BasicForm: FC<BasicFormProps> = ({className , userCommissionDetails , date
                                     showConfirmButton: false,
                                     timer: 1000
                                 }).then(()=>{
-                                    navigate("/basic")
+                                    navigate(-1)
                                 })
                             }).catch(error =>{
                                 Swal.fire({
@@ -125,7 +134,7 @@ const BasicForm: FC<BasicFormProps> = ({className , userCommissionDetails , date
                             }).finally(()=>{
                                 setLoading(false)
                             })
-                                }}   >Delete</button>
+                                }}   >{TRANSLATIONS.Delete[lang]}</button>
 
                     ): null
                 }

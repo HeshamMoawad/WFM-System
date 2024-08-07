@@ -1,4 +1,4 @@
-import React, { useState, type FC } from 'react';
+import React, { useContext, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import { useAuth } from '../../hooks/auth';
 import SelectComponent from '../SelectComponent/SelectComponent';
@@ -7,6 +7,8 @@ import { sendRequest } from '../../calls/base';
 import { parseFormData } from '../../utils/converter';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import Swal from 'sweetalert2';
+import { TRANSLATIONS } from '../../utils/constants';
+import { LanguageContext } from '../../contexts/LanguageContext';
 
 interface AdvanceFormProps {
     setRefresh?:React.Dispatch<React.SetStateAction<boolean>>
@@ -14,9 +16,10 @@ interface AdvanceFormProps {
 
 const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh}) => {
     const {auth} = useAuth()
+    const {lang}= useContext(LanguageContext)
     const [loading , setLoading] = useState(false)
     return (
-    <Container className='relative w-[40%] h-fit'>
+    <Container className='relative w-[85%] md:w-[40%] h-fit'>
         {
             loading ? <LoadingComponent/>:<></>
         }
@@ -43,7 +46,11 @@ const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh}) => {
                         })
             })
                 .finally(()=>{
-                    e.currentTarget.reset();
+                    try{
+                        e.currentTarget.reset();
+                    }catch (error){
+                        console.error(error)
+                    }
                     setLoading(false)
                     if (setRefresh){
                         setRefresh(prev=>!prev)
@@ -55,7 +62,8 @@ const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh}) => {
                 <div className='flex flex-row justify-between'>
                     <SelectComponent
                             selectClassName=''
-                            LabelName='Taker'
+                            LabelName={TRANSLATIONS.Advance.form.taker[lang]}
+                            LabelClassName='place-self-center'
                             url='api/users/user'
                             name='user'
                             config={{
@@ -64,11 +72,11 @@ const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh}) => {
                             }}
                         />
                 </div>
-                <div className='flex flex-row justify-between'>
-                    <label htmlFor="amount">Amount</label>
+                <div className='flex flex-row justify-between gap-2'>
+                    <label htmlFor="amount" className='place-self-center'>{TRANSLATIONS.Advance.form.amount[lang]}</label>
                     <input type="number" min={10} name="amount" id="amount" className='w-[100%] md:w-[50%]  place-self-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' />
                 </div>
-                <button type='submit' className='bg-btns-colors-primary rounded-md mb-4 h-9'>Submit</button>
+                <button type='submit' className='bg-btns-colors-primary rounded-md mb-4 h-9'>{TRANSLATIONS.Advance.form.submit[lang]}</button>
             </form>
 
     </Container>

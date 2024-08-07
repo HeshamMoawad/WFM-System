@@ -1,4 +1,4 @@
-import { type FC, useState, useEffect } from "react";
+import { type FC, useState, useEffect, useContext } from "react";
 import Container from "../../layouts/Container/Container";
 import useRequest from "../../hooks/calls";
 import { convertObjectToArrays, getFullURL } from "../../utils/converter";
@@ -9,10 +9,13 @@ import LoadingComponent from "../../components/LoadingComponent/LoadingComponent
 import Table from "../../components/Table/Table";
 import DatePicker from "../../components/DatePicker/DatePicker";
 import { FaHandHoldingUsd } from "react-icons/fa";
+import { TRANSLATIONS } from "../../utils/constants";
+import { LanguageContext } from "../../contexts/LanguageContext";
 
 interface BasicProps {}
 
 const Basic: FC<BasicProps> = () => {
+    const { lang } = useContext(LanguageContext)
     const [date, setDate] = useState<Date>(new Date());
     const { data, loading } = useRequest<User>(
         {
@@ -25,17 +28,17 @@ const Basic: FC<BasicProps> = () => {
 
     return (
         <div className="flex justify-center">
-            <Container className="w-fit md:w-screen h-fit min-h-[300px] relative flex flex-col gap-3 justify-center items-center ">
-                <div className="w-full grid grid-cols-8">
-                    <h1 className="col-span-5 text-2xl text-center text-btns-colors-primary w-full place-self-center">
-                        Users Basic 
+            <Container className="w-fit md:w-screen h-fit min-h-[300px] relative gap-3 justify-center items-center ">
+                <div className="w-full grid md:grid-cols-8">
+                    <h1 className="md:col-span-5 text-2xl text-center text-btns-colors-primary w-full place-self-center">
+                        {TRANSLATIONS.Basic.title[lang]} 
                     </h1>
                     <h1 className="col-span-1 text-2xl text-center w-full place-self-center">
-                        Date 
+                        {TRANSLATIONS.Date[lang]}  
                     </h1>
                     <DatePicker
                         type="month"
-                        className="col-span-2  h-11 text-center"
+                        className="md:col-span-2  h-11 text-center"
                         spanClassName="text-2xl text-center w-full place-self-center "
                         setDate={setDate}
                     />
@@ -47,15 +50,7 @@ const Basic: FC<BasicProps> = () => {
                     <>
                         <Table
                             className="mb-2"
-                            headers={[
-                                "picture",
-                                "username",
-                                "role",
-                                "title",
-                                "department",
-                                "project",
-                                "Basic",
-                            ]}
+                            headers={TRANSLATIONS.Basic.table.headers[lang]} 
                             data={convertObjectToArrays(data?.results, [
                                 {
                                     key: "profile",

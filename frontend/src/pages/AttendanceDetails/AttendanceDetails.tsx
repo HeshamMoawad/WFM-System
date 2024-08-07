@@ -16,7 +16,6 @@ const AttendanceDetails: FC<AttendanceDetailsProps> = () => {
 
     return (
     <div className='attendance-details flex flex-col justify-center items-center'>
-        {/* <TableCard date={date} setDate={setDate} userID={userID} setUserID={setUserID} label={TRANSLATIONS.AttendanceDetails.title[lang]} /> */}
         <AttendanceDetailsTable className='md:w-2/3 min-h-[300px]' date={date} setDate={setDate} userID={userID} setUserID={setUserID} label={TRANSLATIONS.AttendanceDetails.title[lang]} />
         <div className='md:w-2/3 min-h-[300px] h-fit flex flex-col md:flex-row justify-center items-center'>
             <AdvancesTable  date={date} user_uuid={userID}/>

@@ -2,7 +2,7 @@ import  {useContext, useEffect, useState, type FC } from "react";
 import Container from "../../layouts/Container/Container";
 import {PiFingerprint } from 'react-icons/pi';
 import { LanguageContext } from "../../contexts/LanguageContext";
-import { TRANSLATIONS } from "../../utils/constants";
+import { LANGS, TRANSLATIONS, WEEK_DAYS } from "../../utils/constants";
 import { sendRequest } from "../../calls/base";
 // import LoadingPage from "../../pages/LoadingPage/LoadingPage";
 import { onArrive, onLeave } from "../../calls/Dashboard/Dashboard";
@@ -14,7 +14,7 @@ const AttendCard: FC<AttendCardProps> = () => {
     const {lang} = useContext(LanguageContext)
     const [comingDetails , setComingDetails] = useState<{arrived_at:string|null,leaved_at:string|null}>({arrived_at:null,leaved_at:null})
     const [loading,setLoading] = useState(false)
-
+    const date_temp = new Date()
     useEffect(()=>{
         setLoading(true)
         sendRequest({url:"api/users/arrive-leave-details",method:"GET"})
@@ -35,8 +35,8 @@ const AttendCard: FC<AttendCardProps> = () => {
                     <span className="block opacity-80">
                         {TRANSLATIONS.Dashboard.middleLabel[lang]}
                     </span>
-                    <span className="block text-xl">
-                        {new Date().toDateString()}
+                    <span className="block text-xl" dir={TRANSLATIONS.Direction[lang]}>
+                        {date_temp.getFullYear()} || {date_temp.toLocaleDateString(LANGS[lang],{month:"short"})} || {WEEK_DAYS[date_temp.getDay()][lang]}
                     </span>
                 </div>
             </section>
