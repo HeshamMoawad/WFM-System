@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { useContext, useEffect, useState, type FC } from "react";
 import Container from "../../layouts/Container/Container";
 import useRequest from "../../hooks/calls";
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
@@ -8,14 +8,18 @@ import { TreasuryRecord } from "../../types/auth";
 import { sendRequest } from "../../calls/base";
 import Swal from "sweetalert2";
 import Pagination from "../Pageination/Pageination";
+import { TRANSLATIONS } from "../../utils/constants";
+import { LanguageContext } from "../../contexts/LanguageContext";
 
 interface TreasuryTableProps {
     label?: string;
     url: string;
     color?: string;
+    refresh?: boolean;
 }
 
-const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
+const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh }) => {
+    const { lang } = useContext(LanguageContext)
     const [currentPage, setCurrentPage] = useState(1)
     const { data, loading } = useRequest<TreasuryRecord>(
         {
@@ -25,7 +29,7 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
                 page: currentPage,
             },
         },
-        [currentPage]
+        [currentPage , refresh]
     );
     return (
         <Container className="w-full h-fit relative">
@@ -35,14 +39,8 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
             {data ? (
                 <>
                     <Table
-                        headers={[
-                            "creator",
-                            "username",
-                            "amount",
-                            "details",
-                            "delete",
-                        ]}
-                        data={convertObjectToArrays(data.results, [
+                        headers={TRANSLATIONS.Treasury.intable.headers[lang]}
+                        data={convertObjectToArrays(data?.results, [
                             {
                                 key: "creator",
                                 method: (_) => {
@@ -86,10 +84,10 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
                                 },
                             },
                             {
-                                key: ["uuid","from_advance" , "from_basic"],
+                                key: ["uuid","from_advance" , "from_basic" , "from_salary"],
                                 method: (args) => {
-                                    const {uuid ,from_advance , from_basic  } = args as any;
-                                    const show_delete =  from_advance ? false : from_basic ? false : true //!(typeof from_advance === "string" || typeof from_basic === "string")
+                                    const {uuid ,from_advance , from_basic , from_salary } = args as any;
+                                    const show_delete =  from_advance ? false : from_basic ? false : from_salary ? false : true //!(typeof from_advance === "string" || typeof from_basic === "string")
                                     return (
                                         <td
                                             key={Math.random()}
@@ -137,9 +135,9 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
                                                                     });
                                                                 });
                                                         }}
-                                                        className="rounded-md bg-btns-colors-secondry w-2/3"
+                                                        className="rounded-md bg-btns-colors-secondry w-2/3 min-w-[80px]"
                                                     >
-                                                        Delete
+                                                        {TRANSLATIONS.Treasury.inform.delete[lang]}
                                                     </button>
                                             ) : null
                                             }
@@ -151,7 +149,7 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color }) => {
                     />
                     <Pagination page={data} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
                     <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                        <label htmlFor="" className='text-center'>Total : {data.total_count}</label>
+                        <label htmlFor="" className='text-center'>Total : {data?.total_count}</label>
                     </div>
 
                 </>
