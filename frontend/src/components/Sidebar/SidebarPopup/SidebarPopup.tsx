@@ -2,6 +2,8 @@ import  { useContext,type FC, useMemo } from 'react';
 import {SidebarContext} from '../../../contexts/SidebarContext';
 import { SideSection } from '../../../types/sidebar';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../../hooks/auth';
+import { checkPermissions } from '../../../utils/params';
 
 interface SidebarPopupProps {
     name:string,
@@ -12,6 +14,7 @@ interface SidebarPopupProps {
 
 const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections , setOpened }:SidebarPopupProps) => {
     const {showed , setShowed} = useContext(SidebarContext)
+    const {auth} = useAuth()
     const style = useMemo(()=>{
         return showed === index ? 'w-60 md:w-72':'w-0 opacity-0 overflow-hidden'
     },[showed])
@@ -22,10 +25,10 @@ const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections , setOpened }:
         <ul className="pt-6 space-y-6">
             {
                 sections.map((section,index)=>{
-                    return (
+                    if (checkPermissions(auth,section.permissions)) {
+
+                        return (
                             <li key={index}>
-
-
                                 <Link 
                                     to={section.href}
                                     className="pl-10 md:pl-16 flex justify-start items-center gap-3 hover:text-primary hover:fill-primary"
@@ -34,7 +37,6 @@ const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections , setOpened }:
                                         setShowed(null)
                                     }}
                                     >
-                                
                                         {
                                             section.Icon ? (
                                                 <section.Icon className="w-6 h-6 opacity-80"/>
@@ -43,14 +45,10 @@ const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections , setOpened }:
                                         }
                                     <span className="text-lg">{section.name}</span>
                                 </Link>
-                                {/* <a
-                                    href={}
-                                    className="pl-10 md:pl-16 flex justify-start items-center gap-3 hover:text-primary hover:fill-primary"
-                                >
-                                    
-                                </a> */}
                             </li>                    
                         );
+                    }
+                    return null;
                 })
             }
         </ul>

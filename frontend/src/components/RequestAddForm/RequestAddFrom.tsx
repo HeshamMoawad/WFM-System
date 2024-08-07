@@ -22,6 +22,7 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
     const {auth} = useAuth()
     const {lang} = useContext(LanguageContext)
     const [loading , setLoading] = useState<boolean>(false)
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
 
     return (
         <Container className={`${className}`}>
@@ -45,23 +46,24 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
                         <div className='flex flex-row justify-between'>
                             <SelectComponent
                                     selectClassName=''
-                                    LabelName='User'
+                                    LabelName={TRANSLATIONS.User[lang]}
                                     url='api/users/user'
                                     name='user'
                                     config={{
                                         value:"uuid",
                                         label:"username"
                                     }}
+                                    params={additionalFilter}
                                 />
                         </div>
                     ):null
                 }
                 <div className='flex flex-row justify-between'>
-                    <label htmlFor="details">{TRANSLATIONS.Request.Date[lang]} :</label>
-                    <DatePicker name='date' className='w-1/3'/>
+                    <label htmlFor="details">{TRANSLATIONS.Request.Date[lang]} </label>
+                    <DatePicker name='date' className='' clean required/>
                 </div>
                 <div className='flex flex-row justify-between'>
-                    <label htmlFor="details">{TRANSLATIONS.Request.Details[lang]} :</label>
+                    <label htmlFor="details">{TRANSLATIONS.Request.Details[lang]} </label>
                     <textarea  name="details" id="details" className='w-[80%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' dir={TRANSLATIONS.Direction[lang]} required/>
 
                 </div>

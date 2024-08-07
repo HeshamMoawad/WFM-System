@@ -15,13 +15,15 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
     const [loading , setLoading] = useState(false);
     const [loginInfo , setLoginInfo] = useState<{
         username: string;
-        _password: string;
+        // password_normal: string;
+        password_normal: string;
         first_name: string;
         last_name: string;
         department: string;
         project: string;
         title: string;
         role: string;
+        crm_username: string;
         is_active:boolean;
     }|null>(null);
     const [refresh , setRefresh] = useState(false)
@@ -46,7 +48,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
             params:{uuid}
         })
         .then(data=>{
-            setLoginInfo(Convert(data?.results[0],["project","department"]));
+            setLoginInfo({...Convert(data?.results[0],["project","department"])});
         }).catch(error=>{
             setLoginInfo(null)
         })
@@ -101,8 +103,9 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                     <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
                         <label htmlFor="username" >Username</label>
                         <input value={loginInfo.username} onChange={onChange} type="text" name="username" id="username" className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
-                        <label htmlFor="_password">Password</label>
-                        <input value={loginInfo?._password} onChange={onChange} type="text" name="_password" id="password"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+                        
+                        <label htmlFor="password_normal">Password</label>
+                        <input value={loginInfo?.password_normal} onChange={onChange} type="text" name="password_normal" id="password"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
 
 
                         <label htmlFor="first_name" >First Name</label>
@@ -114,6 +117,9 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                         <label htmlFor="title">Title</label>
                         <input value={loginInfo.title} onChange={onChange} type="text" name="title" id="title"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                         
+                        <label htmlFor="crm_username" className='text-center' >CRM Username</label>
+                        <input type="text" value={loginInfo.crm_username} onChange={onChange} name="crm_username" id="crm_username" className='col-span-2 place-content-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+
                         <SelectComponent<Department> 
                             name="department" 
                             LabelName="Department" 

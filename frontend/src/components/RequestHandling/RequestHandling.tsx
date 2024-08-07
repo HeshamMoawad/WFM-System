@@ -15,10 +15,21 @@ interface RequestHandlingProps {
 
 const RequestHandling: FC<RequestHandlingProps> = ({className , refresh , setRefresh}) => {
     const {auth} = useAuth()
+    const additionalFilter = ()=>{
+        let result = {status:"PENDING"}
+        if (auth.role === "OWNER" || auth.is_superuser || auth.role === "HR") {
+            return result
+        }
+        if (auth.role === "MANAGER") {
+            return {...result , user__department__name:auth.department.name}
+        }
+        return result
+    }
+
     const {data , loading} = useRequest<RequestType>({
         url:"api/users/request",
         method:"GET",
-        params:auth.role === "OWNER" || auth.role === "MANAGER"? {status:"PENDING"} : {user__uuid:auth.uuid , status:"PENDING"}
+        params: additionalFilter()
     },[refresh],15000)
     return (
     <Container className={`${className}`}>
