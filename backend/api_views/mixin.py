@@ -34,7 +34,7 @@ class APIViewMixins(APIView):
 
 
     def _post(self,request:Request):
-        serializer = self.model_serializer(data = request.data)
+        serializer:ModelSerializer = self.model_serializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return serializer.data
@@ -62,8 +62,9 @@ class APIViewMixins(APIView):
         queryset = self.model.objects.filter(**{self.unique_field:id})
         queryset = self.filter_queryset_with_permissions(queryset)
         obj = queryset.get(**{self.unique_field:id})
+        data = self.model_serializer(obj).data
         obj.delete()
-        return self.model_serializer(obj).data
+        return data
         
 
  
@@ -79,10 +80,11 @@ class APIViewMixins(APIView):
         return queryset.filter(**filter_kwargs).exclude(**exclode_kwargs)
         
 
-    def get_pagination_data(self,queryset,request:Request):
+    def get_pagination_data(self,queryset:QuerySet,request:Request):
         paginator = self.pagination_class()
         result = paginator.paginate_queryset(queryset,request)
         return {
+            'total_count': queryset.count() ,
             'count': len(result) if result else 0 ,
             'next':paginator.get_next_link(),
             'previous':paginator.get_previous_link(),

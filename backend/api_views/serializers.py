@@ -16,7 +16,7 @@ class ModelSerializer(ModelSerializer):
             for  key , foreign_model in getattr(self.Meta,"foreign_models",{}).items() 
         ]
         [
-            self._many_to_many_models.update({key:many_to_many_model.get_values(data.get(many_to_many_model.field_name))}) 
+            self._many_to_many_models.update({key:many_to_many_model.get_values(data.get(many_to_many_model.field_name,[]))}) 
             for key , many_to_many_model in getattr(self.Meta,"many_to_many_models",{}).items() 
         ]
         return super().run_validation(data)
