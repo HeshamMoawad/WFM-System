@@ -3,7 +3,6 @@ import { BrowserRouter,Routes, Route} from 'react-router-dom';
 import MainLayout from "../layouts/MainLayout/MainLayout";
 import DarkModeButton from "../components/DarkModeButton/DarkModeButton";
 import DashBoard from "./Dashboard/Dashboard";
-import { useAuth } from "../hooks/auth";
 import Login from "./Login/Login";
 import Requests from "./Requests/Requests";
 import Profile from "./Profile/Profile";
@@ -22,6 +21,8 @@ import Leads from "./Leads/Leads";
 import Notifications from "./Notifications/Notifications";
 import Teams from "./Teams/Teams";
 import NotFound from "./NotFound/NotFound";
+import Salary from "./Salary/Salary";
+import MySalaryList from "./MySalaryList/MySalaryList";
 
 interface PagesProps {}
 
@@ -47,6 +48,7 @@ const Pages: FC<PagesProps> = () => {
                                     
                                     <MainLayout>
                                         <Routes>
+                                            <Route path="/" element={<DashBoard/>}/>
                                             <Route path="/dashboard" element={<DashBoard/>}/>
                                             <Route path="/requests" element={<Requests/>}/>
                                             <Route path="/profile" element={<Profile/>}/>
@@ -57,7 +59,6 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/attendance-details" element={<AttendanceDetails/>}/>
                                             <Route path="/treasury" element={<Treasury/>}/>
                                             <Route path="/advances" element={<Advances/>}/>
-                                            <Route path="/salary-all" element={<SalaryAll/>}/>
                                             <Route path="/basic" element={<Basic/>}/>
                                             <Route path="/user-basic/:user_uuid/:date" element={<UserBasic/>}/>
                                             <Route path="/coin-changer" element={<CoinChanger/>}/>
@@ -65,7 +66,14 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/notifications" element={<Notifications/>}/>
                                             <Route path="/teams" element={<Teams/>}/>
 
-                                            <Route path="/" element={<DashBoard/>}/>
+                                            <Route path="/salary-all" element={<SalaryAll/>}/>
+                                            <Route path="/salary-marketing" element={<SalaryAll department="Marketing"/>}/>
+                                            <Route path="/salary-sales" element={<SalaryAll department="Sales"/>}/>
+                                            <Route path="/salary-technichal" element={<SalaryAll department="Technichal"/>}/>
+                                            <Route path="/salary-general" element={<SalaryAll department="General"/>}/>
+                                            <Route path="/salary/:user_uuid/:date" element={<Salary/>}/>
+                                            <Route path="/my-salary-list" element={<MySalaryList/>}/>
+
                                             <Route path="*" element={<NotFound/>}/>
 
                                         </Routes>

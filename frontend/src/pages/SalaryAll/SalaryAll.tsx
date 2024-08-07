@@ -1,48 +1,66 @@
-import  {type FC , useState, useEffect} from 'react';
+import  {type FC , useContext, useState} from 'react';
 import Container from '../../layouts/Container/Container';
 import useRequest from '../../hooks/calls';
 import { convertObjectToArrays, getFullURL } from '../../utils/converter';
 import { User } from '../../types/auth';
-import { FaUserEdit } from "react-icons/fa";
-import { FaUserXmark } from "react-icons/fa6";
-import { sendRequest } from '../../calls/base';
-import Swal from 'sweetalert2';
+import { FaHandHoldingUsd, FaUserEdit } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import TableFilters from '../../components/UsersTable/TableFilters/TableFilters';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import Table from '../../components/Table/Table';
-import PwdComponent from '../../components/UsersTable/PwdComponent/PwdComponent';
+import DatePicker from '../../components/DatePicker/DatePicker';
+import { useAuth } from '../../hooks/auth';
+import { LanguageContext } from '../../contexts/LanguageContext';
+import { TRANSLATIONS } from '../../utils/constants';
 
-interface SalaryAllProps {}
+interface SalaryAllProps {
+    department?: string;
+}
 
-const SalaryAll: FC<SalaryAllProps> = () => {
-    const [filters,setFilters] = useState<object>({})
-    const {data , loading } = useRequest<User>({
-        url: 'api/users/user' ,
-        method: 'GET',
-        params: {is_active:"True",...filters}
-    },[filters])
-    useEffect(()=>{
-        console.log(filters)
-    },[filters])
+const SalaryAll: FC<SalaryAllProps> = ({department}) => {
+    const [date, setDate] = useState<Date>(new Date());
+    const {auth} = useAuth()
+    const {lang} = useContext(LanguageContext)
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
 
+    const { data, loading } = useRequest<User>(
+        {
+            url: "api/commission/users-commission",
+            method: "GET",
+            params: { 
+                date :`${date.getFullYear()}-${date.getMonth()+1}` ,
+                ...(department ? {department} : {}),
+                ...additionalFilter
+
+            },
+        },
+        [date , department]
+    );
 
 
     return (<div className='flex justify-center'>
         
-        <Container className='w-fit md:w-screen h-fit min-h-[300px] relative flex flex-col gap-3 justify-center items-center '>
-        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>Salary For Users</h1>
-        <TableFilters setFilters={setFilters}/>
+        <Container className='w-fit md:w-screen h-fit min-h-[300px] relative gap-3 justify-center items-center '>
+        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.Salary.title[lang]}</h1>
+        <div className="w-full grid md:grid-cols-8">
+            <h1 className="col-span-1 md:col-start-6  text-2xl text-center w-full place-self-center">
+                {TRANSLATIONS.Date[lang]} 
+            </h1>
+            <DatePicker
+                type="month"
+                className="md:col-span-2 h-11 text-center"
+                spanClassName="text-2xl text-center w-full place-self-center "
+                setDate={setDate}
+            />
+        </div>
         {
             loading? <LoadingComponent/> : <></>
         }
-
         {
             data ? (
                 <>
                 <Table
                     className='mb-2'
-                    headers={["picture","username","role","title","department","project","Basic" , "Commission"]}
+                    headers={TRANSLATIONS.Salary.table.headers[lang]}
                     data={convertObjectToArrays(data?.results,[
                         {
                             key:"profile",
@@ -83,17 +101,28 @@ const SalaryAll: FC<SalaryAllProps> = () => {
                                 return project.name
                             }
                         },{
-                            key:["uuid" , "is_superuser" , "role"],
+                            key:["has_basic","uuid"],
                             method : (args)=>{
-                                const {uuid,is_superuser,role} = args as any;
+                                const {has_basic,uuid} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            {!(is_superuser || role === "OWNER") ? (
-                                                <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
-                                                    <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
-                                                </Link>
-                                            ):null}
-
+                                        <Link className='rounded-md w-2/3 h-8' to={`/user-basic/${uuid}/${date.getMonth()+1}-${date.getFullYear()}`} >
+                                            <FaHandHoldingUsd className={`${has_basic ? "fill-btns-colors-primary" : "fill-btns-colors-secondry"} w-full h-6 text-center`}/>
+                                            {has_basic}
+                                        </Link>
+                                    </td>
+                                )
+                            }
+                        },{
+                            key:["has_commission","uuid"],
+                            method : (args)=>{
+                                const {has_commission,uuid} = args as any;
+                                return (
+                                    <td key={Math.random()} className='px-3 py-1'>
+                                        <Link className='rounded-md w-2/3 h-8' to={`/salary/${uuid}/${date.getMonth()+1}-${date.getFullYear()}`} >
+                                            <FaHandHoldingUsd className={`${has_commission ? "fill-btns-colors-primary" : "fill-btns-colors-secondry"} w-full h-6 text-center`}/>
+                                            {has_commission}
+                                        </Link>
                                     </td>
                                 )
                             }
