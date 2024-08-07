@@ -64,15 +64,15 @@ input[type="text"]{
     dark:bg-dark-colors-login-third-bg;
 }
 
-/* 
-input[type="number"]{
-    @apply 
-    outline-none
-    px-4
-    rounded-lg
-    border
-    border-[gray] 
-    bg-light-colors-login-third-bg
-    dark:border-[#374558]
-    dark:bg-dark-colors-login-third-bg;
-} */
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+

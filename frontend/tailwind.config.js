@@ -46,8 +46,22 @@ module.exports = {
       // "pr-dark-2":"#3b5d7a" ,
       // "third-dark" : "#15202b" ,
     } ,
-    extend: {},
+    extend: {
+      transitionTimingFunction: {
+        'new': 'cubic-bezier(0.01, 0.7, 0.1, 1)',
+        'ease-out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
+        'ease-in-out-expo': 'cubic-bezier(1, 0, 0, 1)',
+      },
+      
+    },
   },
+  variants: {
+    extend: {
+      backgroundColor: ['dark'],
+      textColor: ['dark'],
+    },
+  },
+
   plugins: [
     require('@tailwindcss/forms'),
     
