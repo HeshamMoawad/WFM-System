@@ -5,6 +5,7 @@ import { ChildrenType } from '../../types/base';
 import SidebarContextProvider from '../../contexts/SidebarContext';
 import { useAuth } from '../../hooks/auth';
 import { useNavigate } from 'react-router-dom';
+import Azkar from '../../components/Azkar/Azkar';
 
 interface MainLayoutProps extends ChildrenType{
 
@@ -29,8 +30,10 @@ const MainLayout: FC<MainLayoutProps> = ({children}:MainLayoutProps) => {
                 </SidebarContextProvider>
                 <div className="flex flex-col gap-5 min-h-screen w-screen">
                     <Topbar/>
-                    <div className="empty h-28 md:h-32"></div>
+                    <div className="empty h-20 md:h-24">
+                    </div>
                     <div className="w-full h-full z-0">
+                        <Azkar/>
                         {children}
                     </div>
                 </div>
