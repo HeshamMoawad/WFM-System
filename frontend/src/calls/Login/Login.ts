@@ -6,49 +6,50 @@ import Swal from "sweetalert2";
 import { loadID, saveLogin } from "../../utils/storage";
 import Authintication from "../../types/auth";
 import { Language } from "../../types/base";
-import { getFingerprint } from "../../utils/fingerprint";
+import { NavigateFunction } from "react-router-dom";
 
 export const onSubmitLoginForm = (
     e: FormEvent,
     lang: Language,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setAuth: React.Dispatch<React.SetStateAction<Authintication>>
+    setAuth: React.Dispatch<React.SetStateAction<Authintication>>,
+    navigate:NavigateFunction
 ) => {
     // e.preventDefault()
     setLoading(true);
-    getFingerprint().then((fingerprint) => {
-        sendRequest({
-            url: "api/users/login",
-            method: "POST",
-            params: { unique_id: fingerprint, ...parseObject(e) },
-            reloadWhenUnauthorized: false,
+    
+    sendRequest({
+        url: "api/users/login",
+        method: "POST",
+        params: { unique_id: loadID(), ...parseObject(e) },
+        reloadWhenUnauthorized: false,
+    })
+        .then((data) => {
+            setLoading(false);
+            setAuth({...data,_password:null});
+            saveLogin({...data,_password:null});
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: TRANSLATIONS.Login.Alerts.onSuccess[lang],
+                text: `${data?.username} & ${data?.role} & ${data?.title}`,
+                showConfirmButton: false,
+                timer: 1500,
+            }).then(() => {
+                navigate("/dashboard")
+                // window.location.href = ;
+            });
         })
-            .then((data) => {
-                setLoading(false);
-                setAuth({...data,_password:null});
-                saveLogin({...data,_password:null});
-                Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: TRANSLATIONS.Login.Alerts.onSuccess[lang],
-                    text: `${data?.username} & ${data?.title}`,
-                    showConfirmButton: false,
-                    timer: 1000,
-                }).then(() => {
-                    window.location.href = "/dashboard";
-                });
-            })
-            .catch((err) => {
-                Swal.fire({
-                    icon: "error",
-                    title: TRANSLATIONS.Login.Alerts.onFaild[lang],
-                    text: "Please check your username and password \n or check your device id",
-                    showConfirmButton: false,
-                    timer: 1000,
-                });
-            })
-            .finally(() => setLoading(false));
-    });
+        .catch((err) => {
+            Swal.fire({
+                icon: "error",
+                title: TRANSLATIONS.Login.Alerts.onFaild[lang],
+                text: "Please check your username and password \n or check your device id",
+                showConfirmButton: false,
+                timer: 1000,
+            });
+        })
+        .finally(() => setLoading(false));
 };
 
 export const onForgetPassword = (
