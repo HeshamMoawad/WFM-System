@@ -1,4 +1,4 @@
-import { SetStateAction, useContext, useState, type FC } from 'react';
+import { SetStateAction, useContext, useEffect, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import DatePicker from '../DatePicker/DatePicker';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
@@ -25,27 +25,36 @@ interface AttendanceDetailsTableProps {
 }
 
 const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID , setUserID,date , setDate,className, userBox=true , withDetails=true}) => {
+    const [percentage,setPercantage] = useState(0)
     const {lang} = useContext(LanguageContext)
     const {auth} = useAuth()
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
     const {data , loading }  = useRequest<ArrivingLeaving>({
-        url:"api/users/arriving-leaving",
+        url:"api/users/arriving-leaving-list",
         method:"GET",
         params:{
-            user__uuid:userID ,
-            date__gte: `${date.getFullYear()}-${date.getMonth()}-25`,
-            date__lte: `${date.getFullYear()}-${date.getMonth()+1}-26`,
+            user_id:userID ,
+            year: `${date.getFullYear()}`,
+            month: `${date.getMonth()+1}`,
             // date__gte: `${date.getFullYear()}-${date.getMonth()+1}-1`,
             // date__lte: `${date.getFullYear()}-${date.getMonth()+1}-${getLastDayOfMonth(date)}`,
         }
     },[date,userID])
     let totalDeduction = 0
-
+    useEffect(()=>{
+        if (data?.results){
+            const filterd = data.results.filter((obj:ArrivingLeaving)=> obj.arriving_at !== null)
+            const lated = filterd.filter((obj:ArrivingLeaving)=> obj.late < 60 )
+            const per = Math.floor(((filterd.length - lated.length) / filterd.length)*100)
+            setPercantage( per ?  per : 0)
+        }
+    },[data])
     return (
         <Container className={`${className} h-fit relative pb-2`} >
         {
             loading ? <LoadingComponent/> : <></>
         }
-        <div id="search" className='flex flex-row justify-between min-w-[1000px] md:w-full'>
+        <div id="search" className='flex flex-row justify-between md:min-w-[1000px] md:w-full'>
             <label className='p-2 w-fit text-2xl text-btns-colors-primary'>{label}</label>
 
             {
@@ -63,7 +72,9 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                             label:"username"
                         }}
                         setSelection={setUserID}
-                    
+                        params={additionalFilter}
+                        moreOptions={[{label:"Me", value:auth.uuid}]}
+                        // selected={[auth.username]}
                     />
 
                 </div>
@@ -77,7 +88,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
         </div>
         {
             data?.results ?(
-                <div>
+                <>
                     <Table 
                     headers={TRANSLATIONS.AttendanceDetails.table.headers[lang]}
                     data={convertObjectToArrays<ArrivingLeaving>(
@@ -93,7 +104,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                         }, 
                         {
                             key:"arriving_at",
-                            method:(item) => new Date(item as string).toLocaleTimeString(),
+                            method:(item) => item ? new Date(item as string).toLocaleTimeString() : "-",
                         },
                         {
                             key:"leaving_at",
@@ -124,15 +135,16 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                 )}
                     
                     />
-                    <div dir={lang === "en" ? "ltr" : "rtl"} className={`flex flex-row min-w-[1000px] items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.lateCount[lang]} : {data.results.filter((obj:ArrivingLeaving)=>obj.late > 60 ).length}</label>
-                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.departureCount[lang]} : {data.results.filter((obj:ArrivingLeaving)=> obj.departure > 60 ).length}</label>
-                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.AttendanceCount[lang]} : {data.results.length}</label>
+                    <div dir={lang === "en" ? "ltr" : "rtl"} className={`flex flex-row min-w-[950px] md:min-w-[1000px] items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
+                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.lateCount[lang]} : {data?.results?.filter((obj:ArrivingLeaving)=>obj.late > 60 ).length}</label>
+                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.departureCount[lang]} : {data?.results?.filter((obj:ArrivingLeaving)=> obj.departure > 60 ).length}</label>
+                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.AttendanceCount[lang]} : {data?.results?.filter((obj:ArrivingLeaving)=> obj.arriving_at ).length}</label>
+                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.DaysCount[lang]} : {data?.results?.length}</label>
                         <label>{TRANSLATIONS.AttendanceDetails.bottomBar.deuctionCount[lang]} : {totalDeduction}</label>
-                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.percentageCount[lang]} : { data.results.length !== 0 ? Math.floor(((data.results.length - data.results.filter((obj:ArrivingLeaving)=>obj.late > 60 ).length )/data.results.length) *100) : 100} %</label>
+                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.percentageCount[lang]} : {percentage} %</label>
 
                     </div>
-                </div>
+                </>
             )
             :<></>
         }
