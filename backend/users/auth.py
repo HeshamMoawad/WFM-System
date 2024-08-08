@@ -1,4 +1,4 @@
-from auth.models import BodyAuthentication , HeaderAuthentication , CookieAuthentication
+from users.AuthenticationClasses import BodyAuthentication , HeaderAuthentication , CookieAuthentication
 from auth.mixin import AuthenticateMixins , LoginMixins
 from users.serializers import UserSerializer
 

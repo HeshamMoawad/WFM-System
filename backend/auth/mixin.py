@@ -1,7 +1,7 @@
 from django.http.request import HttpRequest
 from rest_framework.request import Request
 from typing import Optional , List , Tuple , Union
-from .models import User , JWTAuthenticationMixin , Token
+from users.AuthenticationClasses import User , JWTAuthenticationMixin , Token
 from django.contrib.auth import  authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import AuthenticationFailed

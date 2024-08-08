@@ -53,7 +53,7 @@ LOCAL_APPS = [
     'users' ,
     'commission',
     'treasury',
-
+    'home',
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -159,6 +159,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 # Static files Configuration (CSS, JavaScript, Images)
+# STATIC_URL = '/static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 # STATIC_ROOT = os.path.join(BASE_DIR,'static')
@@ -185,9 +186,9 @@ REST_FRAMEWORK = {
     ) ,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'auth.models.HeaderAuthentication',
-        'auth.models.CookieAuthentication',
-        'auth.models.BodyAuthentication',
+        'users.AuthenticationClasses.HeaderAuthentication',
+        'users.AuthenticationClasses.CookieAuthentication',
+        'users.AuthenticationClasses.BodyAuthentication',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
