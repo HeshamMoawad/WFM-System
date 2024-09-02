@@ -48,7 +48,16 @@ class APIViewMixins(APIView):
         queryset = self.filter_queryset_with_permissions(queryset)
         obj = queryset.get(**{self.unique_field:id})
         data = request.data.copy()
-        serializer:ModelSerializer = self.model_serializer(instance=obj , data = data , partial=True)
+        if "picture" in request.FILES.keys():
+            obj.picture = request.FILES['picture']
+            obj.save()
+        # print(request.FILES)
+        # print( )
+        # print(data)
+        # print()
+        serializer:ModelSerializer = self.model_serializer(instance=obj , data = data, partial=True)
+        
+
         setattr(serializer.instance,"__by",request.user)
         if serializer.is_valid():
             serializer.save()
