@@ -50,10 +50,10 @@ class UsersAPI(APIViewSet):
     model = User
     model_serializer= UserSerializer
     order_by = ('role','username')
-    search_filters = ["uuid",'username','project' ,"department","role","is_active","is_superuser","crm_username"]
-    creating_filters = ["username","password_normal","is_active","role","is_staff","title","project","department","crm_username"]
+    search_filters = ["uuid",'username','project' ,"department","annual_count","role","is_active","is_superuser","crm_username"]
+    creating_filters = ["username","password_normal","is_active","annual_count","role","is_staff","title","project","department","crm_username"]
     requiered_fields = ['username',"password_normal"]
-    updating_filters = ["username","password_normal","is_active","role","is_staff","title","project","department","crm_username"]
+    updating_filters = ["username","password_normal","is_active","annual_count","role","is_staff","title","project","department","crm_username"]
     unique_field:str = 'uuid'
     permissions_config = {
         "GET": [IsSuperUser | IsOwner | IsManager],
