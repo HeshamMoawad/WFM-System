@@ -60,7 +60,7 @@ class User(AbstractUser , BaseModel):
 class FingerPrintID(BaseModel):
     name = models.CharField(max_length=100 , verbose_name="Name" , default='PC')
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.CASCADE )
-    unique_id = models.CharField(verbose_name="Unique ID", unique=True , max_length=100)
+    unique_id = models.CharField(verbose_name="Unique ID", max_length=100)
     def __str__(self):
         return f"{self.name} - {self.user}"
         

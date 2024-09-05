@@ -1,4 +1,4 @@
-from rest_framework.serializers import SerializerMethodField
+from rest_framework.serializers import SerializerMethodField , DateField
 from api_views.serializers import ModelSerializer ,  ForeignField , ManyToManyField  
 import json
 from datetime import datetime
@@ -16,6 +16,17 @@ from ..models import (
     FingerPrintID
     )
 
+
+class MultiDateFormatField(DateField):
+    def to_internal_value(self, value):
+        formats = ['%Y-%m-%d' , '%d-%m-%Y']
+        for fmt in formats:
+            try:
+                return datetime.strptime(value, fmt).date()
+            except ValueError:
+                continue
+        self.fail('invalid',format=' ,'.join(formats))
+        
 
 class DepartmentSerializer(ModelSerializer):
 
@@ -38,6 +49,12 @@ class ProjectSerializer(ModelSerializer):
         ]
 
 class ProfileSerializer(ModelSerializer):
+    picture = SerializerMethodField()
+
+    def get_picture(self, obj:Profile):
+        if obj.picture:
+            return obj.picture.url[1:]
+        return None
     class Meta:
         model = Profile
         fields = [
@@ -189,6 +206,7 @@ class FingerPrintIDSerializer(ModelSerializer):
 
 class RequestSerializer(ModelSerializer):
     user = UserSerializer(read_only=True)
+    date = MultiDateFormatField()
     class Meta:
         model = Request
         fields = [

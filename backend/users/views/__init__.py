@@ -56,10 +56,10 @@ class UsersAPI(APIViewSet):
     updating_filters = ["username","password_normal","is_active","role","is_staff","title","project","department","crm_username"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "GET": [IsSuperUser | IsOwner | IsManager],
-        "POST": [IsSuperUser | IsOwner | IsManager],
-        "PUT": [IsSuperUser | IsOwner | IsManager],
-        "DELETE": [IsSuperUser | IsOwner],
+        "GET": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "POST": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
     }
 
 class ProjectsAPI(APIViewSet):
@@ -156,7 +156,7 @@ class RequestAPI(APIViewSet):
 class FingerPrintIDAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
     allowed_methods = ["GET","POST","DELETE"]
-    pagination_class = Pagination1K
+    pagination_class = DefaultPagination
     model = FingerPrintID
     model_serializer= FingerPrintIDSerializer
     order_by = ('-created_at',)
