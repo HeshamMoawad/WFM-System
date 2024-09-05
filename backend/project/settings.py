@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'users' ,
     'commission',
     'treasury',
+    'leads',
 
 ]
 

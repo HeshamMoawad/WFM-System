@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/users/', include('users.api.urls')),
     path('api/commission/',include('commission.api.urls')),
     path('api/treasury/',include('treasury.urls')),
+    path('api/leads/',include('leads.urls')),
     path('media/',include('users.api.media_urls'))
 ]
 
