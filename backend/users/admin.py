@@ -66,8 +66,8 @@ class UserResource(resources.ModelResource):
 # Register your models here..
 class UserAdminSite(ImportExportModelAdmin):
     resource_class = UserResource
-    list_display = ("username","crm_username",'role',"project",'annual_count',"is_active","is_staff","is_superuser")
-    list_filter = ("project","role")
+    list_display = ("username","crm_username",'role',"department","project","is_active","is_staff","is_superuser")
+    list_filter = ("project","department","role")
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['username' , 'uuid' , 'first_name']  
     fieldsets = FieldSets([

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 # from permissions.models import CustomBasePermission
 from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
-from permissions.users import IsOwner, IsSuperUser , IsManager
+from permissions.users import IsOwner, IsSuperUser , IsManager , IsHR
 from users.views import DefaultPagination
 from .serializer import (
     AdvanceSerializer , 
@@ -79,9 +79,9 @@ class NotificationAPIView(APIViewSet):
     requiered_fields = ["creator","message","for_users","deadline"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "POST": [IsSuperUser | IsOwner],
-        "PUT": [IsSuperUser | IsOwner],
-        "DELETE": [IsSuperUser | IsOwner],
+        "POST": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
     }
 
 
