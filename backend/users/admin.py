@@ -52,11 +52,11 @@ class UserResource(resources.ModelResource):
     class Meta:
         model = User
         fields = (
-            'username', 'password_normal','profile__phone', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
+            'username', 'password_normal','profile__phone','annual_count', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
             'basic_salary', 'set_deduction_rules', 'set_global_commission_rules', 'will_arrive_at', 'will_leave_at'
         )
         export_order = (
-            'username', 'password_normal','profile__phone', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
+            'username', 'password_normal','profile__phone','annual_count', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
             'basic_salary', 'set_deduction_rules', 'set_global_commission_rules', 'will_arrive_at', 'will_leave_at'
         )
         
@@ -66,7 +66,7 @@ class UserResource(resources.ModelResource):
 # Register your models here..
 class UserAdminSite(ImportExportModelAdmin):
     resource_class = UserResource
-    list_display = ("username","crm_username",'role',"project","is_active","is_staff","is_superuser")
+    list_display = ("username","crm_username",'role',"project",'annual_count',"is_active","is_staff","is_superuser")
     list_filter = ("project","role")
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['username' , 'uuid' , 'first_name']  
@@ -84,7 +84,6 @@ class UserAdminSite(ImportExportModelAdmin):
                 'is_superuser',
                 "first_name",
                 "last_name",
-
             ] ,
             [
                 "project",
@@ -92,6 +91,7 @@ class UserAdminSite(ImportExportModelAdmin):
                 "title",
                 "department" ,
                 "crm_username" ,
+                "annual_count",
             ],
             [
                 "uuid" ,

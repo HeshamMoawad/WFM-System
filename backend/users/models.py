@@ -44,7 +44,7 @@ class User(AbstractUser , BaseModel):
     title = models.CharField(max_length=100 , verbose_name="Title" , default='Agent')
     department = models.ForeignKey( Department,verbose_name="Department", on_delete=models.SET_NULL, null=True)
     crm_username = models.CharField(max_length=200 , verbose_name="CRM Username" , blank=True  )
-
+    annual_count = models.IntegerField(verbose_name="Annual Count", default= 0 )
     def __str__(self):
         return f"{self.username}"
     
