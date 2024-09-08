@@ -24,17 +24,16 @@ from django.utils.timezone import now
 
 class AdvancesAPIView(APIViewSet):
     permission_classes = [IsAuthenticated]
-    allowed_methods = ["GET","POST","DELETE"]
+    allowed_methods = ["GET","POST","PUT","DELETE"]
     pagination_class = DefaultPagination
     model = Advance
     model_serializer= AdvanceSerializer
     order_by = ('-created_at',)
-    search_filters = ["uuid",'user',"creator","amount","created_at"]
-    creating_filters = ["user","creator","amount"]
-    requiered_fields = ["user","creator","amount"]
+    search_filters = ["uuid",'user','status',"creator","amount","created_at"]
+    creating_filters = ["user","status","creator","amount"]
+    requiered_fields = ["user","status","creator","amount"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "POST": [IsSuperUser | IsOwner],
         "PUT": [IsSuperUser | IsOwner],
         "DELETE": [IsSuperUser | IsOwner],
     }

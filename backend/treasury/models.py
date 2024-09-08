@@ -20,6 +20,7 @@ class Advance(BaseModel):
     user = models.ForeignKey(User,verbose_name="Taker" ,  on_delete=models.SET_NULL , null=True , related_name="advance_taker" ,limit_choices_to={'role__in': ['AGENT','MANAGER','HR']})#limit_choices_to={'role': 'OWNER'}
     amount = models.PositiveIntegerField(verbose_name="Amount")
     # status = models.CharField(verbose_name="Advance Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
+    status = models.CharField(verbose_name="Advance Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
 
 
 
@@ -45,23 +46,23 @@ class Notification(BaseModel):
 
 
 def add_treasury_record(sender:User, instance:Advance, created:bool, **kwargs):
-    # if instance.status == RequestStatuses.ACCEPTED:
-    try :
-        new_record = TreasuryOutcome.objects.get(from_advance=instance)
-        new_record.amount = instance.amount
-        new_record.creator = instance.creator
-        new_record.details = f"Advance to {instance.user} amount {instance.amount} EGP" 
-        new_record.save()
-    except TreasuryOutcome.DoesNotExist :
-        new_record = TreasuryOutcome.objects.create(
-            creator = instance.creator,
-            amount = instance.amount ,
-            from_advance=instance,
-            details = f"Advance to {instance.user} amount {instance.amount} EGP" , 
-        )
-        new_record.save()
-    except Exception as e :
-        print(e)
+    if instance.status == RequestStatuses.ACCEPTED:
+        try :
+            new_record = TreasuryOutcome.objects.get(from_advance=instance)
+            new_record.amount = instance.amount
+            new_record.creator = instance.creator
+            new_record.details = f"Advance to {instance.user} amount {instance.amount} EGP" 
+            new_record.save()
+        except TreasuryOutcome.DoesNotExist :
+            new_record = TreasuryOutcome.objects.create(
+                creator = instance.creator,
+                amount = instance.amount ,
+                from_advance=instance,
+                details = f"Advance to {instance.user} amount {instance.amount} EGP" , 
+            )
+            new_record.save()
+        except Exception as e :
+            print(e)
 
 pre_save.connect(create_update_history, sender=TreasuryIncome)
 pre_save.connect(create_update_history, sender=TreasuryOutcome)

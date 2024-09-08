@@ -54,6 +54,7 @@ class AdvanceSerializer(ModelSerializer):
             "creator",
             "amount",
             "user",
+            "status",
             "created_at",
             "updated_at",
         ]

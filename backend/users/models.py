@@ -129,7 +129,7 @@ class Request(BaseModel):
     department = models.ForeignKey(Department,verbose_name="Department" , on_delete=models.SET_NULL , null=True)
     status = models.CharField(verbose_name="Request Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
     date = models.DateField(verbose_name="Date of Request", null=True )
-
+    
     def save(self,*args,**kwargs):
         if self.user :
             self.department = self.user.department
