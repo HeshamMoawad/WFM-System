@@ -9,7 +9,7 @@ class UserTypes (models.TextChoices):
 
 class RequestTypes (models.TextChoices):
     GLOBAL = ("GLOBAL", "Global")
-    ANNUAL = ("ANNUAL", "Annual")
+    ANNUAL = ("DEPARTURE", "Departure")
     VACATION = ('VACATION','Vacation')
     LATE = ('LATE','Late')
 
