@@ -4,6 +4,7 @@ from rest_framework.response import Response
 # from permissions.models import CustomBasePermission
 from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
+from utils.parsers import parse_date
 from permissions.users import IsOwner, IsSuperUser , IsManager , IsHR
 from users.views import DefaultPagination
 from .serializer import (
@@ -87,14 +88,26 @@ class NotificationAPIView(APIViewSet):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated , IsSuperUser | IsOwner])
 def total_treasury(request:Request):
-    income = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
-    outcome = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
-    income = income if income else 0
-    outcome = outcome if outcome else 0
+    date = request.query_params.get("date",None)
+    date_parsed = parse_date(date,[
+                "%Y-%m", 
+                "%m-%Y",
+                "%m/%Y", 
+                "%Y/%m", 
+                ]) if date else None
+    if date_parsed :
+        income = TreasuryIncome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
+        outcome = TreasuryOutcome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
+
+    income_total = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
+    outcome_total = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
+    
+    income = income if date_parsed else income_total 
+    outcome = outcome if date_parsed else outcome_total
     return Response({
-        "income":income,
-        "outcome":outcome,
-        "total":income - outcome,
+        "income":income if income else 0,
+        "outcome":outcome if income else 0,
+        "total":income - outcome if income and outcome else 0,
     })
 
 
