@@ -95,19 +95,17 @@ def total_treasury(request:Request):
                 "%m/%Y", 
                 "%Y/%m", 
                 ]) if date else None
+    
+    income = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
+    outcome = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
     if date_parsed :
         income = TreasuryIncome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
         outcome = TreasuryOutcome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
-
-    income_total = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
-    outcome_total = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
     
-    income = income if date_parsed else income_total 
-    outcome = outcome if date_parsed else outcome_total
     return Response({
         "income":income if income else 0,
-        "outcome":outcome if income else 0,
-        "total":income - outcome if income and outcome else 0,
+        "outcome":outcome if outcome else 0,
+        "total":(income if income is not None else 0) - (outcome if outcome is not None else 0) ,
     })
 
 
