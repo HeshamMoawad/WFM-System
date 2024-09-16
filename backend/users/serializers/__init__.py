@@ -99,6 +99,7 @@ class UserSerializer(ModelSerializer):
             "profile",
             "crm_username",
             "annual_count",
+            "fp_id",
         ]
         foreign_models = {
             "department": ForeignField("department",Department,'uuid') ,

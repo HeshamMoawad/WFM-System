@@ -69,7 +69,7 @@ class UserAdminSite(ImportExportModelAdmin):
     list_display = ("username","crm_username",'role',"department","project","annual_count","is_active","is_staff","is_superuser")
     list_filter = ("project","department","role")
     readonly_fields = ['uuid',"created_at","updated_at"]
-    search_fields = ['username' , 'uuid' , 'first_name']  
+    search_fields = ['username' , 'uuid' , 'first_name',"fp_id"]  
     fieldsets = FieldSets([
             'Login Fields' ,
             'Company Fields',
@@ -92,6 +92,7 @@ class UserAdminSite(ImportExportModelAdmin):
                 "department" ,
                 "crm_username" ,
                 "annual_count",
+                "fp_id",
             ],
             [
                 "uuid" ,

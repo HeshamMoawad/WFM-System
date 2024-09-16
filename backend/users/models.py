@@ -13,7 +13,7 @@ from core.models import BaseModel
 import json
 from django.utils.timezone import now
 from django.urls import reverse
-
+from uuid import uuid1
 
 
 class Project(BaseModel):
@@ -45,6 +45,8 @@ class User(AbstractUser , BaseModel):
     department = models.ForeignKey( Department,verbose_name="Department", on_delete=models.SET_NULL, null=True)
     crm_username = models.CharField(max_length=200 , verbose_name="CRM Username" , blank=True  )
     annual_count = models.IntegerField(verbose_name="Annual Count", default= 0 )
+    fp_id = models.CharField(verbose_name="Figner Print ID",max_length=200 , unique=False,blank=True)
+    
     def __str__(self):
         return f"{self.username}"
     
