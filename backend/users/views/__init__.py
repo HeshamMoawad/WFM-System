@@ -49,9 +49,9 @@ class UsersAPI(APIViewSet):
     pagination_class = Pagination1K
     model = User
     model_serializer= UserSerializer
-    order_by = ('role','username')
-    search_filters = ["uuid",'username','project' ,"department","annual_count","role","fp_id","is_active","is_superuser","crm_username"]
-    creating_filters = ["username","password_normal","is_active","annual_count" ,"role","is_staff","title","project","department","crm_username"]
+    order_by = ('-is_active','role','username')
+    search_filters = ["uuid",'username','project' ,"department","annual_count","fp_id","role","is_active","is_superuser","crm_username"]
+    creating_filters = ["username","password_normal","is_active","annual_count","role","is_staff","title","project","department","crm_username"]
     requiered_fields = ['username',"password_normal"]
     updating_filters = ["username","password_normal","is_active","annual_count","role","is_staff","title","project","department","crm_username"]
     unique_field:str = 'uuid'
