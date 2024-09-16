@@ -18,7 +18,7 @@ class Command(BaseCommand):
         parser.add_argument('--port', type=int, default=4370, help='ZK Port')
         parser.add_argument('--timeout', type=int, default=5, help='ZK Timeout Connection')
         parser.add_argument('--password', type=str, default=0, help='ZK password')
-        parser.add_argument('--user', type=str, default=None, help='ZK Sync Exact User')
+        # parser.add_argument('--user', type=str, default=None, help='ZK Sync Exact User')
         now = datetime.now().date()
         curr = now.day
         now = datetime(now.year,now.month,day=25).date()
@@ -34,7 +34,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Start Zk FP Syncing on")
         self.stdout.write(f"IP/Port : {kwargs.get('ip')}:{kwargs.get('port')}")
         self.stdout.write(f"Date : {date_from} to {date_to}")
-        self.stdout.write(f"User : {kwargs.get('user')}") if kwargs.get('user') else None
+        # self.stdout.write(f"User : {kwargs.get('user')}") if kwargs.get('user') else None
         conn = None
         zk = ZK(kwargs.get("ip"), port=kwargs.get("port"), timeout=kwargs.get("timeout"), password=kwargs.get("password"), force_udp=False, ommit_ping=False)
 
