@@ -69,8 +69,8 @@ class FingerPrintID(BaseModel):
 
 class ArrivingLeaving(BaseModel):
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.CASCADE )
-    date = models.DateField(verbose_name="Day Date",auto_now_add=True )
-    arriving_at = models.DateTimeField(verbose_name="Arrining Date & Time",auto_now_add=True)
+    date = models.DateField(verbose_name="Day Date", ) # auto_now_add=True
+    arriving_at = models.DateTimeField(verbose_name="Arrining Date & Time", ) # auto_now_add=True
     leaving_at = models.DateTimeField(verbose_name="Leaving Date & Time",null=True)
     # deuration_between = models.PositiveIntegerField(verbose_name="Deuration in secounds" , null=True)
 
