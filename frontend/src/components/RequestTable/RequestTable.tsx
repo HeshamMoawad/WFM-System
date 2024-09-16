@@ -16,8 +16,8 @@ import { Status } from "../../types/base";
 
 interface RequestTableProps {
     className?: string;
-    refresh: object;
-    setRefresh: React.Dispatch<SetStateAction<object>>;
+    refresh: boolean;
+    setRefresh: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const RequestTable: FC<RequestTableProps> = ({
@@ -61,7 +61,7 @@ const RequestTable: FC<RequestTableProps> = ({
                     {TRANSLATIONS.Requests.title[lang]}
                 </label>
                 <button
-                    onClick={(e) => setRefresh({ data: {} })}
+                    onClick={(e) => setRefresh(prev=>!prev)}
                     className="rounded-md bg-btns-colors-primary p-1"
                 >
                     <FiRefreshCw className="h-[25px] w-[25px]" />
@@ -154,37 +154,49 @@ const RequestTable: FC<RequestTableProps> = ({
                                             <button
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    sendRequest({
-                                                        url: "api/users/request",
-                                                        method: "DELETE",
-                                                        params: { uuid },
-                                                    })
-                                                        .then((data) => {
-                                                            Swal.fire({
-                                                                position:
-                                                                    "center",
-                                                                icon: "success",
-                                                                title: "Deleted Successfully",
-                                                                showConfirmButton:
-                                                                    false,
-                                                                timer: 1000,
-                                                            }).then(() =>
-                                                                setRefresh({
-                                                                    data: {},
+                                                    Swal.fire({
+                                                        title: "Are you sure?",
+                                                        text: "You won't be able to revert this!",
+                                                        icon: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#3085d6",
+                                                        cancelButtonColor: "#d33",
+                                                        confirmButtonText: "Yes, delete it!"
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            sendRequest({
+                                                                url: "api/users/request",
+                                                                method: "DELETE",
+                                                                params: { uuid },
+                                                            })
+                                                                .then((data) => {
+                                                                    Swal.fire({
+                                                                        position:
+                                                                            "center",
+                                                                        icon: "success",
+                                                                        title: "Deleted Successfully",
+                                                                        showConfirmButton:
+                                                                            false,
+                                                                        timer: 1000,
+                                                                    }).then(() =>
+                                                                        setRefresh(prev=>!prev)
+                                                                    );
                                                                 })
-                                                            );
-                                                        })
-                                                        .catch((err) => {
-                                                            Swal.fire({
-                                                                position:
-                                                                    "center",
-                                                                icon: "error",
-                                                                title: "can't Deleted",
-                                                                showConfirmButton:
-                                                                    false,
-                                                                timer: 1000,
-                                                            });
-                                                        });
+                                                                .catch((err) => {
+                                                                    Swal.fire({
+                                                                        position:
+                                                                            "center",
+                                                                        icon: "error",
+                                                                        title: "can't Deleted",
+                                                                        showConfirmButton:
+                                                                            false,
+                                                                        timer: 1000,
+                                                                    });
+                                                                });
+                                                        }
+                                                    });                
+
+                                                    
                                                 }}
                                                 className="rounded-md bg-btns-colors-secondry w-2/3"
                                             >

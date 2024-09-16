@@ -38,6 +38,9 @@ const AddUserForm: FC<AddUserFormProps> = ({setUUID}) => {
                 
                 <label htmlFor="title"  className='place-self-center' >{TRANSLATIONS.AddUser.form.usertitle[lang]}</label>
                 <input type="text" name="title" id="title"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+                
+                <label htmlFor="annual_count"  className='place-self-center' >{TRANSLATIONS.Basic.annual[lang]}</label>
+                <input type="number"  name="annual_count" id="annual_count"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
 
                 <SelectComponent<Department> 
                     name="department" 

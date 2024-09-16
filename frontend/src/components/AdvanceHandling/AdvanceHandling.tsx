@@ -1,32 +1,29 @@
 import type { FC, SetStateAction } from 'react';
 import Container from '../../layouts/Container/Container';
-import RequestCard from '../RequestCard/RequestCard';
 import useRequest from '../../hooks/calls';
-import { RequestType } from '../../types/auth';
+import { AdvanceType } from '../../types/auth';
 import { useAuth } from '../../hooks/auth';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
+import AdvanceCard from '../AdvanceCard/AdvanceCard';
 
-interface RequestHandlingProps {
+interface AdvanceHandlingProps {
     className?: string;
     refresh:boolean;
     setRefresh:React.Dispatch<SetStateAction<boolean>>;
     url?:string;
 }
 
-const RequestHandling: FC<RequestHandlingProps> = ({className , refresh , setRefresh , url="api/users/request"}) => {
+const AdvanceHandling: FC<AdvanceHandlingProps> = ({className , refresh , setRefresh , url="api/treasury/advance"}) => {
     const {auth} = useAuth()
     const additionalFilter = ()=>{
         let result = {status:"PENDING"}
-        if (auth.role === "OWNER" || auth.is_superuser || auth.role === "HR") {
+        if (auth.role === "OWNER" || auth.is_superuser) {
             return result
-        }
-        if (auth.role === "MANAGER") {
-            return {...result , user__department__name:auth.department.name}
         }
         return result
     }
 
-    const {data , loading} = useRequest<RequestType>({
+    const {data , loading} = useRequest<AdvanceType>({
         url:url,
         method:"GET",
         params: additionalFilter()
@@ -38,8 +35,8 @@ const RequestHandling: FC<RequestHandlingProps> = ({className , refresh , setRef
         }
         <div className='request-container flex flex-col gap-6'>
             {
-                data?.results.map((request)=>{
-                    return <RequestCard key={request.uuid} request={request} setRefresh={setRefresh} refresh={refresh}/>
+                data?.results.map((advance)=>{
+                    return <AdvanceCard key={advance.uuid} advance={advance} setRefresh={setRefresh} refresh={refresh}/>
                 })
             }
         </div>
@@ -47,4 +44,4 @@ const RequestHandling: FC<RequestHandlingProps> = ({className , refresh , setRef
     );
 }
 
-export default RequestHandling;
+export default AdvanceHandling;

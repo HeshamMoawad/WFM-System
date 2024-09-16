@@ -26,6 +26,7 @@ interface User {
     title:string ,
     first_name:string ,
     last_name:string ,
+    annual_count:number ,
     is_superuser:boolean ,
     is_active:boolean ,
     password_normal?:string,
@@ -74,6 +75,14 @@ interface RequestType{
     note:string;
     date:string;
     department:string;
+    status:"PENDING"|"ACCEPTED"|"REJECTED";
+}
+interface AdvanceType{
+    uuid:string;
+    created_at:string;
+    updated_at:string;
+    user:Authintication;
+    amount:number;
     status:"PENDING"|"ACCEPTED"|"REJECTED";
 }
 
@@ -144,6 +153,7 @@ interface BasicDetails {
     deduction_money: number,
     kpi:number,
     gift:number,
+    take_annual:number,
     basic:number,
 }
 
@@ -225,6 +235,7 @@ export type {
     CoinChangerType ,
     Lead ,
     Team ,
-    Subscription
+    Subscription ,
+    AdvanceType
 
 };

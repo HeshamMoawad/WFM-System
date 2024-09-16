@@ -1,6 +1,6 @@
 const t = (arKey:string,enKey:string)=> ({ar:arKey,en:enKey})
 
-export const BASE_URL = "http://192.168.11.251:8000/"
+export const BASE_URL = "/" // http://192.168.11.251:8000
 
 export const WEEK_DAYS = [
   t("الاحد","Sun"), 
@@ -77,12 +77,12 @@ export const TRANSLATIONS = {
         translate:t("عام","Global")
       },
       {
-        value:"ANNUAL",
-        translate:t("انوال","Annual")
+        value:"VACATION",
+        translate:t("اجازة","vacation")
       },
       {
-        value:"VACATION",
-        translate:t("اجازة","Vacation")
+        value:"DEPARTURE",
+        translate:t("انصراف","departure")
       },
       {
         value:"LATE",
@@ -130,9 +130,18 @@ export const TRANSLATIONS = {
     Phone:t("رقم الهاتف","Phone"),
     About:t("حول","About"),
     TelegramID:t("رقم التيلجرام ID","Telegram ID"),
+    Department:t("القسم","Department"),
+    Project:t("البروجيكت","Project"),
+    Title:t("الترقية","Title"),
+    Username:t("اسم المستخدم","Username"),
+    Fullname:t("الاسم بالكامل","Full Name"),
     Alerts:{
       onSuccessUpdate:t("التحديث تم بنجاح","Success Update"),
       onFaildUpdate:t("فشل التحديث","Update Faild"),
+      onSuccessCreated:t("نجح الانشاء","Created Successfully"),
+      onFaildCreated:t("فشل الانشاء","Created Faild"),
+      // onSuccessCreated:t("نجح الانشاء","Created Successfully"),
+      // onFaildCreated:t("فشل الانشاء","Created Faild"),
     }
   },
   AttendanceDetails:{
@@ -215,8 +224,8 @@ export const TRANSLATIONS = {
     intable:{
       title:t("جدول الواردات","Income Table"),
       headers:{
-        ar:["المستخدم","اسم المستخدم","القيمة","التفاصيل","مسح"],
-        en:["creator","username","amount","details","delete"],
+        ar:["المستخدم","اسم المستخدم","القيمة","التفاصيل","تاريخ الانشاء","مسح"],
+        en:["creator","username","amount","details","created_at","delete"],
       },
     },
   },
@@ -333,7 +342,8 @@ export const TRANSLATIONS = {
     }
   },
   Basic:{
-    title:t("الاساسى","الاساسى"),
+    title:t("الاساسى","Basic"),
+    annual:t("رصيد الاجازات","Annual"),
     table:{
       title:t("جدول الاساسى","Basic Table"),
       headers:{
@@ -346,6 +356,7 @@ export const TRANSLATIONS = {
       deductionmoney:t("خصم بالقيمة","Deduction Money"),
       kpi:t("KPI","KPI"),
       gift:t("علاوة (مكافأة)","Additional Gift"),
+      take_annual:t("الاجازات الاعتيادى","Annual"),
       give:t("اعطى","Give")
     }
 

@@ -7,10 +7,11 @@ import { FaUserEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import Table from "../../components/Table/Table";
-import DatePicker from "../../components/DatePicker/DatePicker";
+import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
 import { FaHandHoldingUsd } from "react-icons/fa";
 import { TRANSLATIONS } from "../../utils/constants";
 import { LanguageContext } from "../../contexts/LanguageContext";
+import DatePicker from "react-datepicker";
 
 interface BasicProps {}
 
@@ -36,12 +37,33 @@ const Basic: FC<BasicProps> = () => {
                     <h1 className="col-span-1 text-2xl text-center w-full place-self-center">
                         {TRANSLATIONS.Date[lang]}  
                     </h1>
-                    <DatePicker
+                    <DatePicker 
+                        showIcon
+                        dateFormat="MM-yyyy"
+                        name='date' 
+                        renderMonthContent={ (month, shortMonth, longMonth, day) => {
+                            const fullYear = new Date(day).getFullYear();
+                            const tooltipText = `Tooltip for month: ${longMonth} ${fullYear}`;
+                            return <span title={tooltipText}>{shortMonth}</span>;
+                        }} 
+                        toggleCalendarOnIconClick
+                        showMonthYearPicker 
+                        className='md:w-full text-center border border-[gray]' 
+                        calendarIconClassName='w-4 h-4 fixed p-1'
+                        selected={date} 
+                        onChange={(date)=>{
+                            if(date && setDate) {
+                                setDate(date)
+                            };
+                        }
+                    }/>
+
+                    {/* <CustomDatePicker
                         type="month"
                         className="md:col-span-2  h-11 text-center"
                         spanClassName="text-2xl text-center w-full place-self-center "
                         setDate={setDate}
-                    />
+                    /> */}
                 </div>
 
                 {loading ? <LoadingComponent /> : <></>}

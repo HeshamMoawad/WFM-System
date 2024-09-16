@@ -10,7 +10,7 @@ import { Language } from '../../types/base';
 
 
 
-export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.Dispatch<React.SetStateAction<boolean>> , setRefresh?:React.Dispatch<React.SetStateAction<object>> , refresh?: object) => {
+export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.Dispatch<React.SetStateAction<boolean>> , setRefresh?:React.Dispatch<React.SetStateAction<boolean>> , refresh?: boolean) => {
     setLoading(true)
     e.preventDefault()
     sendRequest({url:"api/users/request",method:"POST",data:parseFormData(e)})
@@ -18,7 +18,7 @@ export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.
              Swal.fire({
                 position: "center",
                 icon: "success",
-                title: TRANSLATIONS.Profile.Alerts.onSuccessUpdate[lang],
+                title: TRANSLATIONS.Profile.Alerts.onSuccessCreated[lang],
                 text:`${data?.username} - AS - ${data?.title}` ,
                 showConfirmButton: false,
                 timer: 1000
@@ -27,7 +27,7 @@ export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.
          .catch(err => {
               Swal.fire({
                 icon: "error",
-                title: TRANSLATIONS.Profile.Alerts.onFaildUpdate[lang],
+                title: TRANSLATIONS.Profile.Alerts.onFaildCreated[lang],
                 text:err.message,
                 showConfirmButton: false,
                 timer: 1000
@@ -35,7 +35,7 @@ export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.
             }).finally(() => { 
               setLoading(false)
               if (setRefresh && refresh){
-                setRefresh({data:""});
+                setRefresh(prev=>!prev);
               } 
               
             });

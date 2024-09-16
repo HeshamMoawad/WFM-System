@@ -8,13 +8,13 @@ import { useAuth } from '../../hooks/auth';
 interface RequestsProps {}
 
 const Requests: FC<RequestsProps> = () => {
-    const [refresh , setRefresh ]= useState<object>({})
+    const [refresh , setRefresh ]= useState<boolean>(false)
     const {auth} = useAuth()
 
     return (
     <div className='w-full grid grid-cols-1 gap-5 md:grid-flow-row md:grid-cols-9 px-5 '> 
 
-        <RequestAddForm refresh={refresh} setRefresh={setRefresh} className='md:col-span-4 justify-self-center w-full md:min-w-[30rem] h-fit relative'/>
+        <RequestAddForm refresh={refresh} setRefresh={setRefresh} className={`${auth.role === "OWNER" || auth.role === "MANAGER" ? "md:col-span-4  "  : "md:col-span-full max-w-[400px] md:max-w-[400px]"} md:min-w-[30rem]  justify-self-center h-fit relative`}/>
 
         {
             auth.role === "OWNER" || auth.role === "MANAGER" ? 

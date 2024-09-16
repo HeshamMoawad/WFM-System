@@ -12,6 +12,7 @@ interface TableFiltersProps {
 const TableFilters: FC<TableFiltersProps> = ({setFilters}) => {
     const {lang} = useContext(LanguageContext)
     const [refresh , setRefresh] = useState<boolean>(false)
+    
     return (
     <div className='flex flex-row w-[1000px] md:w-full gap-3 justify-evenly md:px-16'>
         <div className='w-full flex justify-evenly gap-3 items-center'>

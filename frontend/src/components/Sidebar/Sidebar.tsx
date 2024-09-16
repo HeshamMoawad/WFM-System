@@ -34,7 +34,7 @@ const Sidebar: FC<SidebarProps> = () => {
             name : TRANSLATIONS.SideBar.DashBoard.title[lang] ,
             Icon : RxDashboard ,
             permissions:[
-                // "OWNER",
+                "OWNER",
                 "MANAGER",
                 "AGENT",
                 "HR",
@@ -82,7 +82,19 @@ const Sidebar: FC<SidebarProps> = () => {
     
                     ],
     
+                },
+                {
+                    name:TRANSLATIONS.SideBar.Treasury.Advance[lang],
+                    href:'/advances',
+                    Icon:PiHandCoins ,
+                    permissions:[
+                        {role : "AGENT" , departments : ["*"]} ,
+                        {role : "MANAGER" , departments : ["*"]} ,
+                        {role : "HR" , departments : ["*"]} ,
+                    ],
+    
                 }
+
             ]
     
         },{
@@ -231,7 +243,7 @@ const Sidebar: FC<SidebarProps> = () => {
                     Icon:BiDevices ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
-                        {role : "HR" , departments : ["*"]} ,
+                        // {role : "HR" , departments : ["*"]} ,
                         {role : "MANAGER" , departments : ["*"]} ,
                     ],
     
@@ -242,7 +254,7 @@ const Sidebar: FC<SidebarProps> = () => {
                     Icon:RiTeamLine ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
-                        {role : "HR" , departments : ["*"]} ,
+                        // {role : "HR" , departments : ["*"]} ,
                         {role : "MANAGER" , departments : ["*"]} ,
                     ],
     

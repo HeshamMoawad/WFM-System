@@ -1,7 +1,7 @@
 import  {FormEvent} from 'react';
 import { TRANSLATIONS } from '../../utils/constants';
 import { sendRequest } from '../../calls/base';
-import { parseFormData } from '../../utils/converter';
+import { parseFormData, parseObject } from '../../utils/converter';
 import Swal from 'sweetalert2';
 import { Language } from '../../types/base';
 import { loadID, saveLogin } from '../../utils/storage';
@@ -10,18 +10,21 @@ import { loadID, saveLogin } from '../../utils/storage';
 
 export const onSubmitProfileForm = (e:FormEvent , lang:Language , uuid:string, setLoading:React.Dispatch<React.SetStateAction<boolean>>) => {
     setLoading(true)
-    e.preventDefault()
-    const form  = parseFormData(e)
-    const picture = form.get('picture') as File
-    console.log(picture.size)
+    const temp_form  = parseFormData(e) 
+    console.log( temp_form,  typeof temp_form)
+    const picture = temp_form.get('picture') as File
+    console.error(temp_form.get("phone") , picture)
     if(picture.size === 0) {
       console.log(picture ,  "Will elete picture")
-
-      form.delete('picture')
+      temp_form.delete("picture")
     }
+    for (let [key, value] of temp_form.entries()) {
+      console.log(`${key}: ${value instanceof File ? value.name : value}`);
+    } 
+    console.log("form\n",temp_form)
     const finger = loadID()
 
-      sendRequest({url:"api/users/profile",method:"PUT",params:{"uuid":uuid},data:form})
+      sendRequest({url:"api/users/profile",method:"PUT",params:{"uuid":uuid},data:temp_form})
           .then(data => {
               Swal.fire({
                   position: "center",

@@ -45,7 +45,7 @@ const UsersTable: FC<UsersTableProps> = () => {
             })
 
     }
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser || auth.role === "HR" ? {} : {department__name : auth.department.name}
     const {data , loading } = useRequest<User>({
         url: 'api/users/user' ,
         method: 'GET',

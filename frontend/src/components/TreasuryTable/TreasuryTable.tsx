@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, type FC } from "react";
+import { SetStateAction, useContext, useEffect, useState, type FC } from "react";
 import Container from "../../layouts/Container/Container";
 import useRequest from "../../hooks/calls";
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
@@ -16,9 +16,10 @@ interface TreasuryTableProps {
     url: string;
     color?: string;
     refresh?: boolean;
+    setRefresh?: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh }) => {
+const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh , setRefresh }) => {
     const { lang } = useContext(LanguageContext)
     const [currentPage, setCurrentPage] = useState(1)
     const { data, loading } = useRequest<TreasuryRecord>(
@@ -84,6 +85,19 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh }) 
                                 },
                             },
                             {
+                                key: "created_at",
+                                method: (_: any) => {
+                                    if (_) {
+                                        const date = new Date(_);
+                                        return `${date.getFullYear()}-${
+                                            date.getMonth() + 1
+                                        }-${date.getDate()}  -  ${date.getHours()}:${date.getMinutes()}`;
+                                    }
+
+                                    return "-";
+                                },
+                            },
+                            {
                                 key: ["uuid","from_advance" , "from_basic" , "from_salary"],
                                 method: (args) => {
                                     const {uuid ,from_advance , from_basic , from_salary } = args as any;
@@ -98,42 +112,60 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh }) 
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            sendRequest({
-                                                                url: url,
-                                                                method: "DELETE",
-                                                                params: {
-                                                                    uuid: uuid,
-                                                                },
-                                                            })
-                                                                .then((data) => {
-                                                                    console.log(
-                                                                        data
-                                                                    );
-                                                                    Swal.fire({
-                                                                        position:
-                                                                            "center",
-                                                                        icon: "success",
-                                                                        title: "Deleted Successfully",
-                                                                        showConfirmButton:
-                                                                            false,
-                                                                        timer: 1000,
-                                                                    }); //.then(() => setRefresh())
-                                                                })
-                                                                .catch((err) => {
-                                                                    console.log(
-                                                                        data,
-                                                                        err
-                                                                    );
-                                                                    Swal.fire({
-                                                                        position:
-                                                                            "center",
-                                                                        icon: "error",
-                                                                        title: "can't Deleted",
-                                                                        showConfirmButton:
-                                                                            false,
-                                                                        timer: 1000,
-                                                                    });
-                                                                });
+                                                            Swal.fire({
+                                                                title: "Are you sure?",
+                                                                text: "You won't be able to revert this!",
+                                                                icon: "warning",
+                                                                showCancelButton: true,
+                                                                confirmButtonColor: "#3085d6",
+                                                                cancelButtonColor: "#d33",
+                                                                confirmButtonText: "Yes, delete it!"
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    sendRequest({
+                                                                        url: url,
+                                                                        method: "DELETE",
+                                                                        params: {
+                                                                            uuid: uuid,
+                                                                        },
+                                                                    })
+                                                                        .then((data) => {
+                                                                            console.log(
+                                                                                data
+                                                                            );
+                                                                            Swal.fire({
+                                                                                position:
+                                                                                    "center",
+                                                                                icon: "success",
+                                                                                title: "Deleted Successfully",
+                                                                                showConfirmButton:
+                                                                                    false,
+                                                                                timer: 1000,
+                                                                            }); //.then(() => setRefresh())
+                                                                        })
+                                                                        .catch((err) => {
+                                                                            console.log(
+                                                                                data,
+                                                                                err
+                                                                            );
+                                                                            Swal.fire({
+                                                                                position:
+                                                                                    "center",
+                                                                                icon: "error",
+                                                                                title: "can't Deleted",
+                                                                                showConfirmButton:
+                                                                                    false,
+                                                                                timer: 1000,
+                                                                            });
+                                                                        }).finally(()=>{
+                                                                            if(setRefresh){
+                                                                                setRefresh(prev=>!prev)
+                                                                            }
+                                                                        })
+                                                                        }
+                                                                    });                
+            
+                                                            
                                                         }}
                                                         className="rounded-md bg-btns-colors-secondry w-2/3 min-w-[80px]"
                                                     >
@@ -149,7 +181,7 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh }) 
                     />
                     <Pagination page={data} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
                     <div  className={`mb-2 rounded-md flex flex-row items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                        <label htmlFor="" className='text-center'>Total : {data?.total_count}</label>
+                        <label htmlFor="" className='text-center'>Count : {data?.total_count}</label>
                     </div>
 
                 </>

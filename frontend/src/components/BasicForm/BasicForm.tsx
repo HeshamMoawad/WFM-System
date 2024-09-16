@@ -15,17 +15,20 @@ interface BasicFormProps {
     userCommissionDetails:CommissionDetails ;
     basicDetails?:BasicDetails ,
     disabled?: boolean;
+    deductionDays?: number;
+    deductionMoney?:number;
 }
 
-const BasicForm: FC<BasicFormProps> = ({className , userCommissionDetails , date , basicDetails , disabled=false}) => {
+const BasicForm: FC<BasicFormProps> = ({className  , deductionDays ,deductionMoney , userCommissionDetails , date , basicDetails , disabled=false}) => {
     const {lang} = useContext(LanguageContext)
     const [loading,setLoading] = useState(false);
     const [basic , setBasic] = useState<BasicDetails>(basicDetails ? basicDetails : {
-        deduction_days: 0,
-        deduction_money: 0,
+        deduction_days: deductionDays ?  deductionDays : 0,
+        deduction_money: deductionMoney ?  deductionMoney : 0,
         kpi:0,
         gift:0,
-        basic:userCommissionDetails.basic,
+        take_annual:0,
+        basic: Math.round(userCommissionDetails.basic - (deductionDays ?  deductionDays * ( userCommissionDetails.basic/30 ) : 0) - (deductionMoney ? deductionMoney : 0)),
 
     } )
     const navigate = useNavigate()
@@ -78,9 +81,16 @@ const BasicForm: FC<BasicFormProps> = ({className , userCommissionDetails , date
                         })
                 }}>
                 <label className='text-2xl text-btns-colors-primary place-self-center col-span-3 mb-1'>{TRANSLATIONS.Basic.title[lang]}</label>
+                
+                <label className='text-2xl place-self-center col-span-3 mb-1'>{TRANSLATIONS.Basic.annual[lang]} : {userCommissionDetails.user.annual_count}</label>
 
                 <input disabled={disabled} type="hidden" name="user" value={userCommissionDetails.user.uuid} />
                 {/* <input type="hidden" name="date" value={parseDateFromParams(date)} /> */}
+
+
+
+                <label className='col-span-1 place-self-center' htmlFor="take_annual">{TRANSLATIONS.Basic.form.take_annual[lang]}</label>
+                <input disabled={disabled} onChange={onChange} onWheel={e=>{e.preventDefault()}} className='w-5/6 col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-secondry  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" min={0} max={userCommissionDetails.user.annual_count} name="take_annual" value={basic.take_annual}/>
 
                 <label className='col-span-1 place-self-center' htmlFor="deduction_days">{TRANSLATIONS.Basic.form.deductiondays[lang]}</label>
                 <input disabled={disabled} onChange={onChange} onWheel={e=>{e.preventDefault()}} className='w-5/6 col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-secondry  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg' type="number" name="deduction_days" value={basic.deduction_days}/>

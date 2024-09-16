@@ -2,7 +2,6 @@ import type { FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import SelectComponent from '../SelectComponent/SelectComponent';
 import { Project } from '../../types/auth';
-import DatePicker from '../DatePicker/DatePicker';
 import { sendRequest } from '../../calls/base';
 import { parseFormData } from '../../utils/converter';
 import Swal from 'sweetalert2';
@@ -71,11 +70,6 @@ const LeadForm: FC<LeadFormProps> = () => {
                 />
 
             
-            {/* <label htmlFor="date" className="col-span-1">Date</label>
-            <DatePicker 
-                name='date'
-                className='col-span-2 w-2/3 place-self-center'
-                /> */}
             <button type="submit" className="bg-btns-colors-primary col-span-3 h-[35px] w-2/3 place-self-center rounded-lg">Save</button>
 
         </form>

@@ -22,8 +22,7 @@ export const parseDateFromParams = (dateString:string) => {
 
 
 export const getFullURL = (url:string|null):string=>{
-    // return `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
-    return url ? `${BASE_URL}media${url}` : ""
+    return url ? `${BASE_URL}${url}` : ""
 }
 
 

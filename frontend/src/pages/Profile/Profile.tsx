@@ -5,7 +5,7 @@ import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { onSubmitProfileForm } from '../../calls/Profile/Profile';
 import LoadingPage from '../LoadingPage/LoadingPage';
-import { getFullURL } from '../../utils/converter';
+import { getFullURL, parseFormData } from '../../utils/converter';
 import { useNavigate } from "react-router-dom";
 
 interface ProfileProps {}
@@ -55,10 +55,42 @@ const Profile: FC<ProfileProps> = () => {
                 <form className='mt-10 grid grid-cols-1 md:grid-cols-2 gap-3 content-start' onSubmit={(e)=>{
                     onSubmitProfileForm(e,lang,auth.profile.uuid,setLoading)
                     }}>
+
                     <div className='flex flex-row md:p-3 gap-5 md:col-span-2'>
                         <label htmlFor="picture" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Picture[lang]} : </label>
                         <input accept="image/*" onChange={handleFileChange} disabled={disabled} type="file" name="picture" id="picture"  className='w-[100%] outline-none px-4 rounded-lg bg-[transparent] '/>
                     </div>
+
+
+                    <div className='flex flex-row justify-stretch md:p-3 gap-5'>
+                        <label htmlFor="" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Username[lang]} : </label>
+                        <label  dir={TRANSLATIONS.Direction[lang]} className='w-full text-center text-xl'>
+                            {auth.username}
+                        </label>
+                    </div>
+                    <div className='flex flex-row justify-around md:p-3 gap-5'>
+                        <label htmlFor="" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Fullname[lang]} : </label>
+                        <label  dir={TRANSLATIONS.Direction[lang]} className='w-full text-center text-xl h-fit'>
+                            {auth.first_name + " " + auth.last_name}
+                        </label>
+                    </div>
+
+
+
+                    <div className='flex flex-row justify-stretch md:p-3 gap-5'>
+                        <label htmlFor="" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Department[lang]} : </label>
+                        <label  dir={TRANSLATIONS.Direction[lang]} className='w-full text-center text-xl'>
+                            {auth.department.name}
+                        </label>
+                    </div>
+                    <div className='flex flex-row justify-stretch md:p-3 gap-5'>
+                        <label htmlFor="" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Project[lang]} : </label>
+                        <label  dir={TRANSLATIONS.Direction[lang]} className='w-full text-center text-xl'>
+                            {auth.project.name}
+                        </label>
+                    </div>
+
+
                     <div className='flex flex-row md:p-3 gap-5'>
                         <label htmlFor="phone" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Phone[lang]} : </label>
                         <input onChange={onChangeInputs} value={profile.phone} disabled={disabled} type="text" name="phone" id="phone" placeholder={TRANSLATIONS.Profile.Phone[lang]} dir={TRANSLATIONS.Direction[lang]} className='w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
@@ -67,6 +99,15 @@ const Profile: FC<ProfileProps> = () => {
                         <label htmlFor="telegram_id" className='text-l w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.TelegramID[lang]} : </label>
                         <input onChange={onChangeInputs} value={profile.telegram_id ? profile.telegram_id : undefined} disabled={disabled} type="number" name="telegram_id" id="telegram_id" dir={TRANSLATIONS.Direction[lang]} placeholder={TRANSLATIONS.Profile.TelegramID[lang]} className='w-full outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                     </div>
+
+                    <div className='flex flex-row justify-stretch md:p-3 gap-5'>
+                        <label htmlFor="" className='text-xl w-[55%] md:w-[65%]'>{TRANSLATIONS.Profile.Title[lang]} : </label>
+                        <label className='w-full text-center text-xl'>
+                            {auth.title}
+                        </label>
+                    </div>
+
+
                     <div className='flex flex-row md:p-3 gap-5 md:col-span-2'>
                         <label htmlFor="about" className='text-xl w-[55%] md:w-[20%]'>{TRANSLATIONS.Profile.About[lang]} : </label>
                         <textarea onChange={onChangeInputs} value={profile.about ? profile.about : ""} disabled={disabled} name="about" id="about" placeholder={TRANSLATIONS.Profile.About[lang]} dir={TRANSLATIONS.Direction[lang]} className='w-[100%] h-60 md:h-80 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>

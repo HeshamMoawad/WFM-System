@@ -1,4 +1,4 @@
-import React, { useContext, useState, type FC } from 'react';
+import React, { useContext, useEffect, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 // import { useAuth } from '../../hooks/auth';
 import useRequest from '../../hooks/calls';
@@ -11,6 +11,8 @@ import {LanguageContext} from '../../contexts/LanguageContext';
 import Pageination from '../Pageination/Pageination';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
+import { Status } from '../../types/base';
+import { useAuth } from '../../hooks/auth';
 // import SelectComponent from '../SelectComponent/SelectComponent';
 // import { LanguageContext } from '../../contexts/LanguageContext';
 
@@ -21,13 +23,15 @@ interface AdvancesTableProps {
     setRefresh?:React.Dispatch<React.SetStateAction<boolean>>;
     className?: string;
     canDelete?:boolean;
+    setTotal?:React.Dispatch<React.SetStateAction<number|null>>;
 }   
 
-const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , setRefresh ,className , canDelete}) => {
-    // const {auth} = useAuth()
+const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , setRefresh ,setTotal,className , canDelete}) => {
+    const {auth} = useAuth()
     const {lang} = useContext(LanguageContext)
     const [currentPage, setCurrentPage] = useState(1)
-    const user__uuid =  user_uuid ? {user__uuid:user_uuid} : {}
+
+    const user__uuid =  {user__uuid:user_uuid ? user_uuid :auth.uuid}
     const dates = date ? {
         created_at__date__gte: `${date.getFullYear()}-${date.getMonth()}-25`,
         created_at__date__lte: `${date.getFullYear()}-${date.getMonth()+1}-26`,
@@ -41,9 +45,18 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
             ...dates,
             page:currentPage ,
         } 
-    },[user_uuid,currentPage , refresh , date])
-
+    },[user_uuid , currentPage , refresh , date])
     let totalAdvance = 0
+
+    useEffect(()=>{
+        if(data?.results && setTotal){
+            let local_total = 0;
+            data?.results.forEach((val, inx) => {
+                local_total += val.amount
+            }, 0);
+            setTotal(local_total)
+        }
+    },[data])
     return (
         <Container className={`${className} md:w-2/3 h-fit relative pb-2`}>
             {
@@ -63,9 +76,14 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
                                     const item = _ as any; 
                                     return (
                                     <td className='px-3 py-1'>
-                                        <div className='flex justify-center items-center'>
-                                            <img src={getFullURL(item?.profile?.picture)} alt="" className='rounded-full w-[60px] h-[60px]'/>
-                                        </div>
+                                        {
+                                            item?.profile?.picture ? (
+                                                <div className='flex justify-center items-center'>
+                                                    <img src={getFullURL(item?.profile?.picture)} alt="" className='rounded-full w-[60px] h-[60px]'/>
+                                                </div>
+
+                                            ): "-"
+                                        }
                                     </td>
                                     )
                                 }
@@ -80,6 +98,27 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
                                 method : (_)=>{
                                     totalAdvance += Number(_);
                                     return <td className='px-3 py-1'>{_}</td>
+                                },
+                            },{
+                                key:"status",
+                                method : (_) => {
+                                    const status : Status = _ as any
+                                    return (
+                                        <td
+                                            key={Math.random()}
+                                            className={`px-3 py-1 ${
+                                                status === "PENDING"
+                                                    ? "text-[rgb(234,179,8)]"
+                                                    : status === "REJECTED"
+                                                    ? "text-[red]"
+                                                    : status === "ACCEPTED"
+                                                    ? "text-[green]"
+                                                    : ""
+                                            }`}
+                                        >
+                                            {TRANSLATIONS.Request.Status[status][lang]}
+                                        </td>
+                                    );
                                 },
                             },{
                                 key:"created_at",
@@ -106,39 +145,53 @@ const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , set
                                             <button
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    sendRequest({
-                                                        url: "api/treasury/advance",
-                                                        method: "DELETE",
-                                                        params: { uuid },
-                                                    })
-                                                        .then((data) => {
-                                                            Swal.fire({
-                                                                position:
-                                                                    "center",
-                                                                icon: "success",
-                                                                title: "Deleted Successfully",
-                                                                showConfirmButton:
-                                                                    false,
-                                                                timer: 1000,
+                                                    Swal.fire({
+                                                        title: "Are you sure?",
+                                                        text: "You won't be able to revert this!",
+                                                        icon: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#3085d6",
+                                                        cancelButtonColor: "#d33",
+                                                        confirmButtonText: "Yes, delete it!"
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            sendRequest({
+                                                                url: "api/treasury/advance",
+                                                                method: "DELETE",
+                                                                params: { uuid },
                                                             })
-                                                        })
-                                                        .catch((err) => {
-                                                            Swal.fire({
-                                                                position:
-                                                                    "center",
-                                                                icon: "error",
-                                                                title: "can't Deleted",
-                                                                showConfirmButton:
-                                                                    false,
-                                                                timer: 1000,
-                                                            });
-                                                        })
-                                                        .finally(()=>{
-                                                            if(setRefresh){
-                                                                setRefresh(prev=>!prev)
+                                                                .then((data) => {
+                                                                    Swal.fire({
+                                                                        position:
+                                                                            "center",
+                                                                        icon: "success",
+                                                                        title: "Deleted Successfully",
+                                                                        showConfirmButton:
+                                                                            false,
+                                                                        timer: 1000,
+                                                                    })
+                                                                })
+                                                                .catch((err) => {
+                                                                    Swal.fire({
+                                                                        position:
+                                                                            "center",
+                                                                        icon: "error",
+                                                                        title: "can't Deleted",
+                                                                        showConfirmButton:
+                                                                            false,
+                                                                        timer: 1000,
+                                                                    });
+                                                                })
+                                                                .finally(()=>{
+                                                                    if(setRefresh){
+                                                                        setRefresh(prev=>!prev)
 
-                                                            }
-                                                        });
+                                                                    }
+                                                                });
+                                                                }
+                                                            });                
+
+                                                    
                                                 }}
                                                 className="rounded-md bg-btns-colors-secondry w-2/3 h-8"
                                             >

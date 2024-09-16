@@ -14,10 +14,12 @@ import { TRANSLATIONS } from '../../utils/constants';
 interface UserBasicProps {}
 
 const UserBasic: FC<UserBasicProps> = () => {
-    const {lang} = useContext(LanguageContext)
-    const {user_uuid="",date=""} = useParams()
-    const [userCommissionDetails,setUserCommissionDetails] = useState<CommissionDetails|null>(null)
-    const [basicDetails , setBasicDetails] = useState<BasicDetails|null>(null)
+    const {lang} = useContext(LanguageContext);
+    const {user_uuid="",date=""} = useParams();
+    const [userCommissionDetails,setUserCommissionDetails] = useState<CommissionDetails|null>(null);
+    const [basicDetails , setBasicDetails] = useState<BasicDetails|null>(null);
+    const [totalMoney, setTotalMoney] = useState<number|null>(null);
+    const [totalDays, setTotalDays] = useState<number|null>(null);
     useEffect(()=>{
         const date_parsed = parseDateFromParams(date)
         const commissionPromise = sendRequest({url:"api/commission/user-commission-details",method:"GET",params:{user__uuid:user_uuid}})
@@ -29,7 +31,6 @@ const UserBasic: FC<UserBasicProps> = () => {
         }})
         Promise.all([commissionPromise, detailsPromise])
         .then(values=>{
-            // console.log(values)
             setUserCommissionDetails(values[0]?.results[0])
             setBasicDetails(values[1]?.results[0])
 
@@ -43,10 +44,14 @@ const UserBasic: FC<UserBasicProps> = () => {
             userCommissionDetails && user_uuid && date ? (
             <>
                 <label className='text-2xl md:text-4xl md:col-span-10 text-center'>{TRANSLATIONS.Basic.title[lang]} | {userCommissionDetails.user.first_name} {userCommissionDetails.user.last_name}  ({userCommissionDetails?.user.username}) | {date} </label>
-                <BasicForm className='w-[100%] md:col-span-3 place-self-center' basicDetails={basicDetails ? basicDetails : undefined} date={date} userCommissionDetails={userCommissionDetails} />
-                <AttendanceDetailsTable className='md:col-span-7 place-self-center' label={TRANSLATIONS.AttendanceDetails.title[lang]} date={parseDateFromParams(date)} userID={user_uuid} withDetails={false}/>
+                {
+                    totalMoney !== null && totalDays !== null ? (
+                    <BasicForm deductionMoney={totalMoney} deductionDays={totalDays} className='w-[100%] md:col-span-3 place-self-center' basicDetails={basicDetails ? basicDetails : undefined} date={date} userCommissionDetails={userCommissionDetails} />
+                    ): null
+                }
+                <AttendanceDetailsTable setTotal={setTotalDays} className='md:col-span-7 place-self-center' label={TRANSLATIONS.AttendanceDetails.title[lang]} date={parseDateFromParams(date)} userID={user_uuid} withDetails={false}/>
                 <RequestsTableBasic className='md:col-span-7 w-full md:col-start-4 place-self-center'  date={parseDateFromParams(date)} user_uuid={userCommissionDetails.user.uuid}/>
-                <AdvancesTable className='md:col-span-7 w-full md:col-start-4 place-self-center' user_uuid={userCommissionDetails.user.uuid} canDelete={true}/>
+                <AdvancesTable setTotal={setTotalMoney} className='md:col-span-7 w-full md:col-start-4 place-self-center' user_uuid={userCommissionDetails.user.uuid} canDelete={true}/>
             </>
             ) : <LoadingComponent/>
         }

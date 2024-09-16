@@ -11,15 +11,16 @@ import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
 
 interface AdvanceFormProps {
-    setRefresh?:React.Dispatch<React.SetStateAction<boolean>>
+    setRefresh?:React.Dispatch<React.SetStateAction<boolean>>;
+    className?: string;
 }
 
-const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh}) => {
+const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh , className}) => {
     const {auth} = useAuth()
     const {lang}= useContext(LanguageContext)
     const [loading , setLoading] = useState(false)
     return (
-    <Container className='relative w-[85%] md:w-[40%] h-fit'>
+    <Container className={`relative w-[85%] h-fit ${className}`}>
         {
             loading ? <LoadingComponent/>:<></>
         }
@@ -58,20 +59,30 @@ const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh}) => {
                 });
 
         }}>
-                <input type="hidden" name='creator' value={auth.uuid}/>
-                <div className='flex flex-row justify-between'>
-                    <SelectComponent
-                            selectClassName=''
-                            LabelName={TRANSLATIONS.Advance.form.taker[lang]}
-                            LabelClassName='place-self-center'
-                            url='api/users/user'
-                            name='user'
-                            config={{
-                                value:"uuid",
-                                label:"username"
-                            }}
-                        />
-                </div>
+                <input type="hidden" name='user' value={auth.uuid}/>
+
+                {
+                    auth.role !== "OWNER" ? 
+                    null : (
+                        <>
+                        <input type="hidden" name='creator' value={auth.uuid}/>
+                        <div className='flex flex-row justify-between'>
+                            <SelectComponent
+                                    selectClassName=''
+                                    LabelName={TRANSLATIONS.Advance.form.taker[lang]}
+                                    LabelClassName='place-self-center'
+                                    url='api/users/user'
+                                    name='user'
+                                    config={{
+                                        value:"uuid",
+                                        label:"username"
+                                    }}
+                                />
+                        </div>
+                        </>
+    
+                        )
+                }
                 <div className='flex flex-row justify-between gap-2'>
                     <label htmlFor="amount" className='place-self-center'>{TRANSLATIONS.Advance.form.amount[lang]}</label>
                     <input type="number" min={10} name="amount" id="amount" className='w-[100%] md:w-[50%]  place-self-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' />

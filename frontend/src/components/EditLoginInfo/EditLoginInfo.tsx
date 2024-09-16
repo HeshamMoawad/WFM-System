@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from 'react';
+import { useContext, useEffect, useState, type FC } from 'react';
 import { Department, Project } from '../../types/auth';
 import Container from '../../layouts/Container/Container';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
@@ -6,6 +6,8 @@ import SelectComponent from '../SelectComponent/SelectComponent';
 import { sendRequest } from '../../calls/base';
 import { Convert } from '../../utils/converter';
 import Swal from 'sweetalert2';
+import { TRANSLATIONS } from '../../utils/constants';
+import {LanguageContext} from '../../contexts/LanguageContext';
 
 interface EditLoginInfoProps {
     uuid: string;
@@ -25,8 +27,11 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
         role: string;
         crm_username: string;
         is_active:boolean;
+        annual_count:number;
     }|null>(null);
     const [refresh , setRefresh] = useState(false)
+    const {lang} = useContext(LanguageContext);
+
     const onChange = (event: any) => {
         setLoginInfo((prev) => {
             if (prev) {
@@ -101,24 +106,28 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                     }}>
 
                     <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
-                        <label htmlFor="username" >Username</label>
+                        <label htmlFor="username" >{TRANSLATIONS.AddUser.form.username[lang]}</label>
                         <input value={loginInfo.username} onChange={onChange} type="text" name="username" id="username" className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                         
-                        <label htmlFor="password_normal">Password</label>
+                        <label htmlFor="password_normal">{TRANSLATIONS.AddUser.form.password[lang]}</label>
                         <input value={loginInfo?.password_normal} onChange={onChange} type="text" name="password_normal" id="password"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
 
 
-                        <label htmlFor="first_name" >First Name</label>
+                        <label htmlFor="first_name" >{TRANSLATIONS.AddUser.form.first[lang]}</label>
                         <input value={loginInfo.first_name} onChange={onChange} type="text" name="first_name" id="first_name" className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
-                        <label htmlFor="last_name">Last Name</label>
+                        <label htmlFor="last_name">{TRANSLATIONS.AddUser.form.last[lang]}</label>
                         <input value={loginInfo?.last_name} onChange={onChange} type="text" name="last_name" id="last_name"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                         
                         
-                        <label htmlFor="title">Title</label>
+                        <label htmlFor="title">{TRANSLATIONS.AddUser.form.title[lang]}</label>
                         <input value={loginInfo.title} onChange={onChange} type="text" name="title" id="title"  className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                         
-                        <label htmlFor="crm_username" className='text-center' >CRM Username</label>
+                        <label htmlFor="crm_username" className='' >{TRANSLATIONS.AddUser.form.crm_username[lang]}</label>
                         <input type="text" value={loginInfo.crm_username} onChange={onChange} name="crm_username" id="crm_username" className='col-span-2 place-content-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+                        
+                        <label htmlFor="annual_count" className='' >{TRANSLATIONS.Basic.annual[lang]}</label>
+                        <input type="number" value={loginInfo.annual_count} onChange={onChange} name="annual_count" id="annual_count" className='col-span-2 place-content-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+                        
 
                         <SelectComponent<Department> 
                             name="department" 

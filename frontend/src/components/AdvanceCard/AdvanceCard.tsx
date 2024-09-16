@@ -1,33 +1,32 @@
 import { useContext, type EventHandler, type FC, type SetStateAction } from 'react';
-import { RequestType } from '../../types/auth';
+import { AdvanceType } from '../../types/auth';
 import { getFullURL } from '../../utils/converter';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
+import { useAuth } from '../../hooks/auth';
 
-interface RequestCardProps {
-    request:RequestType;
+interface AdvanceCardProps {
+    advance:AdvanceType;
     refresh:boolean;
     setRefresh:React.Dispatch<SetStateAction<boolean>>;
 
 }
 
-const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => {
-    const created_at = new Date(request.created_at)
+const AdvanceCard: FC<AdvanceCardProps> = ({advance , refresh , setRefresh}) => {
+    const created_at = new Date(advance.created_at)
     const {lang} = useContext(LanguageContext)
-    const date = new Date(request.date);
+    const {auth} = useAuth()
     // const updated_at = request.created_at === request.updated_at ? null : new Date(request.updated_at)
     const onAccept = (e:React.MouseEvent<HTMLButtonElement>)=>{
         e.preventDefault();
         const form  = new FormData();
         form.append("status","ACCEPTED")
-        form.append("details",request.details)
-        form.append("user",request.user.uuid)
-        form.append("type",request.type)
-        form.append("date",request.date)
+        form.append("user",advance.user.uuid)
+        form.append("creator",auth.uuid)
 
-        sendRequest({url:"api/users/request",method:"PUT", params: {uuid:request.uuid}, data:form})
+        sendRequest({url:"api/treasury/advance",method:"PUT", params: {uuid:advance.uuid}, data:form})
             .then(data =>{
                 Swal.fire({
                     position: "center",
@@ -52,23 +51,15 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
         
         Swal.fire({
             title: "Why you want to reject ??",
-            input: "text",
-            inputAttributes: {
-              autocapitalize: "off"
-            },
             showCancelButton: true,
             confirmButtonText: "Submit",
             showLoaderOnConfirm: true,
             preConfirm: (note) => {
                 const form  = new FormData();
                 form.append("status","REJECTED")
-                form.append("details",request.details)
-                form.append("note",note)
-                form.append("user",request.user.uuid)
-                form.append("type",request.type)
-                form.append("date",request.date)
-        
-                sendRequest({url:"api/users/request",method:"PUT", params: {uuid:request.uuid}, data:form})
+                form.append("user",advance.user.uuid)
+                form.append("creator",auth.uuid)
+                sendRequest({url:"api/treasury/advance",method:"PUT", params: {uuid:advance.uuid}, data:form})
                     .then((data)=> Swal.fire({
                         position: "center",
                         icon: "success",
@@ -77,35 +68,22 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
                         timer: 1000
                         }).then(() =>setRefresh(prev=>!prev))
                     )
-                    .catch(error=>Swal.showValidationMessage(`
-                    Request failed: ${error}
-                `))
+                    
             }
         })
         }
-    // let type = ""
-    // for (let index = 0; index < TRANSLATIONS.Request.Types.length; index++) {
-    //     const element = TRANSLATIONS.Request.Types[index];
-    //     if(element.value === request.type){
-    //         type = element.translate[lang];
-    //         break;
-    //     }
-        
-    // }
     return (
         <div className='flex flex-row w-[100%] md:w-full h-fit gap-1 md:gap-6 items-center border-b p-2 rounded-lg shadow-lg md:m-1' id='card'>
                  
-            <img className={`rounded-full  w-[50px] h-[50px] md:w-[65px] md:h-[65px] ${request?.user?.profile?.picture ? "":"invisible" }`} src={getFullURL(request.user.profile.picture)} alt=''/>
-            <span className={`${request?.user?.profile?.picture ? "w-0 overflow-hidden h-0" : "w-fit"} md:overflow-visible md:w-fit md:h-fit p-2`}>{request?.user?.username}</span>
+            <img className={`rounded-full  w-[50px] h-[50px] md:w-[65px] md:h-[65px] ${advance?.user?.profile?.picture ? "":"invisible" }`} src={getFullURL(advance.user.profile.picture)} alt=''/>
+            <span className={`${advance?.user?.profile?.picture ? "w-0 overflow-hidden h-0" : "w-fit"} md:overflow-visible md:w-fit md:h-fit p-2`}>{advance?.user?.username}</span>
             <div className='flex flex-col gap-2 w-full' id='card-body'>
-                <p id='details'>{request.details}</p>
-                <div className='flex flex-row justify-evenly gap-2 md:gap-6' id='btns-container'>
+                <div className='flex flex-row justify-end gap-2 md:gap-10' id='btns-container'>
+                    <label htmlFor="" className='md:w-[250px] text-start text-2xl'>Amount : {advance.amount} EGP</label>
                     <button onClick={onAccept} className='rounded-md bg-btns-colors-primary w-1/3 md:w-1/5 h-[35px]'> Accept </button>
                     <button onClick={onReject} className='rounded-md bg-btns-colors-secondry w-1/3 md:w-1/5 h-[35px]'> Reject </button>
                 </div>
                 <div className='flex flex-col md:flex-row justify-between w-full opacity-45 text-sm md:text-base'>
-                    <span className='block'>Type : {TRANSLATIONS.Request.Types.filter((d)=>d.value === request.type)[0].translate[lang]}</span>
-                    <span className='block'>Date : {`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`}</span>
                     <span className='block'>Created : {created_at.toLocaleDateString("en-UK",{dateStyle:"medium"})} {created_at.toLocaleTimeString("en-UK",{hour12:true ,hour:"2-digit",minute:"2-digit"})}</span>
                     {/* <span className='block'>Updated : {
                         updated_at  ? `${updated_at.toLocaleDateString("en-UK",{dateStyle:"medium"})} ${updated_at.toLocaleTimeString("en-UK",{hour12:true ,hour:"2-digit",minute:"2-digit"})}` : " - "
@@ -116,4 +94,4 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
     );
 }
 
-export default RequestCard;
+export default AdvanceCard;

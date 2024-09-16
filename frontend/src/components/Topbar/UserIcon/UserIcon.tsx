@@ -5,6 +5,8 @@ import { AUTH_KEY } from '../../../utils/storage';
 import { useAuth } from '../../../hooks/auth';
 import { getFullURL } from '../../../utils/converter';
 import { Link, useNavigate } from 'react-router-dom';
+import { sendRequest } from '../../../calls/base';
+import Swal from 'sweetalert2';
 
 interface UserIconProps {}
 
@@ -48,9 +50,36 @@ const UserIcon: FC<UserIconProps> = () => {
                 <span className='block w-10/12 h-[1px] px-3 bg-[gray] opacity-30'></span>
                 <li onClick={(e)=>{
                     e.preventDefault();
-                    localStorage.removeItem(AUTH_KEY)
-                    document.cookie = "";
-                    window.location.reload();
+                    sendRequest({url:"api/users/logout"})
+                        .then(data=>{
+                            Swal.fire({
+                                position: "center",
+                                icon: "success",
+                                title: "Logout Successfully",
+                                text: `Goodbye`,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            }).then(() => {
+                                
+                            });
+                            localStorage.removeItem(AUTH_KEY)
+                            document.cookie.split(';').forEach(cookie => {
+                                document.cookie = cookie
+                                    .replace(/^ +/,"")
+                                    .replace(/=.*/,"=;expires=" + new Date().toUTCString() + ";path=/");
+                            })
+                            window.location.reload();
+                        })
+                        .catch((err) => {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Can't Logout",
+                                text: "Please Try again later",
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                        })
+                
                 }}>
                     <a href="#s" className="flex  items-center gap-3 px-4 py-2">
                         <CgLogOut />

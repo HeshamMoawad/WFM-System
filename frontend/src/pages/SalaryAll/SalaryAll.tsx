@@ -7,10 +7,11 @@ import { FaHandHoldingUsd, FaUserEdit } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import Table from '../../components/Table/Table';
-import DatePicker from '../../components/DatePicker/DatePicker';
+import CustomDatePicker from '../../components/CustomDatePicker/CustomDatePicker';
 import { useAuth } from '../../hooks/auth';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
+import DatePicker from 'react-datepicker';
 
 interface SalaryAllProps {
     department?: string;
@@ -45,12 +46,27 @@ const SalaryAll: FC<SalaryAllProps> = ({department}) => {
             <h1 className="col-span-1 md:col-start-6  text-2xl text-center w-full place-self-center">
                 {TRANSLATIONS.Date[lang]} 
             </h1>
-            <DatePicker
-                type="month"
-                className="md:col-span-2 h-11 text-center"
-                spanClassName="text-2xl text-center w-full place-self-center "
-                setDate={setDate}
-            />
+            <DatePicker 
+                showIcon
+                dateFormat="MM-yyyy"
+                name='date' 
+                renderMonthContent={ (month, shortMonth, longMonth, day) => {
+                    const fullYear = new Date(day).getFullYear();
+                    const tooltipText = `Tooltip for month: ${longMonth} ${fullYear}`;
+                    return <span title={tooltipText}>{shortMonth}</span>;
+                }} 
+                toggleCalendarOnIconClick
+                showMonthYearPicker 
+                className='md:col-span-2 h-11 text-center' 
+                calendarIconClassName='w-4 h-4 fixed p-1'
+                selected={date} 
+                onChange={(date)=>{
+                    if(date && setDate) {
+                        setDate(date)
+                    };
+                }
+            }/>
+
         </div>
         {
             loading? <LoadingComponent/> : <></>

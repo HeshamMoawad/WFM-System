@@ -22,11 +22,11 @@ const Treasury: FC<TreasuryProps> = () => {
             </div>
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
                 <TreasuryForm setRefresh={setRefresh} header={TRANSLATIONS.Treasury.outform.title[lang]} creator_uuid={auth?.uuid} color="btns-colors-secondry"  url="api/treasury/treasury-outcome"/>
-                <TreasuryTable refresh={refresh}  color="btns-colors-secondry" label={TRANSLATIONS.Treasury.outtable.title[lang]} url="api/treasury/treasury-outcome" />
+                <TreasuryTable refresh={refresh} setRefresh={setRefresh}  color="btns-colors-secondry" label={TRANSLATIONS.Treasury.outtable.title[lang]} url="api/treasury/treasury-outcome" />
             </div>
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
                 <TreasuryForm setRefresh={setRefresh} header={TRANSLATIONS.Treasury.inform.title[lang]} color="btns-colors-primary" creator_uuid={auth?.uuid} url="api/treasury/treasury-income"/>
-                <TreasuryTable refresh={refresh}  color="btns-colors-primary" label={TRANSLATIONS.Treasury.intable.title[lang]} url="api/treasury/treasury-income" />
+                <TreasuryTable refresh={refresh} setRefresh={setRefresh}  color="btns-colors-primary" label={TRANSLATIONS.Treasury.intable.title[lang]} url="api/treasury/treasury-income" />
             </div>
         </div>
     );
