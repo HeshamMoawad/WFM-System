@@ -7,6 +7,9 @@ from typing import Union, List
 from pandas import DataFrame , date_range
 from users.models import User , ArrivingLeaving
 from datetime import timedelta, datetime 
+import warnings
+
+warnings.filterwarnings('ignore')
 
 
 class Command(BaseCommand):
@@ -109,7 +112,7 @@ class Command(BaseCommand):
                     continue
                 self._update_user_arrive_leave(arr_leav,created,times)
             self.stdout.write(self.style.SUCCESS(f"Success update User -> {user.username}"))
-        self.stdout.write(self.style.SUCCESS(f"End Update users FP !"))
+        self.stdout.write(self.style.SUCCESS(f"Success Update => {len(users)} user\nEnd Update users FP  !"))
                         
         
     def _update_user_arrive_leave(self,arr_leav:ArrivingLeaving,created:bool,times:List[Union[datetime,str]]):
