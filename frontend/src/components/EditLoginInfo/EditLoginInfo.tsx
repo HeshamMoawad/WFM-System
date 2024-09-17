@@ -26,6 +26,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
         title: string;
         role: string;
         crm_username: string;
+        fp_id: string;
         is_active:boolean;
         annual_count:number;
     }|null>(null);
@@ -105,7 +106,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                     
                     }}>
 
-                    <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
+                    <div className="grid grid-cols-3 md:grid-cols-6 gap-6 items-center">
                         <label htmlFor="username" >{TRANSLATIONS.AddUser.form.username[lang]}</label>
                         <input value={loginInfo.username} onChange={onChange} type="text" name="username" id="username" className='col-span-2 w-[100%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                         
@@ -125,6 +126,7 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                         <label htmlFor="crm_username" className='' >{TRANSLATIONS.AddUser.form.crm_username[lang]}</label>
                         <input type="text" value={loginInfo.crm_username} onChange={onChange} name="crm_username" id="crm_username" className='col-span-2 place-content-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                         
+
                         <label htmlFor="annual_count" className='' >{TRANSLATIONS.Basic.annual[lang]}</label>
                         <input type="number" value={loginInfo.annual_count} onChange={onChange} name="annual_count" id="annual_count" className='col-span-2 place-content-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
                         
@@ -212,6 +214,9 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                             />
 
                         </div>
+                        <label htmlFor="fp_id" className='text-end' >{TRANSLATIONS.AddUser.form.fp_id[lang]}</label>
+                        <input type="text" value={loginInfo.fp_id} placeholder={TRANSLATIONS.AddUser.form.fp_id[lang]} onChange={onChange} name="fp_id" id="fp_id" className='col-span-2 max-w-32 place-content-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+
                         <div className="col-span-3 md:col-span-6 flex justify-evenly">
                             <button onClick={(e)=>{e.preventDefault();setRefresh(prev=>!prev)}}  className="bg-btns-colors-secondry w-24 h-7 md:w-36 md:h-10 rounded-lg">Cancel</button>
                             <button type="submit" className="bg-btns-colors-primary w-24 h-7 md:w-36 md:h-10 rounded-lg">update</button>

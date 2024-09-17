@@ -9,7 +9,7 @@ interface AddUserProps {
 }
 
 const AddUser: FC<AddUserProps> = () => {
-    const {lang} = useContext(LanguageContext);
+    // const {lang} = useContext(LanguageContext);
     const [uuid,setUUID] = useState<string|null>(null);
     return (
         <div className="add-user flex flex-col md:flex-row justify-center items-center">

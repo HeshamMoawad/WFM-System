@@ -1,6 +1,6 @@
 const t = (arKey:string,enKey:string)=> ({ar:arKey,en:enKey})
 
-export const BASE_URL = "/" //  http://192.168.11.251:8000
+export const BASE_URL = "/" // http://192.168.11.251:8000 
 
 export const WEEK_DAYS = [
   t("الاحد","Sun"), 
@@ -303,6 +303,7 @@ export const TRANSLATIONS = {
       department:t("القسم","Department"),
       project:t("البروجيكت","Project"),
       crm_username:t("CRM Username","CRM Username"),
+      fp_id:t("ID البصمة","Finger ID"),
       create:t("انشاء","Create"),
       cancel:t("الغاء","Cancel"),
     },
