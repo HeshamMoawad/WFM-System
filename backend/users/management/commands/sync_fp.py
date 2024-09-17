@@ -8,6 +8,7 @@ from pandas import DataFrame , date_range
 from users.models import User , ArrivingLeaving
 from datetime import timedelta, datetime 
 import warnings
+from django.db.models import Q
 
 warnings.filterwarnings('ignore')
 
@@ -56,7 +57,7 @@ class Command(BaseCommand):
                 conn = None
             d_range = date_range(start=date_from, end=date_to).strftime('%Y-%m-%d').tolist()
             self.stdout.write(self.style.SUCCESS(f"Created Date Range from : {date_from} || to : {date_to}"))
-            users = User.objects.filter(fp_id__in=fp_attend_df['user_id'].unique().tolist())
+            users = User.objects.filter(Q(my_field='') | Q(my_field__isnull=True))
             self.stdout.write(self.style.SUCCESS(f"Get Users from ZK Machine count : {users.count()}"))
             
             self._map_update(users,d_range,fp_attend_df)
