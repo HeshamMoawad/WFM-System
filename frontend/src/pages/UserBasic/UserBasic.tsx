@@ -45,8 +45,8 @@ const UserBasic: FC<UserBasicProps> = () => {
             <>
                 <label className='text-2xl md:text-4xl md:col-span-10 text-center'>{TRANSLATIONS.Basic.title[lang]} | {userCommissionDetails.user.first_name} {userCommissionDetails.user.last_name}  ({userCommissionDetails?.user.username}) | {date} </label>
                 {
-                    totalMoney !== null && totalDays !== null ? (
-                    <BasicForm deductionMoney={totalMoney} deductionDays={totalDays} className='w-[100%] md:col-span-3 place-self-center' basicDetails={basicDetails ? basicDetails : undefined} date={date} userCommissionDetails={userCommissionDetails} />
+                    basicDetails  || (totalMoney !== null && totalDays !== null )? (
+                    <BasicForm deductionMoney={totalMoney ? totalMoney : undefined} deductionDays={totalDays ? totalDays : undefined } className='w-[100%] md:col-span-3 place-self-center' basicDetails={basicDetails ? basicDetails : undefined} date={date} userCommissionDetails={userCommissionDetails} />
                     ): null
                 }
                 <AttendanceDetailsTable setTotal={setTotalDays} className='md:col-span-7 place-self-center' label={TRANSLATIONS.AttendanceDetails.title[lang]} date={parseDateFromParams(date)} userID={user_uuid} withDetails={false}/>
