@@ -3,9 +3,9 @@ from zk import ZK, const
 from zk.attendance import Attendance
 from zk.user import User as ZkUser
 from zk.finger import Finger
-from typing import Union, List
+from typing import Union, List , Tuple
 from pandas import DataFrame , date_range
-from users.models import User , ArrivingLeaving
+from users.models import User , ArrivingLeaving , ZKConfig
 from datetime import timedelta, datetime 
 import warnings
 from django.db.models import Q
@@ -18,10 +18,11 @@ class Command(BaseCommand):
     
     
     def add_arguments(self, parser):
-        parser.add_argument('--ip', type=str, default="192.168.11.157", help='ZK IPAddress')
-        parser.add_argument('--port', type=int, default=4370, help='ZK Port')
-        parser.add_argument('--timeout', type=int, default=5, help='ZK Timeout Connection')
-        parser.add_argument('--password', type=str, default=0, help='ZK password')
+        zkconfig = ZKConfig.objects.filter(is_default=True).first()
+        parser.add_argument('--ip', type=str, default="192.168.11.157" if not zkconfig else zkconfig.ip, help='ZK IPAddress')
+        parser.add_argument('--port', type=int, default=4370 if not zkconfig else zkconfig.port, help='ZK Port')
+        parser.add_argument('--timeout', type=int, default=0 if not zkconfig else zkconfig.timeout, help='ZK Timeout Connection')
+        parser.add_argument('--password', type=str, default=0 if not zkconfig else zkconfig.password, help='ZK password')
         # parser.add_argument('--user', type=str, default=None, help='ZK Sync Exact User')
         now = datetime.now().date()
         curr = now.day
@@ -41,13 +42,12 @@ class Command(BaseCommand):
         # self.stdout.write(f"User : {kwargs.get('user')}") if kwargs.get('user') else None
         conn = None
         zk = ZK(kwargs.get("ip"), port=kwargs.get("port"), timeout=kwargs.get("timeout"), password=kwargs.get("password"), force_udp=False, ommit_ping=False)
-
         try : 
             conn = zk.connect()
             self.stdout.write(self.style.SUCCESS(f"Successfully Connected to Zk Serial : {conn.get_serialnumber()} "))
             conn.disable_device()
             self.stdout.write(self.style.SUCCESS(f"Disabled other activity ..."))
-            fp_attend_df = self._get_attend_with_user(conn)
+            fp_attend_df , zk_users = self._get_attend_with_user(conn)
             fp_attend_df = fp_attend_df[fp_attend_df['date'] >= date_from]
             conn.enable_device()
             self.stdout.write(self.style.SUCCESS(f"Enable activity again ..."))
@@ -74,21 +74,28 @@ class Command(BaseCommand):
         
 
 
-    def _get_attend_with_user(self , conn:ZK ) -> DataFrame:
+    def _get_attend_with_user(self , conn:ZK ) -> Tuple[DataFrame , List[ZkUser]] :
         attendance:List[Attendance] = conn.get_attendance()
         self.stdout.write(self.style.SUCCESS(f"Attendance Loaded : {len(attendance)} ..."))
-        # users:List[ZkUser] = conn.get_users()
-        # self.stdout.write(self.style.SUCCESS(f"Users Loaded : {len(users)} ..."))
+        users:List[ZkUser] = conn.get_users()
+        self.stdout.write(self.style.SUCCESS(f"Users Loaded : {len(users)} ..."))
         self.stdout.write(self.style.SUCCESS(f"Creating Dataframe to make analytics ... "))
         df = DataFrame(data=attendance,columns=["attendance"])
         df['user_id'] = df["attendance"].map(lambda attend:attend.user_id)
+        df['uid'] = df["attendance"].map(lambda attend:attend.uid)
+        df['user_uid'] = df["attendance"].map(lambda attend:self.__filter_uid(attend,users))
         df['date'] = df["attendance"].map(lambda attend:attend.timestamp.date())
         df['status'] = df["attendance"].map(lambda attend:attend.status)
         df['punch'] = df["attendance"].map(lambda attend:attend.punch)
         self.stdout.write(self.style.SUCCESS(f"Successfully getted FP Dataframe "))
-        return df
+        return df , users
     
-    
+    def __filter_uid(self,attend:Attendance , users):
+        result = list(filter(lambda usr:usr.user_id == attend.user_id,users))
+        if result :
+            return result[0].uid
+        return "-"        
+
     def _map_update(self,users:List[User],d_range:List[datetime],df_attend:DataFrame):
         for user in users :
             # log
@@ -112,7 +119,7 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.ERROR(f"Can't define {arr_leav} and {times}"))
                     continue
                 self._update_user_arrive_leave(arr_leav,created,times)
-            self.stdout.write(self.style.SUCCESS(f"Success update User -> {user.username}"))
+            self.stdout.write(self.style.SUCCESS(f"Success update User -> {user.username} | uid => {user.fp_id} "))
         self.stdout.write(self.style.SUCCESS(f"Success Update => {len(users)} user\nEnd Update users FP  !"))
                         
         
