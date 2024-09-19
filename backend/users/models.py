@@ -8,12 +8,16 @@ from .managers import (
     )
 from .types import UserTypes , RequestTypes , RequestStatuses
 from utils.models_utils import image_upload_path , validate_lead_number , validate_role , validate_user_number
-from django.db.models.signals import pre_save , post_save
+from django.db.models.signals import pre_save , post_save , post_delete
 from core.models import BaseModel
 import json
 from django.utils.timezone import now
 from django.urls import reverse
 from uuid import uuid1
+from zk import ZK, const
+from zk.attendance import Attendance
+from zk.user import User as ZkUser
+from zk.finger import Finger
 
 
 class Project(BaseModel):
@@ -137,7 +141,16 @@ class Request(BaseModel):
             self.department = self.user.department
         return super().save(*args,**kwargs)
 
-
+class ZKConfig(BaseModel):
+    ip = models.CharField(verbose_name="IP Address",max_length=20,unique=True )
+    port=models.PositiveBigIntegerField(verbose_name="Port")
+    timeout = models.PositiveIntegerField(verbose_name="Connection Timeout")
+    password = models.CharField(verbose_name="Password",max_length=100)
+    force_udp = models.BooleanField(verbose_name= "Force UDP")
+    ommit_ping = models.BooleanField(verbose_name= "Ommit Ping")
+    is_default= models.BooleanField(verbose_name= "Set Default")
+    last_uid = models.PositiveBigIntegerField(verbose_name="Last Machine UID")
+    
 def profile_creator_signal(sender:User, instance:User, created:bool, **kwargs):
     if created:
         profile , is_created = Profile.objects.get_or_create(user=instance)
@@ -163,6 +176,52 @@ def create_update_history(sender, instance:BaseModel, **kwargs):
         )
 
 
+def fp_signal(sender:User , instance:User,created:bool,**kwargs):
+    if created :
+        zkconfig = ZKConfig.objects.filter(is_default=True).first()
+        if zkconfig :
+            zk = ZK(zkconfig.ip, port=zkconfig.port, timeout=zkconfig.timeout, password=zkconfig.password, force_udp=zkconfig.force_udp, ommit_ping=zkconfig.ommit_ping)
+        else :
+            zk = ZK("192.168.11.157", port=4370, timeout=5, password=0, force_udp=False, ommit_ping=False)
+        try : 
+            conn = zk.connect()
+            conn.disable_device()
+            if zkconfig and zkconfig.last_uid :
+                next_id = zkconfig.last_uid + 1
+                zkconfig.last_uid = next_id 
+                zkconfig.save()
+            else :
+                users = conn.get_users()
+                next_id = max(map(lambda usr:usr.uid,users))
+            next_uid = int(next_id + 1)
+            conn.set_user(uid=next_uid,name=instance.username)
+            instance.fp_id = next_uid
+            conn.enable_device()
+        except Exception as e:
+            print(e)
+        finally:
+            if conn:
+                conn.disconnect()
+            instance.save()
+
+def fp_delete(sender:BaseModel, instance:User, **kwargs):
+    zkconfig = ZKConfig.objects.filter(is_default=True).first()
+    if zkconfig :
+        zk = ZK(zkconfig.ip, port=zkconfig.port, timeout=zkconfig.timeout, password=zkconfig.password, force_udp=zkconfig.force_udp, ommit_ping=zkconfig.ommit_ping)
+    else :
+        zk = ZK("192.168.11.157", port=4370, timeout=5, password=0, force_udp=False, ommit_ping=False)
+    try : 
+        conn = zk.connect()
+        conn.disable_device()
+        conn.delete_user(uid=int(instance.fp_id))
+        conn.enable_device()
+    except Exception as e:
+        print(e)
+    finally:
+        if conn:
+            conn.disconnect()
+
+    
 
 post_save.connect(profile_creator_signal, sender=User)
 pre_save.connect(create_update_history, sender=Project)
@@ -173,6 +232,8 @@ pre_save.connect(create_update_history, sender=ArrivingLeaving)
 pre_save.connect(create_update_history, sender=Profile)
 pre_save.connect(create_update_history, sender=Lead)
 pre_save.connect(create_update_history, sender=Request)
+post_save.connect(fp_signal, sender=User)
+post_delete.connect(fp_delete,sender=User)
 
 
 

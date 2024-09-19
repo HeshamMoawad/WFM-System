@@ -8,19 +8,22 @@ from zk.attendance import Attendance
 from zk.user import User as ZkUser
 from django.conf import settings
 from pathlib import Path
+from users.models import ZKConfig
+
 
 class Command(BaseCommand):
     help = 'Export tasks'
 
     def add_arguments(self, parser):
+        zkconfig = ZKConfig.objects.filter(is_default=True).first()
+        parser.add_argument('--ip', type=str, default="192.168.11.157" if not zkconfig else zkconfig.ip, help='ZK IPAddress')
+        parser.add_argument('--port', type=int, default=4370 if not zkconfig else zkconfig.port, help='ZK Port')
+        parser.add_argument('--timeout', type=int, default=0 if not zkconfig else zkconfig.timeout, help='ZK Timeout Connection')
+        parser.add_argument('--password', type=str, default=0 if not zkconfig else zkconfig.password, help='ZK password')
         parser.add_argument('--attendance', action='store_true', help='Export Attendance')
         parser.add_argument('--users', action='store_true', help='Export Users')
         parser.add_argument('--merged', action='store_true', help='Export Merged Data')
-        parser.add_argument('--ip', type=str, default="192.168.11.157", help='ZK IPAddress')
-        parser.add_argument('--port', type=int, default=4370, help='ZK Port')
         parser.add_argument('--path', type=str, default=str(settings.BASE_DIR)+"\\Exports", help='ZK Port')
-        parser.add_argument('--timeout', type=int, default=5, help='ZK Timeout Connection')
-        parser.add_argument('--password', type=str, default=0, help='ZK password')
 
     def handle(self, *args, **kwargs):
         self.stdout.write(f"Start Zk FP Syncing on")
@@ -71,6 +74,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"Creating Dataframe to make Export ... "))
         df = DataFrame(data=attendance,columns=["attendance"])
         df['user_id'] = df["attendance"].map(lambda attend:attend.user_id)
+        df['uid'] = df["attendance"].map(lambda attend:attend.uid)
         df['timestamp'] = df["attendance"].map(lambda attend:attend.timestamp)
         df['status'] = df["attendance"].map(lambda attend:attend.status)
         df['punch'] = df["attendance"].map(lambda attend: "Out" if attend.punch else "In")
@@ -81,18 +85,26 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"Attendance Loaded : {len(attendance)} ..."))
         self.stdout.write(self.style.SUCCESS(f"Creating Dataframe to make Export ... "))
         df = DataFrame(data=attendance,columns=["attendance"])
+        df['uid'] = df["attendance"].map(lambda attend:attend.uid)
         df['user_id'] = df["attendance"].map(lambda attend:attend.user_id)
-        df['username'] = df["attendance"].map(lambda a :self.__filter(a,users))
+        df['user_uid'] = df["attendance"].map(lambda attend:self.__filter_uid(attend,users))
+        df['username'] = df["attendance"].map(lambda a :self.__filter_name(a,users))
         df['timestamp'] = df["attendance"].map(lambda attend:attend.timestamp)
         df['status'] = df["attendance"].map(lambda attend:attend.status)
         df['punch'] = df["attendance"].map(lambda attend: "Out" if attend.punch else "In")
         self.stdout.write(self.style.SUCCESS(f"Successfully getted Merged FP Dataframe "))
         return df
     
-    def __filter(self,attend:Attendance , users):
+    def __filter_name(self,attend:Attendance , users):
         result = list(filter(lambda usr:usr.user_id == attend.user_id,users))
         if result :
             return result[0].name
+        return "-"   
+         
+    def __filter_uid(self,attend:Attendance , users):
+        result = list(filter(lambda usr:usr.user_id == attend.user_id,users))
+        if result :
+            return result[0].uid
         return "-"        
     
     def export_users(self,users:List[ZkUser])-> DataFrame:

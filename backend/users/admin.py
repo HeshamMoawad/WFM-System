@@ -12,7 +12,8 @@ from .models import (
     Profile ,
     UpdateHistory , 
     Request , 
-    FingerPrintID
+    FingerPrintID , 
+    ZKConfig
 )
 from utils.admin_utils import FieldSets
 
@@ -279,6 +280,32 @@ class FingerPrintIDAdminSite(ImportExportModelAdmin):
                 "updated_at" ,
             ]
     ]).fieldsets
+    
+    
+class ZKConfigAdminSite(ImportExportModelAdmin):
+    list_display = ["ip","port" ,"timeout","password" , "is_default" , "last_uid"]
+    list_filter = ["is_default"]
+    readonly_fields = ['uuid',"created_at","updated_at" ]
+    search_fields = ['ip',"port"]  
+    fieldsets = FieldSets([
+            'ZKConfig Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'ip', 
+                'port',
+                'timeout',
+                'password',
+                'force_udp',
+                'ommit_ping',
+                'is_default',
+                'last_uid',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at" ,
+            ]
+    ]).fieldsets
 
 admin.site.site_title = "WFM-System"
 admin.site.site_header = "WFM-System"
@@ -291,3 +318,4 @@ admin.site.register(Lead,LeadAdminSite)
 admin.site.register(Request,RequestAdminSite)
 admin.site.register(UpdateHistory , UpdateHistoryAdminSite)
 admin.site.register(FingerPrintID , FingerPrintIDAdminSite)
+admin.site.register(ZKConfig , ZKConfigAdminSite)
