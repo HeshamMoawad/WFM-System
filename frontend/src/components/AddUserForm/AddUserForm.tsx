@@ -72,8 +72,8 @@ const AddUserForm: FC<AddUserFormProps> = ({setUUID}) => {
                 <section className='col-start-1 col-span-full place-self-center w-[100%] flex flex-row items-center justify-center'>
                     <label htmlFor="crm_username" className='w-2/3 text-center' >{TRANSLATIONS.AddUser.form.crm_username[lang]}</label>
                     <input required type="text" name="crm_username" placeholder={TRANSLATIONS.AddUser.form.crm_username[lang]} id="crm_username" className='place-content-center w-2/3 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
-                    <label htmlFor="fp_id" className='w-1/3 text-center' >{TRANSLATIONS.AddUser.form.fp_id[lang]}</label>
-                    <input type="text" name="fp_id" id="fp_id" placeholder={TRANSLATIONS.AddUser.form.fp_id[lang]} className='place-content-center w-1/3 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
+                    {/* <label htmlFor="fp_id" className='w-1/3 text-center' >{TRANSLATIONS.AddUser.form.fp_id[lang]}</label>
+                    <input type="text" name="fp_id" id="fp_id" placeholder={TRANSLATIONS.AddUser.form.fp_id[lang]} className='place-content-center w-1/3 outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/> */}
                 
                 </section>
 
