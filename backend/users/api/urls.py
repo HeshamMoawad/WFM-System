@@ -1,4 +1,5 @@
 from django.urls import path , include
+from users.views.report_views import add_report , check_report , get_reports
 from users.views.authenticate import login , logout
 from users.views import (
     ProjectsAPI , 
@@ -34,6 +35,10 @@ urlpatterns = [
     path('upload-sheet',upload_sheet) ,
     path('save-upload',save_upload) ,
     path('user-leads',user_leads) ,
+    
+    path('add-report',add_report) ,
+    path('check-report',check_report) ,
+    path('get-reports',get_reports) ,
 
     path('test',test) ,
 ]

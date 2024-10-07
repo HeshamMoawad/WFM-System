@@ -5,7 +5,8 @@ from datetime import datetime
 from commission.models import UserCommissionDetails , DeductionRules
 from core.calculator import Calculator
 from ..models import (
-    Department , 
+    Department,
+    ReportRecord , 
     User , 
     Project , 
     ArrivingLeaving , 
@@ -244,6 +245,22 @@ class UpdateHistorySerializer(ModelSerializer):
             "previous",
             "model_name",
             "model_uuid",
+        ]
+
+
+class ReportRecordSerializer(ModelSerializer):
+    data = SerializerMethodField()
+    user = UserSerializer(read_only=True)
+    def get_data(self,obj:ReportRecord)-> dict :
+        return obj.as_json()
+
+    class Meta:
+        model = ReportRecord
+        fields = [
+            "user",
+            "data",
+            "updated_at",
+            "created_at",
         ]
 
 
