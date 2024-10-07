@@ -23,6 +23,9 @@ import Teams from "./Teams/Teams";
 import NotFound from "./NotFound/NotFound";
 import Salary from "./Salary/Salary";
 import MySalaryList from "./MySalaryList/MySalaryList";
+import AddReport from "./AddReport/AddReport";
+import Reports from "./Reports/Reports";
+import ProjectReport from "./ProjectReport/ProjectReport";
 
 interface PagesProps {}
 
@@ -73,6 +76,14 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/salary-general" element={<SalaryAll department="General"/>}/>
                                             <Route path="/salary/:user_uuid/:date" element={<Salary/>}/>
                                             <Route path="/my-salary-list" element={<MySalaryList/>}/>
+
+
+
+                                            <Route path="/add-report-social" element={<AddReport/>}/>
+                                            <Route path="/reports" element={<Reports/>}/>
+                                            <Route path="/project-report/:project_uuid" element={<ProjectReport/>}/>
+
+
 
                                             <Route path="*" element={<NotFound/>}/>
 

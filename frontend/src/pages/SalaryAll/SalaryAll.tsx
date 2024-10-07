@@ -7,7 +7,7 @@ import { FaHandHoldingUsd, FaUserEdit } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import Table from '../../components/Table/Table';
-import CustomDatePicker from '../../components/CustomDatePicker/CustomDatePicker';
+// import CustomDatePicker from '../../components/CustomDatePicker/CustomDatePicker';
 import { useAuth } from '../../hooks/auth';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
@@ -18,7 +18,9 @@ interface SalaryAllProps {
 }
 
 const SalaryAll: FC<SalaryAllProps> = ({department}) => {
-    const [date, setDate] = useState<Date>(new Date());
+    var d = new Date();
+    d.setMonth(d.getMonth()-1)
+    const [date, setDate] = useState<Date>(d);
     const {auth} = useAuth()
     const {lang} = useContext(LanguageContext)
     const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}

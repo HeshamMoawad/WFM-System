@@ -207,7 +207,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
                                     config={{
                                         value: "uuid",
                                         label: ["min_value", "max_value" , "money" , "is_money_percentage" , "is_global" , "name"],
-                                        method:(...args:any[])=> ` ${args[5]} , ${args[0]} , ${args[1]} , ${args[2]} ${args[3] ? "%" : "EGP" } , ${args[4] ? "Global" :""}`
+                                        method:(...args:any[])=> `${args[5]} , ${args[0]} , ${args[1]} , ${args[2]} ${args[3] ? "%" : "EGP" } , ${args[4] ? "Global" :""}`
 
                                     }}
                                 />
@@ -235,7 +235,7 @@ const CommissionDetailsForm: FC<CommissionDetailsFormProps> = ({
 
                             <div className="col-span-3 md:col-span-6 flex justify-evenly">
                                 <button
-                                    type="submit"
+                                    // type="submit"
                                     className="bg-btns-colors-secondry w-24 h-7 md:w-36 md:h-10 rounded-lg"
                                 >
                                     {TRANSLATIONS.AddUser.commissionform.cancel[lang]}

@@ -19,6 +19,7 @@ import {FaHandHoldingUsd} from "react-icons/fa";
 import { FaUsersLine } from "react-icons/fa6";
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
+import { HiOutlineDocumentReport , HiOutlineDocumentAdd , HiOutlineDocumentText   } from "react-icons/hi";
 
 
 
@@ -97,7 +98,40 @@ const Sidebar: FC<SidebarProps> = () => {
 
             ]
     
-        },{
+        },
+        {
+            name:TRANSLATIONS.SideBar.ReportSocial.title[lang],
+            Icon:HiOutlineDocumentReport ,
+            permissions:[
+                "OWNER",
+                "MANAGER",
+                "AGENT",
+                ],
+            sections:[
+                {
+                    name:TRANSLATIONS.SideBar.ReportSocial.report[lang],
+                    href:'/add-report-social',
+                    Icon:HiOutlineDocumentAdd,
+                    permissions:[
+                        {role : "OWNER" , departments : ["Marketing"]} ,
+                        {role : "MANAGER" , departments : ["Marketing"]} ,
+                        {role : "AGENT" , departments : ["Marketing"]} ,
+                    ],
+                },
+                {
+                    name:TRANSLATIONS.SideBar.ReportSocial.view[lang],
+                    href:'/reports',
+                    Icon:HiOutlineDocumentText,
+                    permissions:[
+                        {role : "OWNER" , departments : ["Marketing"]} ,
+                        {role : "MANAGER" , departments : ["Marketing"]} ,
+                        {role : "AGENT" , departments : ["Marketing"]} ,
+                    ],
+                },
+
+            ]
+        },
+        {
             name : TRANSLATIONS.SideBar.Basic.title[lang],
             Icon:PiMoney ,
             permissions:[

@@ -1,6 +1,6 @@
 const t = (arKey:string,enKey:string)=> ({ar:arKey,en:enKey})
 
-export const BASE_URL = "/" // http://192.168.11.251:8000 
+export const BASE_URL = "http://192.168.11.251:8000/" //  
 
 export const WEEK_DAYS = [
   t("الاحد","Sun"), 
@@ -38,6 +38,11 @@ export const TRANSLATIONS = {
     },
     Basic:{
       title:t("الأساسي","Basic"),
+    },
+    ReportSocial:{
+      title:t("ريبورت سوشيال","Report Social"),
+      report:t("اضافة ريبورت","Add Report"),
+      view:t("مشاهدة الريبورتات","View Reports")
     },
     Commission:{
       title:t("كوميشن","Commission"),
