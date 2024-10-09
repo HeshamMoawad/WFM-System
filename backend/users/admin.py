@@ -12,7 +12,9 @@ from .models import (
     Profile ,
     UpdateHistory , 
     Request , 
-    FingerPrintID
+    FingerPrintID , 
+    ZKConfig ,
+    ReportRecord
 )
 from utils.admin_utils import FieldSets
 
@@ -52,11 +54,11 @@ class UserResource(resources.ModelResource):
     class Meta:
         model = User
         fields = (
-            'username', 'password_normal','profile__phone', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
+            'username', 'password_normal','profile__phone','annual_count', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
             'basic_salary', 'set_deduction_rules', 'set_global_commission_rules', 'will_arrive_at', 'will_leave_at'
         )
         export_order = (
-            'username', 'password_normal','profile__phone', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
+            'username', 'password_normal','profile__phone','annual_count', 'is_active', "first_name", "last_name", 'project_name', 'role', 'title', 'department_name', 'crm_username', 
             'basic_salary', 'set_deduction_rules', 'set_global_commission_rules', 'will_arrive_at', 'will_leave_at'
         )
         
@@ -66,10 +68,10 @@ class UserResource(resources.ModelResource):
 # Register your models here..
 class UserAdminSite(ImportExportModelAdmin):
     resource_class = UserResource
-    list_display = ("username","crm_username",'role',"project","is_active","is_staff","is_superuser")
-    list_filter = ("project","role")
+    list_display = ("username","crm_username",'role',"department","project","annual_count","fp_id","is_active","is_staff","is_superuser")
+    list_filter = ("project","department","role")
     readonly_fields = ['uuid',"created_at","updated_at"]
-    search_fields = ['username' , 'uuid' , 'first_name']  
+    search_fields = ['username' , 'uuid' , 'first_name',"fp_id"]  
     fieldsets = FieldSets([
             'Login Fields' ,
             'Company Fields',
@@ -84,7 +86,6 @@ class UserAdminSite(ImportExportModelAdmin):
                 'is_superuser',
                 "first_name",
                 "last_name",
-
             ] ,
             [
                 "project",
@@ -92,6 +93,8 @@ class UserAdminSite(ImportExportModelAdmin):
                 "title",
                 "department" ,
                 "crm_username" ,
+                "annual_count",
+                "fp_id",
             ],
             [
                 "uuid" ,
@@ -278,6 +281,52 @@ class FingerPrintIDAdminSite(ImportExportModelAdmin):
                 "updated_at" ,
             ]
     ]).fieldsets
+    
+    
+class ZKConfigAdminSite(ImportExportModelAdmin):
+    list_display = ["ip","port" ,"timeout","password" , "is_default" , "last_uid"]
+    list_filter = ["is_default"]
+    readonly_fields = ['uuid',"created_at","updated_at" ]
+    search_fields = ['ip',"port"]  
+    fieldsets = FieldSets([
+            'ZKConfig Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'ip', 
+                'port',
+                'timeout',
+                'password',
+                'force_udp',
+                'ommit_ping',
+                'is_default',
+                'last_uid',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at" ,
+            ]
+    ]).fieldsets
+    
+class ReportRecordAdminSite(ImportExportModelAdmin):
+    list_display = ["user", "date"]
+    list_filter = ["user","date"]
+    readonly_fields = ['uuid',"created_at","updated_at" ]
+    search_fields = ["user","date","json_data"]
+    fieldsets = FieldSets([
+            'ZKConfig Fields' ,
+            'Other Fields'
+        ],[
+            [
+                "user",
+                "date",
+                "json_data"            
+                ],[
+                "uuid" ,
+                "created_at",
+                "updated_at" ,
+            ]
+    ]).fieldsets
 
 admin.site.site_title = "WFM-System"
 admin.site.site_header = "WFM-System"
@@ -290,3 +339,5 @@ admin.site.register(Lead,LeadAdminSite)
 admin.site.register(Request,RequestAdminSite)
 admin.site.register(UpdateHistory , UpdateHistoryAdminSite)
 admin.site.register(FingerPrintID , FingerPrintIDAdminSite)
+admin.site.register(ZKConfig , ZKConfigAdminSite)
+admin.site.register(ReportRecord , ReportRecordAdminSite)

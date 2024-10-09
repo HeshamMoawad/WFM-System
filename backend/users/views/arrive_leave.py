@@ -16,7 +16,13 @@ from django.http import FileResponse
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def arreive(request: Request):
-    obj,created = ArrivingLeaving.objects.get_or_create(user=request.user,date=timezone.now().date())
+    try :
+        obj = ArrivingLeaving.objects.get(user=request.user,date=timezone.now().date())
+        created = False
+    except ArrivingLeaving.DoesNotExist :
+        obj = ArrivingLeaving(user=request.user,date=timezone.now().date())
+        obj.arriving_at = timezone.now()
+        created = True    
     obj.save()
     at = obj.arriving_at.strftime('%Y/%m/%d - %H:%M:%S')
     if not created:
@@ -35,7 +41,7 @@ def leave(request: Request):
         obj.save()
         return Response({"details":f"Successfully Leaved {at}","leaved_at":obj.leaving_at})
     except ArrivingLeaving.DoesNotExist :
-        return Response({"details":f"You are not Arrived Yet !!"})
+        return Response({"details":f"You are not Arrived Yet !!"},status=HTTP_400_BAD_REQUEST)
 
 
 

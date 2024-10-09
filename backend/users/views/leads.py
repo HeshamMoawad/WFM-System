@@ -12,6 +12,15 @@ import datetime , numpy,calendar
 from django.db.models import Q , Case , Count
 from datetime import date
 from django.db.models.functions import TruncDate
+from utils.parsers import parse_date
+
+
+DATE_FORMATS = [
+    "%Y-%m-%d - %H:%M", # 2024-09-08 - 06:35
+    "%Y-%m-%d %H:%M:%S", # 2024-09-08 06:35
+    "%m/%d/%Y %H:%M", # 8/28/2024 11:48
+]
+
 
 
 @api_view(["POST"])
@@ -38,7 +47,7 @@ def upload_sheet(request: Request):
     df = df[df["Market"].isin(crm_names)]
     
     
-    df["Date"] = df["Date"].map(lambda date : datetime.datetime.strptime(str(date),"%Y-%m-%d - %H:%M"))
+    df["Date"] = df["Date"].map(lambda date : parse_date(str(date), DATE_FORMATS) )
     
     
     df["Phone"] = df["Phone"].map(str)
@@ -107,7 +116,7 @@ def save_upload(request:Request):
     df = df[df["Market"].isin(crm_names)]
 
 
-    df["Date"] = df["Date"].map(lambda date : datetime.datetime.strptime(str(date),"%Y-%m-%d - %H:%M")) #
+    df["Date"] = df["Date"].map(lambda date : parse_date(str(date), DATE_FORMATS)) #
     
     
     df["Phone"] = df["Phone"].map(str)

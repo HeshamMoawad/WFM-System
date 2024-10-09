@@ -93,9 +93,9 @@ class  BasicRecordAPI(APIViewSet):
     model_serializer= BasicRecordSerializer
     order_by = ('-created_at',)
     search_filters = ["uuid","user","date"]
-    creating_filters = ["user","deduction_days","deduction_money","kpi" , "gift" , "basic" , "date"]
-    requiered_fields = ["user","deduction_days","deduction_money","kpi" , "gift" , "basic" , "date"]
-    updating_filters = ["deduction_days","deduction_money","kpi" , "gift" , "basic"]
+    creating_filters = ["user","deduction_days","take_annual","deduction_money","kpi" , "gift" , "basic" , "date"]
+    requiered_fields = ["user","deduction_days","take_annual","deduction_money","kpi" , "gift" , "basic" , "date"]
+    updating_filters = ["deduction_days","take_annual","deduction_money","kpi" , "gift" , "basic"]
     unique_field:str = 'uuid'
     
     

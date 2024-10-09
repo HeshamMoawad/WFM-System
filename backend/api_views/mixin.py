@@ -50,14 +50,8 @@ class APIViewMixins(APIView):
         data = request.data.copy()
         if "picture" in request.FILES.keys():
             obj.picture = request.FILES['picture']
-            obj.save()
-        # print(request.FILES)
-        # print( )
-        # print(data)
-        # print()
-        serializer:ModelSerializer = self.model_serializer(instance=obj , data = data, partial=True)
-        
-
+            obj.save()            
+        serializer:ModelSerializer = self.model_serializer(instance=obj , data = data , partial=True)
         setattr(serializer.instance,"__by",request.user)
         if serializer.is_valid():
             serializer.save()

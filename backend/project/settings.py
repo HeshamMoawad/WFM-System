@@ -11,10 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os , datetime
 
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = 'django-insecure-&8e6#vd%stkfp%1@&h5b5n(*1!0g4#n*o6*j2-y_qq2(bby%-c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS")
+ALLOWED_HOSTS = ["*"]
 
 
 # print("Allowed Hosts ",ALLOWED_HOSTS)
@@ -55,7 +53,6 @@ LOCAL_APPS = [
     'users' ,
     'commission',
     'treasury',
-
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -148,7 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Cairo'
 
 USE_I18N = True
 
@@ -161,6 +158,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 # Static files Configuration (CSS, JavaScript, Images)
+# STATIC_URL = '/static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 # STATIC_ROOT = os.path.join(BASE_DIR,'static')
@@ -187,9 +185,9 @@ REST_FRAMEWORK = {
     ) ,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'auth.models.HeaderAuthentication',
-        'auth.models.CookieAuthentication',
-        'auth.models.BodyAuthentication',
+        'users.AuthenticationClasses.HeaderAuthentication',
+        'users.AuthenticationClasses.CookieAuthentication',
+        'users.AuthenticationClasses.BodyAuthentication',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',

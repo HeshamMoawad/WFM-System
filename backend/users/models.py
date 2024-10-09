@@ -8,12 +8,16 @@ from .managers import (
     )
 from .types import UserTypes , RequestTypes , RequestStatuses
 from utils.models_utils import image_upload_path , validate_lead_number , validate_role , validate_user_number
-from django.db.models.signals import pre_save , post_save
+from django.db.models.signals import pre_save , post_save , post_delete
 from core.models import BaseModel
 import json
 from django.utils.timezone import now
 from django.urls import reverse
-
+from uuid import uuid1
+from zk import ZK, const
+from zk.attendance import Attendance
+from zk.user import User as ZkUser
+from zk.finger import Finger
 
 
 class Project(BaseModel):
@@ -44,7 +48,9 @@ class User(AbstractUser , BaseModel):
     title = models.CharField(max_length=100 , verbose_name="Title" , default='Agent')
     department = models.ForeignKey( Department,verbose_name="Department", on_delete=models.SET_NULL, null=True)
     crm_username = models.CharField(max_length=200 , verbose_name="CRM Username" , blank=True  )
-
+    annual_count = models.IntegerField(verbose_name="Annual Count", default= 0 )
+    fp_id = models.CharField(verbose_name="Figner Print ID",max_length=200 , unique=False,blank=True)
+    
     def __str__(self):
         return f"{self.username}"
     
@@ -60,15 +66,15 @@ class User(AbstractUser , BaseModel):
 class FingerPrintID(BaseModel):
     name = models.CharField(max_length=100 , verbose_name="Name" , default='PC')
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.CASCADE )
-    unique_id = models.CharField(verbose_name="Unique ID", unique=True , max_length=100)
+    unique_id = models.CharField(verbose_name="Unique ID", max_length=100)
     def __str__(self):
         return f"{self.name} - {self.user}"
         
 
 class ArrivingLeaving(BaseModel):
     user = models.ForeignKey(User,verbose_name="User" , on_delete=models.CASCADE )
-    date = models.DateField(verbose_name="Day Date",auto_now_add=True )
-    arriving_at = models.DateTimeField(verbose_name="Arrining Date & Time",auto_now_add=True)
+    date = models.DateField(verbose_name="Day Date", ) # auto_now_add=True
+    arriving_at = models.DateTimeField(verbose_name="Arrining Date & Time", ) # auto_now_add=True
     leaving_at = models.DateTimeField(verbose_name="Leaving Date & Time",null=True)
     # deuration_between = models.PositiveIntegerField(verbose_name="Deuration in secounds" , null=True)
 
@@ -129,13 +135,39 @@ class Request(BaseModel):
     department = models.ForeignKey(Department,verbose_name="Department" , on_delete=models.SET_NULL , null=True)
     status = models.CharField(verbose_name="Request Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
     date = models.DateField(verbose_name="Date of Request", null=True )
-
+    
     def save(self,*args,**kwargs):
         if self.user :
             self.department = self.user.department
         return super().save(*args,**kwargs)
 
-
+class ZKConfig(BaseModel):
+    ip = models.CharField(verbose_name="IP Address",max_length=20,unique=True )
+    port=models.PositiveBigIntegerField(verbose_name="Port")
+    timeout = models.PositiveIntegerField(verbose_name="Connection Timeout")
+    password = models.CharField(verbose_name="Password",max_length=100)
+    force_udp = models.BooleanField(verbose_name= "Force UDP")
+    ommit_ping = models.BooleanField(verbose_name= "Ommit Ping")
+    is_default= models.BooleanField(verbose_name= "Set Default")
+    last_uid = models.PositiveBigIntegerField(verbose_name="Last Machine UID")
+    
+    
+    
+class ReportRecord(BaseModel):
+    user = models.ForeignKey(User,verbose_name="User",on_delete=models.CASCADE)
+    date = models.DateField(verbose_name="Date of Record", null=True )
+    json_data = models.TextField(verbose_name="Data as Serialized Json",max_length=2000)
+    
+    def set_data(self,data:dict):
+        self.json_data = json.dumps(data)
+        
+    def as_json(self) -> dict:
+        return json.loads(self.json_data)
+        
+    class Meta:
+        unique_together = ['user','date']
+    
+    
 def profile_creator_signal(sender:User, instance:User, created:bool, **kwargs):
     if created:
         profile , is_created = Profile.objects.get_or_create(user=instance)
@@ -161,6 +193,55 @@ def create_update_history(sender, instance:BaseModel, **kwargs):
         )
 
 
+def fp_signal(sender:User , instance:User,created:bool,**kwargs):
+    if created :
+        zkconfig = ZKConfig.objects.filter(is_default=True).first()
+        if zkconfig :
+            zk = ZK(zkconfig.ip, port=zkconfig.port, timeout=zkconfig.timeout, password=zkconfig.password, force_udp=zkconfig.force_udp, ommit_ping=zkconfig.ommit_ping)
+        else :
+            zk = ZK("192.168.11.157", port=4370, timeout=5, password=0, force_udp=False, ommit_ping=False)
+        try : 
+            conn = zk.connect()
+            conn.disable_device()
+            if zkconfig and zkconfig.last_uid :
+                next_id = zkconfig.last_uid 
+            else :
+                users = conn.get_users()
+                next_id = max(map(lambda usr:usr.uid,users))
+                
+            if zkconfig :
+                zkconfig.last_uid = next_id 
+                zkconfig.save()
+
+            next_uid = int(next_id + 1)
+            conn.set_user(uid=next_uid,name=instance.username)
+            instance.fp_id = next_uid
+            conn.enable_device()
+        except Exception as e:
+            print(e)
+        finally:
+            if conn:
+                conn.disconnect()
+            instance.save()
+
+def fp_delete(sender:BaseModel, instance:User, **kwargs):
+    zkconfig = ZKConfig.objects.filter(is_default=True).first()
+    if zkconfig :
+        zk = ZK(zkconfig.ip, port=zkconfig.port, timeout=zkconfig.timeout, password=zkconfig.password, force_udp=zkconfig.force_udp, ommit_ping=zkconfig.ommit_ping)
+    else :
+        zk = ZK("192.168.11.157", port=4370, timeout=5, password=0, force_udp=False, ommit_ping=False)
+    try : 
+        conn = zk.connect()
+        conn.disable_device()
+        conn.delete_user(uid=int(instance.fp_id))
+        conn.enable_device()
+    except Exception as e:
+        print(e)
+    finally:
+        if conn:
+            conn.disconnect()
+
+    
 
 post_save.connect(profile_creator_signal, sender=User)
 pre_save.connect(create_update_history, sender=Project)
@@ -171,6 +252,8 @@ pre_save.connect(create_update_history, sender=ArrivingLeaving)
 pre_save.connect(create_update_history, sender=Profile)
 pre_save.connect(create_update_history, sender=Lead)
 pre_save.connect(create_update_history, sender=Request)
+post_save.connect(fp_signal, sender=User)
+post_delete.connect(fp_delete,sender=User)
 
 
 

@@ -4,7 +4,8 @@ from rest_framework.response import Response
 # from permissions.models import CustomBasePermission
 from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
-from permissions.users import IsOwner, IsSuperUser , IsManager
+from utils.parsers import parse_date
+from permissions.users import IsOwner, IsSuperUser , IsManager , IsHR
 from users.views import DefaultPagination
 from .serializer import (
     AdvanceSerializer , 
@@ -24,17 +25,16 @@ from django.utils.timezone import now
 
 class AdvancesAPIView(APIViewSet):
     permission_classes = [IsAuthenticated]
-    allowed_methods = ["GET","POST","DELETE"]
+    allowed_methods = ["GET","POST","PUT","DELETE"]
     pagination_class = DefaultPagination
     model = Advance
     model_serializer= AdvanceSerializer
     order_by = ('-created_at',)
-    search_filters = ["uuid",'user',"creator","amount","created_at"]
-    creating_filters = ["user","creator","amount"]
-    requiered_fields = ["user","creator","amount"]
+    search_filters = ["uuid",'user','status',"creator","amount","created_at"]
+    creating_filters = ["user","status","creator","amount"]
+    requiered_fields = ["user","status","creator","amount"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "POST": [IsSuperUser | IsOwner],
         "PUT": [IsSuperUser | IsOwner],
         "DELETE": [IsSuperUser | IsOwner],
     }
@@ -79,23 +79,33 @@ class NotificationAPIView(APIViewSet):
     requiered_fields = ["creator","message","for_users","deadline"]
     unique_field:str = 'uuid'
     permissions_config = {
-        "POST": [IsSuperUser | IsOwner],
-        "PUT": [IsSuperUser | IsOwner],
-        "DELETE": [IsSuperUser | IsOwner],
+        "POST": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
+        "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
     }
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated , IsSuperUser | IsOwner])
 def total_treasury(request:Request):
+    date = request.query_params.get("date",None)
+    date_parsed = parse_date(date,[
+                "%Y-%m", 
+                "%m-%Y",
+                "%m/%Y", 
+                "%Y/%m", 
+                ]) if date else None
+    
     income = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
     outcome = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
-    income = income if income else 0
-    outcome = outcome if outcome else 0
+    if date_parsed :
+        income = TreasuryIncome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
+        outcome = TreasuryOutcome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
+    
     return Response({
-        "income":income,
-        "outcome":outcome,
-        "total":income - outcome,
+        "income":income if income else 0,
+        "outcome":outcome if outcome else 0,
+        "total":(income if income is not None else 0) - (outcome if outcome is not None else 0) ,
     })
 
 

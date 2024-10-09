@@ -130,7 +130,7 @@ class UserCommissionDetailsAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 class BasicRecordAdminSite(admin.ModelAdmin):
-    list_display = ["user","date","basic"]
+    list_display = ["user","date","take_annual","basic"]
     list_filter = ["user","date"]
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['user__username',"date"]  + ['uuid',"created_at","updated_at"] 
@@ -144,7 +144,8 @@ class BasicRecordAdminSite(admin.ModelAdmin):
                 'deduction_money',
                 'kpi',
                 'gift',
-                'date',                
+                'take_annual',
+                'date',           
                 'basic',
             ],[
                 "uuid" ,

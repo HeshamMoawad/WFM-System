@@ -1,6 +1,6 @@
 from django.db import models 
 from django.core.exceptions import ValidationError
-from django.db.models.signals import pre_save , post_save
+from django.db.models.signals import pre_save , post_save , post_delete
 from users.models import  User ,Department , create_update_history
 from core.models import BaseModel
 import typing , datetime
@@ -99,6 +99,7 @@ class CoinChanger(BaseModel):
 
 class BasicRecord(BaseModel):
     user = models.ForeignKey(User, verbose_name="User", on_delete=models.SET_NULL , null=True)
+    take_annual = models.IntegerField(verbose_name="Take Annual" , default= 0 )
     # user_commission_details = models.ForeignKey(UserCommissionDetails, verbose_name="User Commission Details", on_delete=models.SET_NULL , null=True)
     deduction_days = models.FloatField(verbose_name="Deduction Days" , default=0)
     deduction_money = models.IntegerField(verbose_name="Deduction Money" , default=0)
@@ -192,6 +193,26 @@ def create_Outcome_record_salary(sender, instance:Commission, created ,**kwargs)
         details.save()
 
 
+def calc_annual(sender:BaseModel, instance:BasicRecord ,**kwargs):
+    try :
+        old:BasicRecord = sender.objects.get(uuid=instance.uuid)
+        diff = old.take_annual - instance.take_annual
+        instance.user.annual_count = instance.user.annual_count + diff 
+    except BasicRecord.DoesNotExist:        
+        if instance.take_annual > 0 :
+            if instance.user.annual_count > instance.take_annual :
+                instance.user.annual_count -= instance.take_annual
+            else :
+                instance.take_annual = instance.user.annual_count
+                instance.user.annual_count = 0
+    instance.user.save()
+
+        
+def delete_annual(sender:BaseModel, instance:BasicRecord, **kwargs):
+    if instance.take_annual > 0 :
+        instance.user.annual_count =  instance.user.annual_count + instance.take_annual
+        instance.user.save()
+        
 
 pre_save.connect(create_update_history,sender=Team)
 pre_save.connect(create_update_history,sender=CoinChanger)
@@ -202,6 +223,8 @@ pre_save.connect(create_update_history, sender=Team)
 pre_save.connect(create_update_history, sender=CoinChanger)
 pre_save.connect(create_update_history, sender=BasicRecord)
 pre_save.connect(create_update_history, sender=Commission)
+pre_save.connect(calc_annual, sender=BasicRecord)
+post_delete.connect(delete_annual,sender=BasicRecord)
 post_save.connect(create_user_commission_details,sender=User)
 # post_save.connect(create_Outcome_record,sender=BasicRecord)
 post_save.connect(create_Outcome_record_salary,sender=Commission)

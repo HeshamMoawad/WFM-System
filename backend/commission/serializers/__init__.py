@@ -115,6 +115,7 @@ class BasicRecordSerializer(ModelSerializer):
             "kpi",
             "gift",
             "date",
+            "take_annual",
             "basic",
         ]
         foreign_models = {

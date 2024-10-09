@@ -14,15 +14,35 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path , include
+from django.urls import path , include , re_path
+from django.views.static import serve
+from django.core.exceptions import ImproperlyConfigured
+from urllib.parse import urlsplit
+from django.conf import settings
+import re 
 
+def static(prefix,view=serve,**kwargs):
+    if not prefix:
+        raise ImproperlyConfigured("Empty static prefix not premitted")
+    elif urlsplit(prefix).netloc:
+        # No-op if not in debug mode or a non-local prefix.
+        return []
+    return [
+        re_path(r'^%s(?P<path>.*)$' % re.escape(prefix.lstrip("/")), view, kwargs=kwargs),
+    ]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.api.urls')),
     path('api/commission/',include('commission.api.urls')),
     path('api/treasury/',include('treasury.urls')),
-    path('media/',include('users.api.media_urls'))
+    # path('media/',include('users.api.media_urls'))
 ]
 
+# urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
 
+
+# urlpatterns += [
+#     path('',include("home.urls"))
+# ]
