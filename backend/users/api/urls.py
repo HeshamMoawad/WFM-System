@@ -1,5 +1,5 @@
 from django.urls import path , include
-from users.views.report_views import add_report , check_report , get_reports
+from users.views.report_views import add_report , check_report , get_reports , get_leads_report
 from users.views.authenticate import login , logout
 from users.views import (
     ProjectsAPI , 
@@ -39,6 +39,11 @@ urlpatterns = [
     path('add-report',add_report) ,
     path('check-report',check_report) ,
     path('get-reports',get_reports) ,
+    
+    
+    
+    path('leads-report',get_leads_report) ,
+
 
     path('test',test) ,
 ]

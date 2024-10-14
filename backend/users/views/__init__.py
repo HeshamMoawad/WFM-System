@@ -25,7 +25,7 @@ from users.serializers import (
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import FormParser , MultiPartParser 
-from permissions.users import IsAgent , IsManager , IsHR , IsOwner , IsSuperUser
+from permissions.users import IsAgent , IsManager , IsHR , IsOwner , IsSuperUser , IsLeader
 
 
 class DefaultPagination(PageNumberPagination):
@@ -50,7 +50,7 @@ class UsersAPI(APIViewSet):
     model = User
     model_serializer= UserSerializer
     order_by = ('-is_active','role','username')
-    search_filters = ["uuid",'username','project' ,"department","annual_count","role","is_active","is_superuser","crm_username"]
+    search_filters = ["uuid",'username','project' ,"department","annual_count","role","is_active","is_staff","is_superuser","crm_username"]
     creating_filters = ["username","password_normal","is_active","annual_count","role","is_staff","title","project","department","crm_username"]
     requiered_fields = ['username',"password_normal"]
     updating_filters = ["username","password_normal","is_active","annual_count","role","is_staff","title","project","department","crm_username"]
@@ -69,9 +69,9 @@ class ProjectsAPI(APIViewSet):
     model_serializer= ProjectSerializer
     order_by = ('name',)
     search_filters = ["uuid",'name']
-    creating_filters = ["name","logo"]
+    creating_filters = ["name","logo","color"]
     requiered_fields = ['name']
-    updating_filters = ["name","logo"]
+    updating_filters = ["name","logo","color"]
     unique_field:str = 'uuid'
     permissions_config = {
         "POST": [IsSuperUser | IsOwner],
