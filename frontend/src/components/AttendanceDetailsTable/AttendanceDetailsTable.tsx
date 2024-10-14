@@ -30,7 +30,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
     const [percentage,setPercantage] = useState(0)
     const {lang} = useContext(LanguageContext)
     const {auth} = useAuth()
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser || auth.role === "HR"? {} : {department__name : auth.department.name}
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser || auth.role === "HR" ? {is_superuser:"False",is_staff:"False"} : {is_superuser:"False",department__name : auth.department.name , role:"AGENT"}
     const {data , loading }  = useRequest<ArrivingLeaving>({
         url:"api/users/arriving-leaving-list",
         method:"GET",

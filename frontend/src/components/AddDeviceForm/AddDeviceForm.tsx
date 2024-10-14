@@ -19,7 +19,7 @@ const AddDevicesForm: FC<AddDevicesFormProps> = ({refresh , setRefresh}) => {
     const {lang} = useContext(LanguageContext)
     const [loading , setLoading] = useState(false)
     const {auth} = useAuth()
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {is_active:"True"} : {department__name : auth.department.name , is_active:"True"}
 
     const onSubmit = (e:FormEvent<HTMLFormElement>)=>{
         e.preventDefault();

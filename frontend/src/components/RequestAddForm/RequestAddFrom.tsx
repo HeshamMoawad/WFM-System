@@ -22,7 +22,7 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
     const {lang} = useContext(LanguageContext)
     const [loading , setLoading] = useState<boolean>(false)
     const [date, setDate] = useState(new Date())
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {is_active:"True"} : {department__name : auth.department.name , is_active:"True"}
 
     return (
         <Container className={`${className}`}>

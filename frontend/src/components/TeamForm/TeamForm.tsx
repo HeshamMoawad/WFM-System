@@ -14,7 +14,7 @@ interface TeamFormProps {}
 const TeamForm: FC<TeamFormProps> = () => {
     const {lang} = useContext(LanguageContext)
     const {auth} = useAuth()
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : { is_superuser:"False" , department__name : auth.department.name}
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {is_active:"True"} : { is_superuser:"False" ,is_active:"True", department__name : auth.department.name}
 
     return (
     <Container className='md:col-span-2 relative h-fit place-self-center'>
