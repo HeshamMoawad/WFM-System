@@ -35,7 +35,7 @@ def get_users_with_has_basic(request:Request):
                     default=None,
                     output_field=IntegerField(),
                 ),
-            ).filter(Q(has_basic__gte = 0)|Q(has_basic__isnull=True)).order_by("department","project","role").distinct() # Q(has_basic__gte=0)| Q(has_basic__isnull=True)
+            ).filter(Q(has_basic__gte = 0)|(Q(has_basic__isnull=True)&Q(is_active=True))).order_by("department","project","role").distinct() # Q(has_basic__gte=0)| Q(has_basic__isnull=True)
 
         return Response({
             "results":UserSerializer(users_with_basic_annotation,many=True).data
@@ -94,8 +94,8 @@ def get_users_with_basic_commission(request:Request):
                     output_field=IntegerField(),
                 ),
             )\
-            .filter(Q(has_basic__gte = 0)|Q(has_basic__isnull=True))\
-                .filter(Q(has_commission__gte = 0)|Q(has_commission__isnull=True))\
+            .filter(Q(has_basic__gte = 0)|(Q(has_basic__isnull=True)&Q(is_active=True)))\
+                .filter(Q(has_commission__gte = 0)|(Q(has_commission__isnull=True)&Q(is_active=True)))\
                     .order_by("department","project","role")\
                     .distinct()
             
