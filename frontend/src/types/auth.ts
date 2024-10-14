@@ -30,6 +30,7 @@ interface User {
     is_superuser:boolean ,
     is_active:boolean ,
     password_normal?:string,
+    total?:number
 
 }
 interface Authintication extends User {

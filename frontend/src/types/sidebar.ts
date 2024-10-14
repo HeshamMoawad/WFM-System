@@ -4,6 +4,7 @@ import type { IconType } from "react-icons";
 export interface Perm {
     role: string;
     departments: string[];
+    titles?:string[];
 }
 
 
