@@ -20,6 +20,7 @@ import { FaUsersLine } from "react-icons/fa6";
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { HiOutlineDocumentReport , HiOutlineDocumentAdd , HiOutlineDocumentText   } from "react-icons/hi";
+import { MdOutlineAnalytics } from "react-icons/md";
 
 
 
@@ -48,7 +49,16 @@ const Sidebar: FC<SidebarProps> = () => {
                     permissions:[
                         {role : "AGENT" , departments : ["*"]} ,
                         {role : "HR" , departments : ["*"]} ,
-                        {role : "MANAGER" , departments : ["*"]} ,
+                        // {role : "MANAGER" , departments : ["*"]} ,
+                    ],
+                },
+                {
+                    name:TRANSLATIONS.SideBar.DashBoard.market[lang],
+                    href:'/dashboard-market',
+                    Icon:MdOutlineAnalytics , 
+                    permissions:[
+                        {role : "MANAGER" , departments : ["Marketing"]} ,
+                        {role : "OWNER" , departments : ["Marketing"]} ,
                     ],
                 },
             ]
@@ -125,7 +135,8 @@ const Sidebar: FC<SidebarProps> = () => {
                     permissions:[
                         {role : "OWNER" , departments : ["Marketing"]} ,
                         {role : "MANAGER" , departments : ["Marketing"]} ,
-                        {role : "AGENT" , departments : ["Marketing"]} ,
+                        {role : "AGENT" , departments : ["Marketing"] , titles:["Leader"]} ,
+
                     ],
                 },
 

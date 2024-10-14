@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { useContext, type FC } from "react";
 import { BrowserRouter,Routes, Route} from 'react-router-dom';
 import MainLayout from "../layouts/MainLayout/MainLayout";
 import DarkModeButton from "../components/DarkModeButton/DarkModeButton";
@@ -26,11 +26,15 @@ import MySalaryList from "./MySalaryList/MySalaryList";
 import AddReport from "./AddReport/AddReport";
 import Reports from "./Reports/Reports";
 import ProjectReport from "./ProjectReport/ProjectReport";
+import DashMarket from "./DashMarket/DashMarket";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend , CategoryScale , LinearScale ,PointElement , LineElement , BarElement} from 'chart.js';
 
 interface PagesProps {}
 
+
+ChartJS.register(ArcElement, Tooltip, Legend , CategoryScale , LinearScale ,PointElement , LineElement , BarElement);
+
 const Pages: FC<PagesProps> = () => {
-    // const {auth} = useAuth();
     return (<>
             <div className={`
                 overflow-x-hidden
@@ -53,6 +57,10 @@ const Pages: FC<PagesProps> = () => {
                                         <Routes>
                                             <Route path="/" element={<DashBoard/>}/>
                                             <Route path="/dashboard" element={<DashBoard/>}/>
+
+
+                                            <Route path="/dashboard-market" element={<DashMarket/>}/>
+
                                             <Route path="/requests" element={<Requests/>}/>
                                             <Route path="/profile" element={<Profile/>}/>
                                             <Route path="/add-user" element={<AddUser/>}/>
@@ -82,8 +90,6 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/add-report-social" element={<AddReport/>}/>
                                             <Route path="/reports" element={<Reports/>}/>
                                             <Route path="/project-report/:project_uuid" element={<ProjectReport/>}/>
-
-
 
                                             <Route path="*" element={<NotFound/>}/>
 

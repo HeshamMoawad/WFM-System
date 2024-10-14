@@ -8,7 +8,12 @@ export function checkPermissions(auth:Authintication ,perms:Perm[]){
     }
     let available = false;
     perms.map((perm)=>{
-        if ((auth.role === perm.role || perm.role === "*") && (perm.departments.includes(auth.department.name) || perm.departments.includes("*"))){
+        if (
+            (auth.role === perm.role || perm.role === "*") &&
+            (perm.departments.includes(auth.department.name) || perm.departments.includes("*")) &&
+            (perm.titles ? perm.titles.includes(auth.title) : true)
+        )
+            {
             available =  true;
         }
     })
