@@ -71,3 +71,7 @@ class AllowAnyAuthenticated(CustomBasePermission):
         return {"User":{"role":"OWNER"}}
 
 
+class IsLeader(CustomBasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.title in ["Leader" ,"Team Leader"]
+

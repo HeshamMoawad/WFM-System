@@ -13,7 +13,8 @@ from .models import (
     UpdateHistory , 
     Request , 
     FingerPrintID , 
-    ZKConfig
+    ZKConfig ,
+    ReportRecord
 )
 from utils.admin_utils import FieldSets
 
@@ -187,6 +188,7 @@ class ProjectAdminSite(ImportExportModelAdmin):
             [
                 'name',
                 'logo',
+                'color',
             ],[
                 "uuid" ,
                 "created_at",
@@ -306,6 +308,26 @@ class ZKConfigAdminSite(ImportExportModelAdmin):
                 "updated_at" ,
             ]
     ]).fieldsets
+    
+class ReportRecordAdminSite(ImportExportModelAdmin):
+    list_display = ["user", "date"]
+    list_filter = ["user","date"]
+    readonly_fields = ['uuid',"created_at","updated_at" ]
+    search_fields = ["user","date","json_data"]
+    fieldsets = FieldSets([
+            'ZKConfig Fields' ,
+            'Other Fields'
+        ],[
+            [
+                "user",
+                "date",
+                "json_data"            
+                ],[
+                "uuid" ,
+                "created_at",
+                "updated_at" ,
+            ]
+    ]).fieldsets
 
 admin.site.site_title = "WFM-System"
 admin.site.site_header = "WFM-System"
@@ -319,3 +341,4 @@ admin.site.register(Request,RequestAdminSite)
 admin.site.register(UpdateHistory , UpdateHistoryAdminSite)
 admin.site.register(FingerPrintID , FingerPrintIDAdminSite)
 admin.site.register(ZKConfig , ZKConfigAdminSite)
+admin.site.register(ReportRecord , ReportRecordAdminSite)

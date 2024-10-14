@@ -5,7 +5,8 @@ from datetime import datetime
 from commission.models import UserCommissionDetails , DeductionRules
 from core.calculator import Calculator
 from ..models import (
-    Department , 
+    Department,
+    ReportRecord , 
     User , 
     Project , 
     ArrivingLeaving , 
@@ -46,6 +47,7 @@ class ProjectSerializer(ModelSerializer):
             "uuid",
             "name",
             "logo" ,
+            "color"
         ]
 
 class ProfileSerializer(ModelSerializer):
@@ -73,13 +75,12 @@ class UserSerializer(ModelSerializer):
 
     has_basic = SerializerMethodField()
     has_commission = SerializerMethodField()
+    total = SerializerMethodField()
 
-    def get_has_basic(self,obj):
-        return getattr(obj,"has_basic",None)
+    def get_has_basic(self,obj): return getattr(obj,"has_basic",None)
+    def get_has_commission(self,obj): return getattr(obj,"has_commission",None)  
+    def get_total(self,obj): return getattr(obj,"total",None)
     
-    def get_has_commission(self,obj):
-        return getattr(obj,"has_commission",None)
-            
     class Meta:
         model = User
         fields = [
@@ -97,6 +98,7 @@ class UserSerializer(ModelSerializer):
             "has_commission",
             "password_normal",
             "profile",
+            "total",
             "crm_username",
             "annual_count",
             "fp_id",
@@ -244,6 +246,22 @@ class UpdateHistorySerializer(ModelSerializer):
             "previous",
             "model_name",
             "model_uuid",
+        ]
+
+
+class ReportRecordSerializer(ModelSerializer):
+    data = SerializerMethodField()
+    user = UserSerializer(read_only=True)
+    def get_data(self,obj:ReportRecord)-> dict :
+        return obj.as_json()
+
+    class Meta:
+        model = ReportRecord
+        fields = [
+            "user",
+            "data",
+            "updated_at",
+            "created_at",
         ]
 
 

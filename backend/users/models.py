@@ -18,11 +18,12 @@ from zk import ZK, const
 from zk.attendance import Attendance
 from zk.user import User as ZkUser
 from zk.finger import Finger
-
+from colorfield.fields import ColorField
 
 class Project(BaseModel):
     name = models.CharField(verbose_name="Project Name", max_length=100)
     logo = models.ImageField(verbose_name="Logo", upload_to='projects-logo/')
+    color = ColorField(default="#FF0000")
     def __str__(self):
         return self.name
 
@@ -151,6 +152,23 @@ class ZKConfig(BaseModel):
     is_default= models.BooleanField(verbose_name= "Set Default")
     last_uid = models.PositiveBigIntegerField(verbose_name="Last Machine UID")
     
+    
+    
+class ReportRecord(BaseModel):
+    user = models.ForeignKey(User,verbose_name="User",on_delete=models.CASCADE)
+    date = models.DateField(verbose_name="Date of Record", null=True )
+    json_data = models.TextField(verbose_name="Data as Serialized Json",max_length=2000)
+    
+    def set_data(self,data:dict):
+        self.json_data = json.dumps(data)
+        
+    def as_json(self) -> dict:
+        return json.loads(self.json_data)
+        
+    class Meta:
+        unique_together = ['user','date']
+    
+    
 def profile_creator_signal(sender:User, instance:User, created:bool, **kwargs):
     if created:
         profile , is_created = Profile.objects.get_or_create(user=instance)
@@ -187,12 +205,15 @@ def fp_signal(sender:User , instance:User,created:bool,**kwargs):
             conn = zk.connect()
             conn.disable_device()
             if zkconfig and zkconfig.last_uid :
-                next_id = zkconfig.last_uid + 1
-                zkconfig.last_uid = next_id 
-                zkconfig.save()
+                next_id = zkconfig.last_uid 
             else :
                 users = conn.get_users()
                 next_id = max(map(lambda usr:usr.uid,users))
+                
+            if zkconfig :
+                zkconfig.last_uid = next_id 
+                zkconfig.save()
+
             next_uid = int(next_id + 1)
             conn.set_user(uid=next_uid,name=instance.username)
             instance.fp_id = next_uid

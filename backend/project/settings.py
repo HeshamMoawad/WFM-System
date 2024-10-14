@@ -46,7 +46,7 @@ THIRD_PARTY_APPS = [
     'rest_framework' ,
     'corsheaders',
     'import_export',
-
+    "colorfield" ,
 ]
 
 LOCAL_APPS = [

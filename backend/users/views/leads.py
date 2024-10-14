@@ -67,26 +67,7 @@ def upload_sheet(request: Request):
     },inplace=True)
     
     
-
-    # database_frame = pd.read_sql_query(str(Lead.objects.all().query),connection)
-    
-    # merge_columns = ['user_id', 'phone']
-
-    # merged = df.merge(
-    #     database_frame[merge_columns],
-    #     on=merge_columns, 
-    #     how='left', 
-    #     indicator=True
-    # )
-    
-    # df["Exist"] = merged['_merge'] == 'both'
-    
-    # print(df.head(20))
-    # df.to_excel("testing.xlsx")
     response_data = {
-        
-        # "new_count": len(df[df["Exist"] == False]),
-        # "old_count": len(df[df["Exist"] == True]),
         "total_count": len(df),
     }
     
@@ -131,20 +112,6 @@ def save_upload(request:Request):
         "user_id" : "Market",
         "phone" : "Phone" ,
     },inplace=True)
-    
-    # database_frame["Market"] = database_frame["Market"].map(lambda crm_username : User.objects.filter(uuid=crm_username).first())
-
-    
-    # merge_columns = ['Market', 'Phone']
-
-    # merged = df.merge(
-    #     database_frame[merge_columns],
-    #     on=merge_columns, 
-    #     how='left', 
-    #     indicator=True
-    # )
-    
-    # df["Exist"] = merged['_merge'] == 'both'
     
     objects = [ 
             Lead(
