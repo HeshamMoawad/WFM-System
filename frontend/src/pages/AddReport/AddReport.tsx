@@ -21,7 +21,7 @@ interface SectionProps {
     posts?: string[];
 }
 type Inputs = {
-    twitter: SectionProps;
+    twitter: SectionProps ;
     tiktok: SectionProps;
     whatsapp: SectionProps;
     telegram: SectionProps;
@@ -39,6 +39,7 @@ const AddReport: FC<AddReportProps> = () => {
         handleSubmit,
         control,
     } = useForm<Inputs>({
+
         defaultValues: {},
     });
     
@@ -95,6 +96,7 @@ const AddReport: FC<AddReportProps> = () => {
                         {/* Report Form */}
                         <ReportTable
                             register={register}
+                            required_indexes={[0,1,2]}
                             tableType="twitter"
                             rows={[
                                 {
@@ -117,6 +119,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="tiktok"
+                            required_indexes={[0,1]}
                             rows={[
                                 {
                                     type: "Account_Names",
@@ -135,6 +138,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="whatsapp"
+                            required_indexes={[0,1]}
                             rows={[
                                 {
                                     type: "Account_Names",
@@ -147,6 +151,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="Telegram"
+                            required_indexes={[0,1,2]}
                             rows={[
                                 {
                                     type: "Account_Names",
@@ -159,6 +164,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="jaco"
+                            required_indexes={[0]}
                             rows={[
                                 {
                                     type: "Account_Names",

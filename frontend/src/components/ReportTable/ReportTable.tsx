@@ -20,9 +20,10 @@ interface ReportTableProps {
     rows: {type: string}[];
     disabled?: boolean;
     name?: string;
+    required_indexes?: number[];
 }
 
-const ReportTable: FC<ReportTableProps> = ({ register , tableType ,name  , rows , disabled=false}) => {
+const ReportTable: FC<ReportTableProps> = ({ register , tableType ,name  , rows  , required_indexes=[0], disabled=false}) => {
     const [data, setData] = useState( { nodes:rows } );
     const {mode} = useContext(ModeContext)
     const theme = useTheme({...getTheme(),
@@ -73,7 +74,7 @@ const ReportTable: FC<ReportTableProps> = ({ register , tableType ,name  , rows 
                                                         type="text"
                                                         {...register(
                                                             `${tableType.toLowerCase()}.${item.type.toLowerCase()}.${val}`,
-                                                            { disabled: disabled }
+                                                            { disabled: disabled  , required : required_indexes ? required_indexes.includes(val) : false}
                                                         )}
                                                         onChange={undefined}
                                                         style={{
@@ -81,7 +82,6 @@ const ReportTable: FC<ReportTableProps> = ({ register , tableType ,name  , rows 
                                                         }}
                                                     />
                                                 </Cell>
-
                                                 </>
                                                 ))
                                             }

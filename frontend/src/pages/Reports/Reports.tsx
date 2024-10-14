@@ -3,15 +3,19 @@ import { Project } from '../../types/auth';
 import { sendRequest } from '../../calls/base';
 import LoadingPage from '../LoadingPage/LoadingPage';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/auth';
 
 interface ReportsProps {}
 
 const Reports: FC<ReportsProps> = () => {
     const [projects,setProjects] = useState<Project[]>([])
     const [loading,setLoading] = useState<boolean>(false)
+    const {auth} = useAuth()
+    const filters = auth.is_superuser || auth.role === "OWNER" ? undefined : {uuid:auth.project.uuid}
+    // Fetch projects data here using useEffect hook and sendRequest function from calls/base.ts file.
     useEffect(()=>{
         setLoading(true)
-        sendRequest({url:"api/users/project" , method:"GET"})
+        sendRequest({url:"api/users/project" , method:"GET" , params:filters})
         .then((data)=>{
             setProjects(data.results)
         })
