@@ -13,7 +13,7 @@ const Container: FC<ContainerProps> = ({children , className , onClick , onDoubl
         <div 
         onDoubleClick={onDoubleClick}
         onClick={onClick}
-        className={`container max-w-[93vw] transition-all duration-600 rounded-lg shadow-md m-2 px-3 pt-2 hover:mt-0 bg-light-colors-dashboard-secondry-bg dark:bg-dark-colors-dashboard-secondry-bg overflow-auto ${className}`}
+        className={`container max-w-[93vw] transition-all duration-600 rounded-lg shadow-md dark:shadow-[gray] dark:shadow-sm  m-2 px-3 pt-2 hover:-translate-y-2 bg-light-colors-dashboard-secondry-bg dark:bg-dark-colors-dashboard-secondry-bg overflow-auto ${className}`}
         aria-disabled={disabled}
         >
             {children}
