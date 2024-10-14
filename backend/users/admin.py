@@ -188,6 +188,7 @@ class ProjectAdminSite(ImportExportModelAdmin):
             [
                 'name',
                 'logo',
+                'color',
             ],[
                 "uuid" ,
                 "created_at",

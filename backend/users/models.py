@@ -18,11 +18,12 @@ from zk import ZK, const
 from zk.attendance import Attendance
 from zk.user import User as ZkUser
 from zk.finger import Finger
-
+from colorfield.fields import ColorField
 
 class Project(BaseModel):
     name = models.CharField(verbose_name="Project Name", max_length=100)
     logo = models.ImageField(verbose_name="Logo", upload_to='projects-logo/')
+    color = ColorField(default="#FF0000")
     def __str__(self):
         return self.name
 
