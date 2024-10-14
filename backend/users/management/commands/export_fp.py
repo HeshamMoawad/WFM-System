@@ -9,7 +9,7 @@ from zk.user import User as ZkUser
 from django.conf import settings
 from pathlib import Path
 from users.models import ZKConfig
-
+import os
 
 class Command(BaseCommand):
     help = 'Export tasks'
@@ -23,7 +23,7 @@ class Command(BaseCommand):
         parser.add_argument('--attendance', action='store_true', help='Export Attendance')
         parser.add_argument('--users', action='store_true', help='Export Users')
         parser.add_argument('--merged', action='store_true', help='Export Merged Data')
-        parser.add_argument('--path', type=str, default=str(settings.BASE_DIR)+"\\Exports", help='ZK Port')
+        parser.add_argument('--path', type=str, default=os.path.join(str(settings.BASE_DIR),"Exports"), help='ZK Port')
 
     def handle(self, *args, **kwargs):
         self.stdout.write(f"Start Zk FP Syncing on")
@@ -52,13 +52,16 @@ class Command(BaseCommand):
 
             if kwargs.get("attendance"):
                 df = self.export_attendance(attendance)
-                df.to_excel(f"{path}\\{serial}-attendance-{datetime.now().date()}.xlsx",index=False)
+                p = os.path.join(path , f"{serial}-attendance-{datetime.now().date()}.xlsx")
+                df.to_excel(p,index=False)
             if kwargs.get("users"):
                 df = self.export_users(users)
-                df.to_excel(f"{path}\\{serial}-users-{datetime.now().date()}.xlsx",index=False)
+                p = os.path.join(path , f"{serial}-users-{datetime.now().date()}.xlsx")
+                df.to_excel(p,index=False)
             if kwargs.get("merged"):
                 df = self.export_merged(users,attendance)
-                df.to_excel(f"{path}\\{serial}-merged-{datetime.now().date()}.xlsx",index=False)
+                p = os.path.join(path , f"{serial}-merged-{datetime.now().date()}.xlsx")
+                df.to_excel(p,index=False)
                 
             self.stdout.write(self.style.SUCCESS(f"Exported Tasks Success to '{path}' !"))
         except Exception as e:
