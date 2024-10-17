@@ -9,7 +9,7 @@ from zk.user import User as ZkUser
 from django.conf import settings
 from pathlib import Path
 from users.models import ZKConfig
-
+import os
 
 class Command(BaseCommand):
     help = 'Export tasks'
@@ -23,7 +23,7 @@ class Command(BaseCommand):
         parser.add_argument('--attendance', action='store_true', help='Export Attendance')
         parser.add_argument('--users', action='store_true', help='Export Users')
         parser.add_argument('--merged', action='store_true', help='Export Merged Data')
-        parser.add_argument('--path', type=str, default=str(settings.BASE_DIR)+"\\Exports", help='ZK Port')
+        parser.add_argument('--path', type=str, default=os.path.join(str(settings.BASE_DIR),"Exports"), help='ZK Port')
 
     def handle(self, *args, **kwargs):
         self.stdout.write(f"Start Zk FP Syncing on")
