@@ -73,5 +73,5 @@ class AllowAnyAuthenticated(CustomBasePermission):
 
 class IsLeader(CustomBasePermission):
     def has_permission(self, request, view):
-        return request.user and request.user.title in ["Leader" ,"Team Leader"]
+        return request.user and "Leader" in request.user.title
 
