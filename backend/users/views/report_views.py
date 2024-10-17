@@ -3,12 +3,15 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.request import Request
 from rest_framework.response import Response
-from users.models import User 
-from users.serializers import  ReportRecord ,ReportRecordSerializer , LeadSerializer , Lead , Project , Department , UserSerializer
+from users.models import User
+from users.serializers import  ReportRecord ,ReportRecordSerializer , LeadSerializer , Lead , Project , Department , UserSerializer , ProjectSerializer
 from users.views import IsAuthenticated , IsOwner , IsSuperUser , IsManager , IsLeader
 from django.utils import timezone
 import json
-from django.db.models import Count , Q
+from django.db.models import Count , Q , OuterRef , Exists
+from commission.serializers import Team , TeamSerializer
+from itertools import chain
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -34,10 +37,29 @@ def get_reports(request: Request):
     date_filterd = request.query_params.get("date",None)
     if date_filterd :
         date_filterd = datetime.strptime(date_filterd , '%Y-%m-%d')
-    objs = ReportRecord.objects.filter(user__project__uuid= proj_filterd , user__is_active=True, date = date_filterd.date())
-    # print(objs.first().date ,date_filterd.date() ) # 
+       
+    users_in_project = Project.objects.get(uuid=proj_filterd).user_set.filter(department__name="Marketing",is_active=True)
+
+    reports_exist_subquery = ReportRecord.objects.filter(
+        user = OuterRef('uuid'),
+        date = date_filterd , 
+        user__is_active=True,
+    )
+
+
+    users_with_exist_flag = users_in_project.annotate(
+        exist=Exists(reports_exist_subquery)
+    ).filter(exist=False)
+
+    
+    objs = ReportRecord.objects.filter(user__in= users_in_project , user__is_active=True, date = date_filterd.date()).all()
+    
+    reports=[]
+    for user in users_with_exist_flag:
+        reports.append(ReportRecord(user=user,date=date_filterd,json_data="{}"))
+        
     return Response({
-        "results" : ReportRecordSerializer(objs,many=True).data
+        "results" : ReportRecordSerializer(list(chain(objs , reports)),many=True).data
     })
 
 
@@ -76,4 +98,13 @@ def get_leads_report(request:Request):
     return Response(result)
     
     
-    
+@api_view(["GET"])
+@permission_classes([IsLeader | IsManager | IsSuperUser | IsOwner])
+def get_projects_to_report(request:Request):
+    if request.user.is_superuser or  request.user.role == "OWNER" or request.user.role == "MANAGER" :
+        return Response(ProjectSerializer(Project.objects.all(),many=True).data)
+    team = Team.objects.filter(leader=request.user).first()
+    if team :
+        projects = Project.objects.filter(user__in=team.agents.all()).distinct()
+        return Response(ProjectSerializer(projects,many=True).data)
+    return Response(ProjectSerializer([request.user.project],many=True).data)

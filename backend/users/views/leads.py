@@ -166,4 +166,12 @@ def user_leads(request:Request):
 
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def del_old_lead(request:Request):
+    phone = request.data.get("phone",None)
+    if not phone  :
+        return Response({},status=400)
+    
 
+    pass

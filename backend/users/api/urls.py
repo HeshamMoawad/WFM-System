@@ -1,5 +1,5 @@
 from django.urls import path , include
-from users.views.report_views import add_report , check_report , get_reports , get_leads_report
+from users.views.report_views import add_report , check_report , get_reports , get_leads_report , get_projects_to_report
 from users.views.authenticate import login , logout
 from users.views import (
     ProjectsAPI , 
@@ -43,6 +43,7 @@ urlpatterns = [
     
     
     path('leads-report',get_leads_report) ,
+    path('get-my-projects',get_projects_to_report) ,
 
 
     path('test',test) ,
