@@ -95,7 +95,7 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
     return (
         <div className='flex flex-row w-[100%] md:w-full h-fit gap-1 md:gap-6 items-center border-b p-2 rounded-lg shadow-lg md:m-1' id='card'>
                  
-            <img className={`rounded-full  w-[50px] h-[50px] md:w-[65px] md:h-[65px] ${request?.user?.profile?.picture ? "":"invisible" }`} src={getFullURL(request.user.profile.picture)} alt=''/>
+            <img className={`rounded-full  w-[50px] h-[50px] md:w-[65px] md:h-[65px] object-contain ${request?.user?.profile?.picture ? "":"invisible" }`} src={getFullURL(request.user.profile.picture)} alt=''/>
             <span className={`${request?.user?.profile?.picture ? "w-0 overflow-hidden h-0" : "w-fit"} md:overflow-visible md:w-fit md:h-fit p-2`}>{request?.user?.username}</span>
             <div className='flex flex-col gap-2 w-full' id='card-body'>
                 <p id='details'>{request.details}</p>

@@ -40,7 +40,7 @@ const ProjectReport: FC<ProjectReportProps> = () => {
             fill: currentColor;
             }
         `,
-        Table:"border-radius:5px;",
+        Table:"border-radius:5px;row-gap:10px;column-gap:0px;",
         Body:"border-radius:5px;",
         Header:"border-radius:5px;",
         Row: ``,
@@ -60,7 +60,7 @@ const ProjectReport: FC<ProjectReportProps> = () => {
         })
     },[date])
     return (
-        <div className='p-10 flex flex-col gap-8 text-center '>
+        <div className='p-10 flex flex-col gap-8 text-center'>
         {
             loading ? <LoadingPage/> : 
             <>
@@ -82,6 +82,7 @@ const ProjectReport: FC<ProjectReportProps> = () => {
                                     <HeaderCell>Username</HeaderCell>
                                     <HeaderCell>Project</HeaderCell>
                                     <HeaderCell>Department</HeaderCell>
+                                    <HeaderCell>All</HeaderCell>
                                     <HeaderCell>Twitter</HeaderCell>
                                     <HeaderCell>Tiktok</HeaderCell>
                                     <HeaderCell>Whatsapp</HeaderCell>

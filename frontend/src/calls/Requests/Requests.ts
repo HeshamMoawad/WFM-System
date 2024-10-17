@@ -34,7 +34,7 @@ export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.
               });
             }).finally(() => { 
               setLoading(false)
-              if (setRefresh && refresh){
+              if (setRefresh){
                 setRefresh(prev=>!prev);
               } 
               

@@ -27,12 +27,24 @@ import AddReport from "./AddReport/AddReport";
 import Reports from "./Reports/Reports";
 import ProjectReport from "./ProjectReport/ProjectReport";
 import DashMarket from "./DashMarket/DashMarket";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend , CategoryScale , LinearScale ,PointElement , LineElement , BarElement} from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend , CategoryScale , LinearScale ,PointElement , LineElement , BarElement , BarController , LineController , DoughnutController} from 'chart.js';
 
 interface PagesProps {}
 
 
-ChartJS.register(ArcElement, Tooltip, Legend , CategoryScale , LinearScale ,PointElement , LineElement , BarElement);
+ChartJS.register(
+    ArcElement, 
+    Tooltip, 
+    Legend , 
+    CategoryScale , 
+    LinearScale ,
+    PointElement ,
+    LineElement , 
+    BarElement , 
+    BarController , 
+    LineController , 
+    DoughnutController ,
+);
 
 const Pages: FC<PagesProps> = () => {
     return (<>

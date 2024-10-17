@@ -72,16 +72,19 @@ const TableRows = {
 
 }
 
+type TableDataType = "twitter"|"tiktok"|"whatsapp"|"telegram"|"jaco";
+
 const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
+    const sended = Object.keys(item.data).length > 1 ? true : false;
     const {register, control } = useForm<any>(
         {
-            defaultValues:item.data
+            defaultValues:item.data 
         }
     ); // replace with your actual form hook
 
-    const [expandedData,setExpandedData] = useState<"twitter"|"tiktok"|"whatsapp"|"telegram"|"jaco">('twitter');
+    const [expandedData,setExpandedData] = useState<TableDataType|"*">('twitter');
     const [show,setShow] = useState(false);
-    const handleToggle = (fieldName:"twitter"|"tiktok"|"whatsapp"|"telegram"|"jaco") => {
+    const handleToggle = (fieldName:TableDataType|"*") => {
         if (expandedData === fieldName) {
             setShow(!show)
         }else {
@@ -95,22 +98,37 @@ const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
         <Cell>{item.user.username}</Cell>
         <Cell>{item.user.project?.name}</Cell>
         <Cell>{item.user.department?.name}</Cell>
-        <Cell><label onClick={()=>handleToggle('twitter')} className='text-primary hover:text-[gold] shadow-xl'>Twitter</label></Cell>
-        <Cell><label onClick={()=>handleToggle('tiktok')} className='text-primary hover:text-[gold] shadow-xl'>Tiktok</label></Cell>
-        <Cell><label onClick={()=>handleToggle('whatsapp')} className='text-primary hover:text-[gold] shadow-xl'>Whatsapp</label></Cell>
-        <Cell><label onClick={()=>handleToggle('telegram')} className='text-primary hover:text-[gold] shadow-xl'>Telegram</label></Cell>
-        <Cell><label onClick={()=>handleToggle('jaco')} className='text-primary hover:text-[gold] shadow-xl'>Jaco</label></Cell>
+        <Cell><label onClick={()=>handleToggle('*')} className={`${sended ? "text-primary" : "text-btns-colors-secondry"} hover:text-[gold] shadow-xl`}>All</label></Cell>
+        <Cell><label onClick={()=>handleToggle('twitter')} className={`${sended ? "text-primary" : "text-btns-colors-secondry"} hover:text-[gold] shadow-xl`}>Twitter</label></Cell>
+        <Cell><label onClick={()=>handleToggle('tiktok')} className={`${sended ? "text-primary" : "text-btns-colors-secondry"} hover:text-[gold] shadow-xl`}>Tiktok</label></Cell>
+        <Cell><label onClick={()=>handleToggle('whatsapp')} className={`${sended ? "text-primary" : "text-btns-colors-secondry"} hover:text-[gold] shadow-xl`}>Whatsapp</label></Cell>
+        <Cell><label onClick={()=>handleToggle('telegram')} className={`${sended ? "text-primary" : "text-btns-colors-secondry"} hover:text-[gold] shadow-xl`}>Telegram</label></Cell>
+        <Cell><label onClick={()=>handleToggle('jaco')} className={`${sended ? "text-primary" : "text-btns-colors-secondry"} hover:text-[gold] shadow-xl`}>Jaco</label></Cell>
     </Row>
     {
-        show ? 
+        show && sended? 
         <>
         <Row key={Math.random()} item={{id:Math.random()}}>
-            <ReportTable
-                register={register}
-                name={item.user.username}
-                tableType={expandedData}
-                rows={TableRows[expandedData]}
-            />
+            {
+                expandedData === "*" ? Object.keys(TableRows).map((val:string,index:number)=>{
+                    return <ReportTable
+                    register={register}
+                    name={item.user.username}
+                    tableType={val}
+                    rows={TableRows[val as TableDataType]}
+                />
+
+                }) : (
+                <>
+                <ReportTable
+                    register={register}
+                    name={item.user.username}
+                    tableType={expandedData}
+                    rows={TableRows[expandedData]}
+                />
+                </>
+                )
+            }
 
         </Row>
         
