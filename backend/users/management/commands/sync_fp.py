@@ -97,6 +97,7 @@ class Command(BaseCommand):
         return "-"        
 
     def _map_update(self,users:List[User],d_range:List[datetime],df_attend:DataFrame):
+
         for user in users :
             # log
             temp_df = df_attend[df_attend["user_id"] == user.fp_id]
@@ -104,6 +105,7 @@ class Command(BaseCommand):
             for day in d_range :
                 arr_leav = ArrivingLeaving.objects.filter(user=user,date=day).first()
                 times = temp_df[temp_df['date'] == day]['attendance'].map(lambda att: att.timestamp).tolist()
+                
                 if not times :
                     continue
                 elif arr_leav:
@@ -126,7 +128,6 @@ class Command(BaseCommand):
     def _update_user_arrive_leave(self,arr_leav:ArrivingLeaving,created:bool,times:List[Union[datetime,str]]):
         if times :
             arr_leav.arriving_at = min(arr_leav.arriving_at,*times) if not created else min(times)
-            # print(arr_leav.leaving_at,*times) if not created and arr_leav.leaving_at else print(times)
             if arr_leav.date != datetime.now().date() and len(times) > 1:
                 leaving_at = max(arr_leav.leaving_at,*times) if not created and arr_leav.leaving_at else max(times)
                 if leaving_at != arr_leav.arriving_at :
