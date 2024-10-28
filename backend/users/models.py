@@ -211,7 +211,7 @@ def fp_signal(sender:User , instance:User,created:bool,**kwargs):
                 next_id = max(map(lambda usr:usr.uid,users))
                 
             if zkconfig :
-                zkconfig.last_uid = next_id 
+                zkconfig.last_uid = next_id + 1
                 zkconfig.save()
 
             next_uid = int(next_id + 1)
