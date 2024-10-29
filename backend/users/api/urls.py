@@ -11,7 +11,7 @@ from users.views import (
     RequestAPI ,
     FingerPrintIDAPI
      )
-from users.views.arrive_leave import arreive , leave , arrive_leave_details , test , MonthlyHistoryView
+from users.views.arrive_leave import arreive , leave , arrive_leave_details  , MonthlyHistoryView
 from users.views.forget_pass import forget_password
 from users.views.leads import upload_sheet , save_upload , user_leads
 
@@ -46,5 +46,4 @@ urlpatterns = [
     path('get-my-projects',get_projects_to_report) ,
 
 
-    path('test',test) ,
 ]

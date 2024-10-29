@@ -1,17 +1,20 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework.request import Request
-from users.models import ArrivingLeaving , User
+from commission.models import DeductionRules
+from users.models import ArrivingLeaving , User 
+# from commission.models import UserCommissionDetails
 from users.serializers import ArrivingLeavingSerializer
 from django.utils import timezone
 from users.views import IsAuthenticated
 import pandas as pd
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from datetime import date, timedelta, datetime
-from django.db.models import Q
+from django.db.models import Q , F , Case , When
+from django.db import connection
 from django.utils.timezone import make_aware
 from django.http import FileResponse
-
+from pprint import pprint
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -66,14 +69,8 @@ def arrive_leave_details_table(request: Request):
     user = request.query_params.get("user",None)
     if all( start ,  end , user ):
         date_range = pd.date_range(start=start,end=end)
-
-
         user = User.objects.get(uuid=user)
-        
         try :
-
-            
-
             obj = ArrivingLeaving.objects.get(user=request.user,date=timezone.now().date())
             return Response({"details":f"","arrived_at":obj.arriving_at , "leaved_at":obj.leaving_at})
         except ArrivingLeaving.DoesNotExist :
@@ -81,63 +78,6 @@ def arrive_leave_details_table(request: Request):
 
     else :
         return Response({},HTTP_400_BAD_REQUEST)
-
-
-
-
-from importlib import import_module
-
-@api_view(["GET"])
-def test(request:Request):
-    code = request.data.get('code', '')
-    data = {
-        'Column1': ['Value1', 'Value2', 'Value3'],
-        'Column2': [10, 20, 30],
-        'Column3': [1.5, 2.5, 3.5],
-    }
-
-    # Create a DataFrame
-    df = pd.DataFrame(data)
-
-    # Generate an Excel file
-    
-    # with pd.ExcelWriter("../../media", engine='openpyxl') as writer:
-    df.to_excel("example.xlsx", index=False, sheet_name='Sheet1')
-        
-    # response = Response(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        
-    # response['Content-Disposition'] = 'attachment; filename=example.xlsx'
-    response = FileResponse([],filename="example.xlsx",as_attachment=True)
-
-    return response
-
-    # try:
-    #     # Define a safe scope with only the necessary imports and variables
-    #     safe_scope = {
-    #         'User': getattr(import_module("users.models") , "User"),
-    #         'queryset': None,  # Ensure a known variable for the queryset
-    #     }
-    #     print(code)
-    #     # Execute the code string
-    #     exec(code, {}, safe_scope)
-    #     print(safe_scope)
-
-    #     # Extract the queryset
-    #     queryset = safe_scope.get('queryset')
-    #     if queryset is not None:
-    #         # Use the serializer to serialize the queryset
-    #         s = getattr(import_module("users.serializers"),"UserSerializer")
-    #         serializer = s(queryset, many=True)
-    #         return Response({'result': serializer.data})
-    #     else:
-    #         return Response({'error': 'No queryset defined'}, status=400)
-    # except Exception as e:
-    #     return Response({'error': str(e)}, status=400)
-
-
-
-
-
 
 
 
@@ -176,7 +116,11 @@ def get_monthly_history(user, year, month):
     records = ArrivingLeaving.objects.filter(
         user=user,
         date__range=(start_date, end_date)
-    )
+    ).prefetch_related("user","user__usercommissiondetails").annotate(
+        will_arrive_at=F("user__usercommissiondetails__will_arrive_at"),
+        will_leave_at=F("user__usercommissiondetails__will_leave_at"),
+        set_deduction_rules=F("user__usercommissiondetails__set_deduction_rules"),
+    ) 
 
     records_lookup = {record.date: record for record in records}
     
@@ -195,17 +139,51 @@ def get_monthly_history(user, year, month):
     return history
 
 
+def get_monthly_history_lated_only( date:datetime , department:str=None):
+    if all([date, department]) :
+        f = {"date":date.date(),"user__department__uuid":department}
+    else :
+        f = {"date":date.date()}
+    records = ArrivingLeaving.objects.filter(
+        **f
+    ).prefetch_related("user","user__usercommissiondetails","user__usercommissiondetails__deduction_rules").annotate(
+        will_arrive_at=F("user__usercommissiondetails__will_arrive_at"),
+        will_leave_at=F("user__usercommissiondetails__will_leave_at"),
+        set_deduction_rules=F("user__usercommissiondetails__set_deduction_rules"),
+    )
+    return records
+
+
 
 
 class MonthlyHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request:Request):
-        user_id = request.query_params.get("user_id")
-        year = int(request.query_params.get("year"))
-        month = int(request.query_params.get("month"))
+        user_id = request.query_params.get("user_id",None)
+        year = request.query_params.get("year",None)
+        month = request.query_params.get("month",None)
+        if not all([user_id,year,month]):
+            return Response({},status=HTTP_400_BAD_REQUEST)
         user = User.objects.get(uuid=user_id)
-        history = get_monthly_history(user, year, month)
-        serializer = ArrivingLeavingSerializer(history, many=True)
+        history = get_monthly_history(user, int(year), int(month))
+        cache= {}
+        rules = DeductionRules.objects.filter(is_global=True).values("late_time","deduction_days")
+        serializer = ArrivingLeavingSerializer(history,rules=rules,cache=cache, many=True)
         return Response({"results":serializer.data , "count":len(history)})
-
+        
+    def post(self, request:Request):
+        date = request.query_params.get("date",None)
+        department = request.query_params.get("department",None)
+        try :
+            date_parsed = datetime.strptime(date,"%d-%m-%Y")
+            date= True
+        except Exception as e :
+            date=False
+        cache = {}
+        if not date:
+            return Response({},status=HTTP_400_BAD_REQUEST)
+        history = get_monthly_history_lated_only(date_parsed , department)
+        rules = DeductionRules.objects.filter(is_global=True).values("late_time","deduction_days")
+        serializer = ArrivingLeavingSerializer(history,rules=rules,cache=cache, many=True)
+        return Response({"results": serializer.data, "count":len(history)})
