@@ -55,7 +55,7 @@ interface TargetSlice{
 }
 
 interface ArrivingLeaving {
-    user:string;
+    user:User;
     date:string;
     arriving_at:string;
     leaving_at:string;

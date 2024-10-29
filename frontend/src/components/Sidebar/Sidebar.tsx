@@ -20,7 +20,7 @@ import { FaUsersLine } from "react-icons/fa6";
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { HiOutlineDocumentReport , HiOutlineDocumentAdd , HiOutlineDocumentText   } from "react-icons/hi";
-import { MdOutlineAnalytics } from "react-icons/md";
+import { MdOutlineAnalytics , MdDirectionsRun } from "react-icons/md";
 
 
 
@@ -81,6 +81,16 @@ const Sidebar: FC<SidebarProps> = () => {
                     Icon:IoCalendarNumberOutline,
                     permissions:[
                         {role : "*" , departments : ["*"]} ,
+                    ],
+    
+                },
+                {
+                    name:TRANSLATIONS.SideBar.FPDetails.AttendanceDetailsLated[lang],
+                    href:'/attendance-details-lated',
+                    Icon:MdDirectionsRun,
+                    permissions:[
+                        {role : "OWNER" , departments : ["*"]} ,
+                        {role : "MANAGER" , departments : ["*"]} ,
                     ],
     
                 },

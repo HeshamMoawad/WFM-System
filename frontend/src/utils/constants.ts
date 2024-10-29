@@ -35,6 +35,7 @@ export const TRANSLATIONS = {
       title:t("تفاصيل الحضور","FP Details"),
       Requests : t("الطلبات","Requests"),
       AttendanceDetails : t("تفاصيل الحضور","Attendance Details"),
+      AttendanceDetailsLated : t("المتاخرين","Attendance Lated"),
       SalaryList:t("قائمة القبض","Salary List"),
     },
     Basic:{
@@ -148,6 +149,23 @@ export const TRANSLATIONS = {
       onFaildCreated:t("فشل الانشاء","Created Faild"),
       // onSuccessCreated:t("نجح الانشاء","Created Successfully"),
       // onFaildCreated:t("فشل الانشاء","Created Faild"),
+    }
+  },
+  AttendanceLated:{
+    title:t(" المتاخرين","Attendance Lated"),
+    table:{
+      headers: {
+        ar:["صورة","المستخدم","التاريخ","يوم الاسبوع","حضور","انصراف","مدة الشيفت" , "التاخير" , "الانصراف مبكرا","الخصم"],
+        en:["picture","User","date","DayOfWeek","arrived at","leaving at","deuration" , "late" , "departure","deduction"],
+      },
+    },
+    bottomBar:{
+      lateCount:t("عدد التاخيرات","Late Count"), 
+      departureCount:t(" الانصراف مبكرا","Departure Count"), 
+      AttendanceCount:t("عدد ايام الحضور","Attendance Count"), 
+      DaysCount:t("عدد الايام","Days Count"), 
+      deuctionCount:t("عدد ايام الخصم","Deduction Count (Days)"), 
+      percentageCount:t("نسبة التاخير","Late Percentage")
     }
   },
   AttendanceDetails:{

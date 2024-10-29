@@ -8,6 +8,7 @@ import LoadingComponent from '../../components/LoadingComponent/LoadingComponent
 import Pageination from '../../components/Pageination/Pageination';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
+import { Status } from '../../types/base';
 
 interface RequestsTableBasicProps {
     className:string;
@@ -29,7 +30,7 @@ const RequestsTableBasic: FC<RequestsTableBasicProps> = ({className ,user_uuid, 
             page:currentPage
 
         }
-    },[currentPage])
+    },[currentPage ,user_uuid , date])
 
     return (
         <Container className={`${className}`}>
@@ -52,13 +53,31 @@ const RequestsTableBasic: FC<RequestsTableBasicProps> = ({className ,user_uuid, 
                         [
                             {
                                 key:"type",
-                                method : null
+                                method: (type_)=>{
+                                    return TRANSLATIONS.Request.Types.filter((d)=>d.value === type_)[0].translate[lang]
+                                },
                             },
                             {
                                 key:"status",
-                                method : (_)=>{
-                                    return <td key={Math.random()} className={`px-3 py-1 ${_ === "PENDING" ?  "text-[rgb(234,179,8)]" : _ === "REJECTED" ? "text-[red]" : _ === "ACCEPTED" ? "text-[green]" : "" }`}>{_}</td>
-                                }
+                                method: (_) => {
+                                    const status : Status = _ as any
+                                    return (
+                                        <td
+                                            key={Math.random()}
+                                            className={`px-3 py-1 ${
+                                                status === "PENDING"
+                                                    ? "text-[rgb(234,179,8)]"
+                                                    : status === "REJECTED"
+                                                    ? "text-[red]"
+                                                    : status === "ACCEPTED"
+                                                    ? "text-[green]"
+                                                    : ""
+                                            }`}
+                                        >
+                                            {TRANSLATIONS.Request.Status[status][lang]}
+                                        </td>
+                                    );
+                                },
                             },
                             {
                                 key:"details",

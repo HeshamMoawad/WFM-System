@@ -76,7 +76,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 return (
                                     item?.picture ? 
                                         <td key={Math.random()} className='flex justify-center items-center px-3 py-1'>
-                                            <img src={getFullURL(item?.picture)} alt="" className='rounded-full w-[40px] h-[40px] object-contain'/>
+                                            <img loading='lazy' src={getFullURL(item?.picture)} alt="" className='rounded-full w-[40px] h-[40px] object-contain'/>
                                         </td>
                                         : 
                                         <td key={Math.random()} className='text-center w-[40px] h-[40px] px-3 py-1'>
