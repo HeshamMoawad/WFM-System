@@ -1,3 +1,4 @@
+from typing import Dict, List
 from rest_framework.serializers import SerializerMethodField , DateField
 from api_views.serializers import ModelSerializer ,  ForeignField , ManyToManyField  
 import json
@@ -116,40 +117,51 @@ class UserSerializer(ModelSerializer):
 
 
 class ArrivingLeavingSerializer(ModelSerializer):
+    user = UserSerializer()
     late = SerializerMethodField()
     departure = SerializerMethodField()
     deuration = SerializerMethodField()
     deduction = SerializerMethodField()
 
+    def __init__(self, instance=None, data=... ,rules:List[dict]=[],cache:Dict[str,List[dict]]={}, **kwargs):
+        self.__rules = rules
+        self.__cache = cache
+        self._calculator = Calculator()
+        super().__init__(instance, data, **kwargs)
+        
     def get_late(self,obj:ArrivingLeaving):
-        if obj.arriving_at:
-            calculator = Calculator()
-            return calculator.calc_late(obj)
+        if getattr(obj,'will_arrive_at',None):
+            if obj.arriving_at :
+                return self._calculator.calc_late(obj)
         return 0
     
     def get_departure(self,obj:ArrivingLeaving):
-        if obj.leaving_at:
-            calculator = Calculator()
-            return calculator.calc_departure(obj)
+        if getattr(obj,'will_arrive_at',None):
+            if obj.leaving_at :
+                return self._calculator.calc_departure(obj)
         return 0
     
     def get_deuration(self,obj:ArrivingLeaving):
-        if obj.leaving_at:
-            calculator = Calculator()
-            return calculator.calc_deuration(obj)
+        if getattr(obj,'will_arrive_at',None):
+            if obj.leaving_at : 
+                return int(round((obj.leaving_at - obj.arriving_at).total_seconds(),0))
         return 0
     
     def get_deduction(self,obj:ArrivingLeaving):
-        if obj.arriving_at:
-            calculator = Calculator()
-            late_time = calculator.calc_late(obj)
-            details:UserCommissionDetails = obj.user.usercommissiondetails
-            total= 0 
-            if details.set_deduction_rules :
-                total += calculator.calc_global_deduction(late_time)
-            else :
-                total += calculator.calc_custom_deduction(late_time,details)
-            return total 
+        if getattr(obj,'will_arrive_at',None):
+            if obj.arriving_at :
+                late_time = self._calculator.calc_late(obj)
+                total= 0 
+                if getattr(obj,"set_deduction_rules",True) :
+                    total += self._calculator.calc_deduction(late_time,self.__rules)
+                else :
+                    if obj.user not in self.__cache :
+                        rules = obj.user.usercommissiondetails.deduction_rules.values("deduction_days","late_time")
+                        self.__cache[obj.user] = rules
+                    else :
+                        rules = self.__cache[obj.user]
+                    total += self._calculator.calc_deduction(late_time,rules)
+                return total 
         return 1
 
     class Meta:
