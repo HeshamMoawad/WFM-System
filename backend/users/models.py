@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser 
 from .managers import (
         CustomUserManager ,
@@ -195,7 +196,39 @@ def create_update_history(sender, instance:BaseModel, **kwargs):
 
 
 def fp_signal(sender:User , instance:User,created:bool,**kwargs):
-    if created :
+    if not settings.DEBUG :
+        if created :
+            zkconfig = ZKConfig.objects.filter(is_default=True).first()
+            if zkconfig :
+                zk = ZK(zkconfig.ip, port=zkconfig.port, timeout=zkconfig.timeout, password=zkconfig.password, force_udp=zkconfig.force_udp, ommit_ping=zkconfig.ommit_ping)
+            else :
+                zk = ZK("192.168.11.157", port=4370, timeout=5, password=0, force_udp=False, ommit_ping=False)
+            try : 
+                conn = zk.connect()
+                conn.disable_device()
+                if zkconfig and zkconfig.last_uid :
+                    next_id = zkconfig.last_uid 
+                else :
+                    users = conn.get_users()
+                    next_id = max(map(lambda usr:usr.uid,users))
+                    
+                if zkconfig :
+                    zkconfig.last_uid = next_id + 1
+                    zkconfig.save()
+
+                next_uid = int(next_id + 1)
+                conn.set_user(uid=next_uid,name=instance.username)
+                instance.fp_id = next_uid
+                conn.enable_device()
+            except Exception as e:
+                print(e)
+            finally:
+                if conn:
+                    conn.disconnect()
+                instance.save()
+
+def fp_delete(sender:BaseModel, instance:User, **kwargs):
+    if not settings.DEBUG :
         zkconfig = ZKConfig.objects.filter(is_default=True).first()
         if zkconfig :
             zk = ZK(zkconfig.ip, port=zkconfig.port, timeout=zkconfig.timeout, password=zkconfig.password, force_udp=zkconfig.force_udp, ommit_ping=zkconfig.ommit_ping)
@@ -204,43 +237,13 @@ def fp_signal(sender:User , instance:User,created:bool,**kwargs):
         try : 
             conn = zk.connect()
             conn.disable_device()
-            if zkconfig and zkconfig.last_uid :
-                next_id = zkconfig.last_uid 
-            else :
-                users = conn.get_users()
-                next_id = max(map(lambda usr:usr.uid,users))
-                
-            if zkconfig :
-                zkconfig.last_uid = next_id + 1
-                zkconfig.save()
-
-            next_uid = int(next_id + 1)
-            conn.set_user(uid=next_uid,name=instance.username)
-            instance.fp_id = next_uid
+            conn.delete_user(uid=int(instance.fp_id))
             conn.enable_device()
         except Exception as e:
             print(e)
         finally:
             if conn:
                 conn.disconnect()
-            instance.save()
-
-def fp_delete(sender:BaseModel, instance:User, **kwargs):
-    zkconfig = ZKConfig.objects.filter(is_default=True).first()
-    if zkconfig :
-        zk = ZK(zkconfig.ip, port=zkconfig.port, timeout=zkconfig.timeout, password=zkconfig.password, force_udp=zkconfig.force_udp, ommit_ping=zkconfig.ommit_ping)
-    else :
-        zk = ZK("192.168.11.157", port=4370, timeout=5, password=0, force_udp=False, ommit_ping=False)
-    try : 
-        conn = zk.connect()
-        conn.disable_device()
-        conn.delete_user(uid=int(instance.fp_id))
-        conn.enable_device()
-    except Exception as e:
-        print(e)
-    finally:
-        if conn:
-            conn.disconnect()
 
     
 

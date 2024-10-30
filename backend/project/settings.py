@@ -101,24 +101,24 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'testDB',
-#         'USER': 'admin',
-#         'PASSWORD': 'admin',
-#         'HOST': '192.168.11.250',  # Set to 'localhost' if running locally
-#         'PORT': '5432',  # Set to '5432' for default
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'wfmsystem',
+        'USER': 'wfm',
+        'PASSWORD': 'wfmpassword',
+        'HOST': '192.168.11.235',  # Set to 'localhost' if running locally
+        'PORT': '5432',  # Set to '5432' for default
+    }
+}
 
 
 # Password validation
