@@ -56,11 +56,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='commission',
-            name='basic',
-            field=models.FloatField(default=0, verbose_name='Basic'),
-        ),
-        migrations.AlterField(
-            model_name='commission',
             name='target_Team',
             field=models.FloatField(default=0, verbose_name='Target Team'),
         ),
