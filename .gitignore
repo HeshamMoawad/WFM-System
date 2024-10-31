@@ -170,3 +170,4 @@ node_modules/
 .vscode/
 backup.sh
 backend/store.json
+backend/store-all.json
