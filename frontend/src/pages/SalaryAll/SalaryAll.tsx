@@ -12,40 +12,47 @@ import { useAuth } from '../../hooks/auth';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
 import DatePicker from 'react-datepicker';
+import TableFilters from '../../components/UsersTable/TableFilters/TableFilters';
 
 interface SalaryAllProps {
-    department?: string;
+    department__name?: string;
 }
 
-const SalaryAll: FC<SalaryAllProps> = ({department}) => {
+const SalaryAll: FC<SalaryAllProps> = ({department__name}) => {
     var d = new Date();
     d.setMonth(d.getMonth()-1)
     const [date, setDate] = useState<Date>(d);
     const {auth} = useAuth()
     const {lang} = useContext(LanguageContext)
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {department__name : auth.department.name}
 
+    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? 
+                    department__name ? {department__name} : {}
+                    : 
+                    {department__name:auth.department.name} 
+    const [filters, setFilters] = useState<object>()
     const { data, loading } = useRequest<User>(
         {
             url: "api/commission/users-commission",
             method: "GET",
             params: { 
                 date :`${date.getFullYear()}-${date.getMonth()+1}` ,
-                ...(department ? {department} : {}),
-                ...additionalFilter
-
+                // ...(department ? {department} : {}),
+                ...filters ,
+                ...additionalFilter ,
             },
         },
-        [date , department]
+        [date , department__name , filters],
+        undefined,1000
     );
 
 
     return (<div className='flex justify-center'>
         
-        <Container className='w-fit md:w-screen h-fit min-h-[300px] relative gap-3 justify-center items-center '>
-        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.Salary.title[lang]}</h1>
-        <div className="w-full grid md:grid-cols-8">
-            <h1 className="col-span-1 md:col-start-6  text-2xl text-center w-full place-self-center">
+        <Container className='w-fit md:w-screen h-fit min-h-[500px] relative gap-3 justify-center items-center '>
+        <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.Salary.title[lang]} - {department__name ? department__name : "All"} - {date.getFullYear()}-{date.getMonth()+1}</h1>
+        <div className="col-span-full mt-4 gap-8 flex justify-center">
+            <TableFilters className='md:px-16' setFilters={setFilters} others={false}/>
+            <h1 className="text-2xl text-center ">
                 {TRANSLATIONS.Date[lang]} 
             </h1>
             <DatePicker 
@@ -59,7 +66,7 @@ const SalaryAll: FC<SalaryAllProps> = ({department}) => {
                 }} 
                 toggleCalendarOnIconClick
                 showMonthYearPicker 
-                className='md:col-span-2 h-11 text-center' 
+                className=' h-11 text-center' 
                 calendarIconClassName='w-4 h-4 fixed p-1'
                 selected={date} 
                 onChange={(date)=>{
@@ -68,7 +75,6 @@ const SalaryAll: FC<SalaryAllProps> = ({department}) => {
                     };
                 }
             }/>
-
         </div>
         {
             loading? <LoadingComponent/> : <></>
@@ -85,16 +91,11 @@ const SalaryAll: FC<SalaryAllProps> = ({department}) => {
                             method : (_)=>{
                                 const item = _ as any; 
                                 return (
-                                    item.picture ? 
                                         <td key={Math.random()} className='flex justify-center items-center px-3 py-1'>
-                                            <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/>
+                                            {
+                                                item.picture ? <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/> : "-"
+                                            }
                                         </td>
-                                        : 
-                                        <td key={Math.random()} className='text-center w-[40px] h-[40px] px-3 py-1'>
-                                            -
-                                            {/* <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/> */}
-                                        </td>
-
                                 )}
     
                         },{

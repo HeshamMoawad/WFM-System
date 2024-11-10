@@ -92,10 +92,10 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/teams" element={<Teams/>}/>
 
                                             <Route path="/salary-all" element={<SalaryAll/>}/>
-                                            <Route path="/salary-marketing" element={<SalaryAll department="Marketing"/>}/>
-                                            <Route path="/salary-sales" element={<SalaryAll department="Sales"/>}/>
-                                            <Route path="/salary-technichal" element={<SalaryAll department="Technichal"/>}/>
-                                            <Route path="/salary-general" element={<SalaryAll department="General"/>}/>
+                                            <Route path="/salary-marketing" element={<SalaryAll department__name="Marketing"/>}/>
+                                            <Route path="/salary-sales" element={<SalaryAll department__name="Sales"/>}/>
+                                            <Route path="/salary-technichal" element={<SalaryAll department__name="Technichal"/>}/>
+                                            <Route path="/salary-general" element={<SalaryAll department__name="General"/>}/>
                                             <Route path="/salary/:user_uuid/:date" element={<Salary/>}/>
                                             <Route path="/my-salary-list" element={<MySalaryList/>}/>
 

@@ -25,11 +25,11 @@ const MySalaryList: FC<MySalaryListProps> = () => {
     <Container className='w-[80vw] h-fit ' >
             {
                 data? (
-                <>
+            <>
                 <Table
-                className='mb-2'
-                headers={["date" , "basic", "commission" , "salary"]}
-                data={convertObjectToArrays(data?.results,[
+                    className='mb-2'
+                    headers={["date","( de_days + de_money )","( kpi + gift )","= basic","commission","salary"]}
+                    data={convertObjectToArrays(data?.results,[
                     {
                         key:"date",
                         method:null
@@ -37,21 +37,48 @@ const MySalaryList: FC<MySalaryListProps> = () => {
                     {
                         key:"basic",
                         method:(_)=>{
+                            let r;
                             try {
                                 const basic:BasicDetails = _ as any
-                                return `${basic.basic}` 
-
+                                r =  `${basic.deduction_days} days + ${basic.deduction_money} EGP` 
                             }catch {
-                                return " 0 "
+                                r =  "0 days + 0 EGP"
                             }
+                            return <td className='px-3 py-1 text-[red] font-bold'>{r}</td>
                         }
-                    },{
+                    },
+                    {
+                        key:"basic",
+                        method:(_)=>{
+                            let r;
+                            try {
+                                const basic:BasicDetails = _ as any
+                                r =  `${basic.kpi} EGP + ${basic.gift} EGP` 
+                            }catch {
+                                r =  "0 EGP + 0 EGP"
+                            }
+                            return <td className='px-3 py-1 text-[green] font-bold'>{r}</td>
+                        }
+                    },
+                    {
+                        key:"basic",
+                        method:(_)=>{
+                            let r;
+                            try {
+                                const basic:BasicDetails = _ as any
+                                r =  `${basic.basic}` 
+                            }catch {
+                                r =  "0"
+                            }
+                            return <td className='px-3 py-1 font-bold text-xl-'>{r}</td>
+                        }
+                    },                    
+                    {
                         key:["salary", "basic"],
                         method:(_)=>{
                             const {basic , salary} = _ as any
+                            return <td className='px-3 py-1 text-xl font-bold'>{salary - basic.basic}</td>
 
-                            return `${salary - basic.basic}`
-                        
                         }
                     },
 
@@ -59,15 +86,15 @@ const MySalaryList: FC<MySalaryListProps> = () => {
                         key:"salary",
                         method:(_)=>{
                             total_money += _ as number
-                            return `${_}`
+                            return <td className='px-3 py-1 text-2xl font-bold'>{_} EGP</td>
                         }
                     },
             ])}
                 />
                 <div  className={`flex flex-row min-w-[500px] mb-2 rounded-lg items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
+                    <label> Count Salaries : {data?.results.length} </label>
                     <label> Total Salaries : {total_money} </label>
                 </div>
-
                 </>
                 ):null
             }
