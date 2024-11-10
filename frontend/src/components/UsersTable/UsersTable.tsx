@@ -49,18 +49,15 @@ const UsersTable: FC<UsersTableProps> = () => {
     const {data , loading } = useRequest<User>({
         url: 'api/users/user' ,
         method: 'GET',
-        params: {...filters , ...additionalFilter , is_superuser:"False" }
-    },[filters])
-    useEffect(()=>{
-        console.log(filters)
-    },[filters])
+        params: {...filters , ...additionalFilter , is_superuser:"False" },
+    },[filters],undefined,1500)
 
     return (
     <Container className='w-fit md:w-screen h-fit min-h-[300px] relative gap-3 justify-center items-center'>
         <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.UsersList.title[lang]}</h1>
-        <TableFilters setFilters={setFilters}/>
+        <TableFilters className='flex flex-row w-[1000px] md:w-full gap-3 justify-evenly md:px-16' setFilters={setFilters}/>
         {
-            loading? <LoadingComponent/> : <></>
+            loading ? <LoadingComponent/> : <></>
         }
         {
             data ? (
