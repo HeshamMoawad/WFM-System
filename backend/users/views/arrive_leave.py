@@ -141,9 +141,9 @@ def get_monthly_history(user, year, month):
 
 def get_monthly_history_lated_only( date:datetime , department:str=None):
     if all([date, department]) :
-        f = {"date":date.date(),"user__department__uuid":department}
+        f = {"date":date.date(),"user__is_superuser":False,"user__department__uuid":department}
     else :
-        f = {"date":date.date()}
+        f = {"date":date.date(),"user__is_superuser":False}
     records = ArrivingLeaving.objects.filter(
         **f
     ).prefetch_related("user","user__usercommissiondetails","user__usercommissiondetails__deduction_rules").annotate(
