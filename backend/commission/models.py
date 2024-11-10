@@ -128,7 +128,7 @@ class Commission(BaseModel):
     deduction = models.FloatField(verbose_name="Deduction" , default=0)
     gift = models.FloatField(verbose_name="Gift" , default=0)
     salary = models.FloatField(verbose_name="Total of Salary" , default=0)
-    date  = models.DateField(verbose_name="Date" , default=now().date() )
+    date  = models.DateField(verbose_name="Date" , default=now )
 
     def __str__(self):
         return self.date.strftime("%Y/%m")

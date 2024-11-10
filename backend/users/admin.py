@@ -239,7 +239,7 @@ class UpdateHistoryAdminSite(ImportExportModelAdmin):
 
 
 class RequestAdminSite(ImportExportModelAdmin):
-    list_display = ["user" ,"type","status", "department","date"]
+    list_display = ["user" ,"type","status", "department","date" , "created_at"]
     list_filter = ["user" ,  "department","status" , "type"]
     readonly_fields = ['uuid',"created_at","updated_at" , "department" ]
     search_fields = ['user__username','details', 'department__name' , "uuid"]  
