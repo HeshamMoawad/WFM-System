@@ -7,7 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 import datetime
-
+from django.utils.timezone import now 
 
 @api_view(["GET"])
 @permission_classes([IsOwner | IsSuperUser | IsManager | IsHR])
@@ -49,16 +49,12 @@ def get_users_with_has_basic(request:Request):
 @api_view(["GET"])
 @permission_classes([IsOwner | IsSuperUser | IsManager])
 def get_users_with_basic_commission(request:Request):
-    date = request.query_params.get("date",None)
-    department = request.query_params.get("department","")
-    
+    f = {key : value for key , value in request.query_params.items()}
+    date = f.pop("date",str(now().strftime("%Y-%m")))
     if date :
         first = datetime.datetime.strptime(date, "%Y-%m")
         first = datetime.datetime(first.year , first.month , 1)       
-        
-        f = {"is_superuser":False } 
-        if department :
-            f.update({"department__name":department})
+        f.update({"is_superuser":False })
         users_with_basic_annotation = User.objects\
             .filter(**f)\
             .exclude(role="OWNER")\
