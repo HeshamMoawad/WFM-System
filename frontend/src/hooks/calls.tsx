@@ -13,7 +13,7 @@ interface ListData<T> {
     results: T[]|[];
 }
 
-function useRequest<ResultsType>(reqConfig: sendRequestKwargs, dependency:any[] = [],intervalTimer?:number){
+function useRequest<ResultsType>(reqConfig: sendRequestKwargs, dependency:any[] = [],intervalTimer?:number , debounceTime?:number){
     const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<ListData<ResultsType>|null>(null); 
     const [error, setError] = useState<any>(null);
@@ -24,16 +24,23 @@ function useRequest<ResultsType>(reqConfig: sendRequestKwargs, dependency:any[] 
                     .catch(err => setError(err))
                     .finally(() => setLoading(false)); // Set loading to false after request completion
             }
+    useEffect(() =>runner(),[])
     useEffect(() => {
-        runner()
         let interval:NodeJS.Timer|undefined
+        let handler:NodeJS.Timer
         if (intervalTimer){
             interval =  setInterval(runner, intervalTimer)
-        }else {
+        }else if (debounceTime){
+            handler = setTimeout(() => {
+                runner();
+            }, debounceTime);
+        }
+        else {
             runner()
         }
         return () => {
             clearInterval(interval)
+            clearInterval(handler)
         }
     }, dependency);
 
