@@ -1,42 +1,53 @@
+import datetime
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework.status import  HTTP_401_UNAUTHORIZED , HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.request import Request
-from users.auth import Login
-from auth.constants import AUTH_COOKIE
-from rest_framework.status import HTTP_200_OK,HTTP_401_UNAUTHORIZED
-from users.models import FingerPrintID
-from users.serializers import FingerPrintIDSerializer
+from users.constants import AUTH_COOKIE
+from users.models import User
+from users.serializers import UserSerializer
+from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+
+def check_exist(request:Request):
+    if request.query_params.dict().keys() :
+        data = request.query_params.dict()
+    elif request.data.keys() :
+        data = request.data
+    else :
+        data = {}
+    return data, ("username" in data ) and ("password" in data) and ("unique_id" in data)    
+
+def wrap_data(user,token,test:bool=False):
+    data = UserSerializer(user).data
+    data.update({settings.SIMPLE_JWT["AUTH_HEADER"]:f"{token}"})
+    data.update({settings.SIMPLE_JWT["EXPIRE"]:datetime.datetime.fromtimestamp(token['exp']).isoformat()})
+    response = Response(data)
+    response.set_cookie(settings.SIMPLE_JWT["AUTH_COOKIE"],f"{token}")
+    if test:
+        return data
+    return response
 
 
 @api_view(["POST","GET"])
 def login(request: Request):
-    login_class = Login()
-    try :
-        data = login_class.login(request)
-        uuid = data.get("uuid",None)
-        is_superuser = data.get("is_superuser",False)
-        if is_superuser : 
-            data.update({"unique_id":"SuperUser"})
-        elif uuid :
-            finger = FingerPrintID.objects.filter(user__uuid=uuid , unique_id=request.query_params.get("unique_id",request.data.get("unique_id",None))).first()
-            if not finger :
-                raise NotImplementedError("No Devices ID added Please add one !")
-            data.update({"unique_id":FingerPrintIDSerializer(finger).data})
-        else :
-            raise NotImplementedError
+    if request.user.is_anonymous :
+        data , exist = check_exist(request)
+        if exist :
+            username,password,unique_id = data['username'] ,  data['password'] ,  data['unique_id']
+            user = User.objects.filter(username=username).first()
+            if user and user.check_password(password) and ( user.is_superuser or user.fingerprintid_set.filter(unique_id=unique_id).first()) :
+                token:RefreshToken = RefreshToken.for_user(user).access_token
+                return wrap_data(user,token)
+        return Response({},status=HTTP_400_BAD_REQUEST)
+    else :
+        a:JWTAuthentication = request.successful_authenticator
+        user , token = a.authenticate(request)
+        return wrap_data(user,token)
 
-        status = HTTP_200_OK
-        response = Response(data,status)
-        response.set_cookie(AUTH_COOKIE , data[AUTH_COOKIE])
-    except Exception as e :
-        data = {
-            "message" : str(e),
-            "type" : str(e.__class__.__name__)
-        }
-        status = HTTP_401_UNAUTHORIZED
-        response = Response(data,status)
-    return response
 
 @api_view(["GET" , "POST"])
 def logout(request: Request):
