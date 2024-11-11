@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.request import Request
-from users.constants import AUTH_COOKIE
 from users.models import User
 from users.serializers import UserSerializer
 from django.conf import settings
@@ -52,5 +51,5 @@ def login(request: Request):
 @api_view(["GET" , "POST"])
 def logout(request: Request):
     response = Response({"message":"Logout successfully"})
-    response.delete_cookie(AUTH_COOKIE)
+    response.delete_cookie(settings.SIMPLE_JWT["AUTH_COOKIE"])
     return response
