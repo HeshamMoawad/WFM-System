@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&8e6#vd%stkfp%1@&h5b5n(*1!0g4#n*o6*j2-y_qq2(bby%-c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -99,26 +99,21 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-
-
-DATABASES = {
-    'default': {
+DB_CONFIG = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+    } if DEBUG else {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'wfmsystem',
+            'USER': 'wfm',
+            'PASSWORD': 'wfmpassword',
+            'HOST': '192.168.11.235',  # Set to 'localhost' if running locally
+            'PORT': '5432',  # Set to '5432' for default
+        }
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'wfmsystem',
-#         'USER': 'wfm',
-#         'PASSWORD': 'wfmpassword',
-#         'HOST': '192.168.11.235',  # Set to 'localhost' if running locally
-#         'PORT': '5432',  # Set to '5432' for default
-#     }
-# }
+DATABASES = {
+    'default': DB_CONFIG
+    }   
 
 
 # Password validation
@@ -206,6 +201,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE': 'Authorization',
     'AUTH_HEADER': 'Authorization',
     'AUTH_BODY': 'Authorization',
+    'EXPIRE': 'expire',
     "USER_ID_FIELD" : "uuid"
 
 }
