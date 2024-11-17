@@ -24,12 +24,9 @@ class Command(BaseCommand):
         parser.add_argument('--timeout', type=int, default=0 if not zkconfig else zkconfig.timeout, help='ZK Timeout Connection')
         parser.add_argument('--password', type=str, default=0 if not zkconfig else zkconfig.password, help='ZK password')
         # parser.add_argument('--user', type=str, default=None, help='ZK Sync Exact User')
-        now = datetime.now().date()
-        curr = now.day
-        now = datetime(now.year,now.month,day=25).date()
-        to = now - timedelta(days=31 * (1 if curr <= 25 else -1) )
-        l = datetime(to.year,to.month,day=25).date()
-        parser.add_argument('--date', type=str, default=f"{min(now,l)}~{max(now,l)}", help='Extract from date to date like "2024-8-25~2024-9-25"')
+        now = datetime.now().date() + timedelta(days=1)
+        l = datetime.now().date() - timedelta(days=1)
+        parser.add_argument('--date', type=str, default=f"{min(now,l)}~{max(now,l)}", help='Extract from date to date like "2024-8-dd~2024-9-25"')
 
 
     def handle(self, *args, **kwargs):
