@@ -3,18 +3,15 @@ from rest_framework.decorators import api_view , permission_classes
 from rest_framework.request import Request
 from commission.models import DeductionRules
 from users.models import ArrivingLeaving , User 
-# from commission.models import UserCommissionDetails
 from users.serializers import ArrivingLeavingSerializer
 from django.utils import timezone
 from users.views import IsAuthenticated
 import pandas as pd
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from datetime import date, timedelta, datetime
-from django.db.models import Q , F , Case , When
-from django.db import connection
+from django.db.models import F 
 from django.utils.timezone import make_aware
-from django.http import FileResponse
-from pprint import pprint
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

@@ -17,7 +17,7 @@ from users.views.leads import upload_sheet , save_upload , user_leads
 
 
 urlpatterns = [
-    path('login',login ),
+    path('login',login ,name="login"),
     path('logout',logout) ,
     path('arrive',arreive) ,
     path('leave',leave) , 
