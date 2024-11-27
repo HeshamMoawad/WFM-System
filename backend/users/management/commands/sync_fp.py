@@ -125,9 +125,9 @@ class Command(BaseCommand):
     def _update_user_arrive_leave(self,arr_leav:ArrivingLeaving,created:bool,times:List[Union[datetime,str]]):
         if times :
             arr_leav.arriving_at = min(arr_leav.arriving_at,*times) if not created else min(times)
-            if arr_leav.date != datetime.now().date() and len(times) > 1:
+            if arr_leav.date != datetime.now().date() and len(times) > 0:
                 leaving_at = max(arr_leav.leaving_at,*times) if not created and arr_leav.leaving_at else max(times)
-                if leaving_at != arr_leav.arriving_at :
+                if leaving_at.strftime("%H:%M") != arr_leav.arriving_at.strftime("%H:%M") :
                     arr_leav.leaving_at = leaving_at
             arr_leav.save()
         return arr_leav
