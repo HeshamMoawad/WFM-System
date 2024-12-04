@@ -9,6 +9,7 @@ import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import Swal from 'sweetalert2';
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
+import { checkPermission } from '../../utils/permissions/permissions';
 
 interface AdvanceFormProps {
     setRefresh?:React.Dispatch<React.SetStateAction<boolean>>;
@@ -60,10 +61,8 @@ const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh , className}) => {
 
         }}>
                 <input type="hidden" name='user' value={auth.uuid}/>
-
                 {
-                    auth.role !== "OWNER" ? 
-                    null : (
+                    checkPermission(auth,"add_admin_advance") ? (
                         <>
                         <input type="hidden" name='creator' value={auth.uuid}/>
                         <div className='flex flex-row justify-between'>
@@ -81,8 +80,7 @@ const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh , className}) => {
                                 />
                         </div>
                         </>
-    
-                        )
+                        ):null
                 }
                 <div className='flex flex-row justify-between gap-2'>
                     <label htmlFor="amount" className='place-self-center'>{TRANSLATIONS.Advance.form.amount[lang]}</label>

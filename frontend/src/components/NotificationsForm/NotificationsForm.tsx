@@ -81,7 +81,7 @@ const NotificationsForm: FC<NotificationsFormProps> = ({setRefresh}) => {
                         label:"All",
                         value:""
                     }]}
-                    required={true}
+                    // required={true}
                     setSelection={setSearch}
                 />
 

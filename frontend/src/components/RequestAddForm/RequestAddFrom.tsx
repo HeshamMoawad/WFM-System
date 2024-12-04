@@ -1,36 +1,40 @@
-import  {type FC , useState , useContext} from 'react';
+import  {type FC , useState , useContext, useEffect} from 'react';
 import SelectComponent from '../../components/SelectComponent/SelectComponent';
 import { onSubmitRequest } from '../../calls/Requests/Requests';
-import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
 // import LoadingPage from '../LoadingPage/LoadingPage';
 import { useAuth } from '../../hooks/auth';
 import Container from '../../layouts/Container/Container';
 import DatePicker from 'react-datepicker';
+import LoadingPage from '../../pages/LoadingPage/LoadingPage';
+import { checkPermission } from '../../utils/permissions/permissions';
 // import CustomDatePicker from '../CustomDatePicker/CustomDatePicker';
 
 
 interface RequestAddFormProps {
     className?: string;
-    refresh:boolean;
+    // refresh:boolean;
     setRefresh:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh}) => {
+const RequestAddForm: FC<RequestAddFormProps> = ({className , setRefresh}) => {
     const {auth} = useAuth()
     const {lang} = useContext(LanguageContext)
     const [loading , setLoading] = useState<boolean>(false)
     const [date, setDate] = useState(new Date())
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {is_active:"True"} : {department__name : auth.department.name , is_active:"True"}
-
+    // const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? 
+    // {is_active:"True"} : {department__name : auth.department.name , is_active:"True"}
+    // useEffect(()=>{
+    //     console.log("refreshed")
+    // },[])
     return (
         <Container className={`${className}`}>
-            {refresh ? <></> : <></> }
+            {/* {refresh ? <></> : <></> } */}
             {
-                loading ? <LoadingComponent/> : <></>
+                loading ? <LoadingPage/> : <></>
             }
-            <form action="" method="post" className='grid grid-cols-3 gap-4 h-full' onSubmit={e=>{onSubmitRequest(e,lang,setLoading , setRefresh,refresh)}}>
+            <form action="" method="post" className='grid grid-cols-3 gap-4 h-full' onSubmit={e=>{onSubmitRequest(e,lang,setLoading , setRefresh)}}>
                 <input type="hidden" name='user' value={auth.uuid}/>
                 <section className="col-span-3 flex flex-row justify-between items-center" dir=''>
                     <label className='inline-block'>{TRANSLATIONS.Request.Type[lang]}</label>
@@ -41,7 +45,7 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
                     </select>
                 </section>
                 {
-                    auth.role === "OWNER" || auth.role === "MANAGER" ?
+                    checkPermission(auth,"add_admin_request") ?
                     (
                         <div className='col-span-3 flex flex-row justify-between'>
                             <SelectComponent
@@ -53,7 +57,7 @@ const RequestAddForm: FC<RequestAddFormProps> = ({className ,refresh, setRefresh
                                         value:"uuid",
                                         label:"username"
                                     }}
-                                    params={additionalFilter}
+                                    params={{is_active:"True"}}
                                 />
                         </div>
                     ):null

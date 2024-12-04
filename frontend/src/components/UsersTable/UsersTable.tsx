@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/auth';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
+import { checkPermission } from '../../utils/permissions/permissions';
 
 
 
@@ -45,11 +46,13 @@ const UsersTable: FC<UsersTableProps> = () => {
             })
 
     }
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser || auth.role === "HR" ? {} : {department__name : auth.department.name}
+    const canDelete = checkPermission(auth,"delete_user")
+    const canEdit = checkPermission(auth,"change_user")
+    // const additionalFilter = auth.role === "OWNER" || auth.is_superuser || auth.role === "HR" ? {} : {department__name : auth.department.name}
     const {data , loading } = useRequest<User>({
         url: 'api/users/user' ,
         method: 'GET',
-        params: {...filters , ...additionalFilter , is_superuser:"False" },
+        params: {...filters , is_superuser:"False" },
     },[filters],undefined,1500)
 
     return (
@@ -78,11 +81,8 @@ const UsersTable: FC<UsersTableProps> = () => {
                                         : 
                                         <td key={Math.random()} className='text-center w-[40px] h-[40px] px-3 py-1'>
                                             -
-                                            {/* <img src={getFullURL(item.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/> */}
                                         </td>
-
                                 )}
-    
                         },{
                             key:"username",
                             method:null
@@ -93,7 +93,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                             key:["password_normal" , "is_superuser" , "role"],
                             method:(_)=>{
                                 const { password_normal , is_superuser = false , role = "AGENT"} = _ as any;
-                                return !(is_superuser || role === "OWNER" || role === "MANAGER") ? <PwdComponent content={password_normal}/> : <td className={``} ></td>
+                                return <td className={``} >{!(is_superuser || role === "OWNER" || role === "MANAGER") ? <PwdComponent content={password_normal}/> : null}</td> 
                             }
                         },{
                             key:"is_active",
@@ -128,12 +128,15 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 return profile?.phone ? profile?.phone :"-"
                             }
                         },{
+                            key:"fp_id",
+                            method:null
+                        },{
                             key:["uuid" , "is_superuser" , "role"],
                             method : (args)=>{
                                 const {uuid,is_superuser=false,role = "AGENT"} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            {!(is_superuser || role === "OWNER" || role === "MANAGER") ? (
+                                            {canEdit ? (
                                                 <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
                                                     <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
                                                 </Link>
@@ -149,7 +152,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
                                         {
-                                            !(is_superuser || role === "OWNER" || role === "MANAGER") ? (
+                                            canDelete ? (
                                                 <a onClick={(e)=>{
                                                         e.preventDefault();
                                                         Swal.fire({

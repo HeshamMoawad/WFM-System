@@ -10,7 +10,7 @@ import { Language } from '../../types/base';
 
 
 
-export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.Dispatch<React.SetStateAction<boolean>> , setRefresh?:React.Dispatch<React.SetStateAction<boolean>> , refresh?: boolean) => {
+export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.Dispatch<React.SetStateAction<boolean>> , setRefresh?:React.Dispatch<React.SetStateAction<boolean>> ) => {
     setLoading(true)
     e.preventDefault()
     sendRequest({url:"api/users/request",method:"POST",data:parseFormData(e)})

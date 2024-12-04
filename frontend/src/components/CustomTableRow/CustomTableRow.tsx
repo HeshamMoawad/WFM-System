@@ -116,6 +116,7 @@ const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
                     name={item.user.username}
                     tableType={val}
                     rows={TableRows[val as TableDataType]}
+                    disabled
                 />
 
                 }) : (
@@ -125,6 +126,7 @@ const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
                     name={item.user.username}
                     tableType={expandedData}
                     rows={TableRows[expandedData]}
+                    disabled
                 />
                 </>
                 )

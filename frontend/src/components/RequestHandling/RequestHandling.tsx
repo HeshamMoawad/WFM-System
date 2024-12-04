@@ -16,7 +16,7 @@ interface RequestHandlingProps {
 const RequestHandling: FC<RequestHandlingProps> = ({className , refresh , setRefresh , url="api/users/request"}) => {
     const {auth} = useAuth()
     const additionalFilter = ()=>{
-        let result = {status:"PENDING"}
+        let result = {status:"PENDING",page_size:1000}
         if (auth.role === "OWNER" || auth.is_superuser || auth.role === "HR") {
             return result
         }
@@ -30,7 +30,7 @@ const RequestHandling: FC<RequestHandlingProps> = ({className , refresh , setRef
         url:url,
         method:"GET",
         params: additionalFilter()
-    },[refresh],15000)
+    },[refresh],5000)
     return (
     <Container className={`${className}`}>
         {

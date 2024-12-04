@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/auth";
 import TreasuryTable from "../../components/TreasuryTable/TreasuryTable";
 import { TRANSLATIONS } from "../../utils/constants";
 import { LanguageContext } from "../../contexts/LanguageContext";
+import { checkPermission } from "../../utils/permissions/permissions";
 
 interface TreasuryProps {
 
@@ -21,12 +22,28 @@ const Treasury: FC<TreasuryProps> = () => {
                 <TotalTreasury refresh={refresh} setRefresh={setRefresh}/>
             </div>
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
-                <TreasuryForm setRefresh={setRefresh} header={TRANSLATIONS.Treasury.outform.title[lang]} creator_uuid={auth?.uuid} color="btns-colors-secondry"  url="api/treasury/treasury-outcome"/>
-                <TreasuryTable refresh={refresh} setRefresh={setRefresh}  color="btns-colors-secondry" label={TRANSLATIONS.Treasury.outtable.title[lang]} url="api/treasury/treasury-outcome" />
+                {   
+                    checkPermission(auth,"add_treasuryoutcome") ?
+                    <TreasuryForm setRefresh={setRefresh} header={TRANSLATIONS.Treasury.outform.title[lang]} creator_uuid={auth?.uuid} color="btns-colors-secondry"  url="api/treasury/treasury-outcome"/>
+                    : null
+                }
+                {
+                    checkPermission(auth,"view_treasuryoutcome") ?
+                    <TreasuryTable refresh={refresh} setRefresh={setRefresh}  color="btns-colors-secondry" label={TRANSLATIONS.Treasury.outtable.title[lang]} url="api/treasury/treasury-outcome" />
+                    : null
+                }
             </div>
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
-                <TreasuryForm setRefresh={setRefresh} header={TRANSLATIONS.Treasury.inform.title[lang]} color="btns-colors-primary" creator_uuid={auth?.uuid} url="api/treasury/treasury-income"/>
-                <TreasuryTable refresh={refresh} setRefresh={setRefresh}  color="btns-colors-primary" label={TRANSLATIONS.Treasury.intable.title[lang]} url="api/treasury/treasury-income" />
+                {   
+                    checkPermission(auth,"add_treasuryincome") ?
+                    <TreasuryForm setRefresh={setRefresh} header={TRANSLATIONS.Treasury.inform.title[lang]} color="btns-colors-primary" creator_uuid={auth?.uuid} url="api/treasury/treasury-income"/>
+                    : null
+                }
+                {
+                    checkPermission(auth,"view_treasuryincome") ?
+                    <TreasuryTable refresh={refresh} setRefresh={setRefresh}  color="btns-colors-primary" label={TRANSLATIONS.Treasury.intable.title[lang]} url="api/treasury/treasury-income" />
+                    : null
+                }
             </div>
         </div>
     );

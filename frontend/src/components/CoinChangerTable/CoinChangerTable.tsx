@@ -8,6 +8,8 @@ import Table from '../Table/Table';
 import { convertObjectToArrays } from '../../utils/converter';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
+import { useAuth } from '../../hooks/auth';
+import { checkPermission } from '../../utils/permissions/permissions';
 
 interface CoinChangerTableProps {
     refresh: boolean;
@@ -16,12 +18,13 @@ interface CoinChangerTableProps {
 
 const CoinChangerTable: FC<CoinChangerTableProps> = ({refresh , setRefresh}) => {
     const [currentPage , setCurrentPage] = useState(1)
+    const {auth} = useAuth()
     const {data , loading} = useRequest<CoinChangerType>({
         url:"api/commission/coin-changer" , 
         method:"GET" , 
         params:{page:currentPage}
     },[refresh,currentPage])
-
+    const canDelete = checkPermission(auth,"delete_coinchanger")
     return (
     <Container className='relative h-fit w-[700px]'>
         {
@@ -72,57 +75,61 @@ const CoinChangerTable: FC<CoinChangerTableProps> = ({refresh , setRefresh}) => 
                                         key={Math.random()}
                                         className="px-3 py-1 min-w-[100px] flex justify-center items-center"
                                     >
-                                        <button
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                Swal.fire({
-                                                    title: "Are you sure?",
-                                                    text: "You won't be able to revert this!",
-                                                    icon: "warning",
-                                                    showCancelButton: true,
-                                                    confirmButtonColor: "#3085d6",
-                                                    cancelButtonColor: "#d33",
-                                                    confirmButtonText: "Yes, delete it!"
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        sendRequest({
-                                                            url: "api/commission/coin-changer",
-                                                            method: "DELETE",
-                                                            params: { uuid },
-                                                        })
-                                                            .then((data) => {
-                                                                Swal.fire({
-                                                                    position:
-                                                                        "center",
-                                                                    icon: "success",
-                                                                    title: "Deleted Successfully",
-                                                                    showConfirmButton:
-                                                                        false,
-                                                                    timer: 1000,
-                                                                }).then(() =>
-                                                                    setRefresh(prev=>!prev)
-                                                                );
+                                        {
+                                            canDelete ? 
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    Swal.fire({
+                                                        title: "Are you sure?",
+                                                        text: "You won't be able to revert this!",
+                                                        icon: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#3085d6",
+                                                        cancelButtonColor: "#d33",
+                                                        confirmButtonText: "Yes, delete it!"
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            sendRequest({
+                                                                url: "api/commission/coin-changer",
+                                                                method: "DELETE",
+                                                                params: { uuid },
                                                             })
-                                                            .catch((err) => {
-                                                                Swal.fire({
-                                                                    position:
-                                                                        "center",
-                                                                    icon: "error",
-                                                                    title: "can't Deleted",
-                                                                    showConfirmButton:
-                                                                        false,
-                                                                    timer: 1000,
+                                                                .then((data) => {
+                                                                    Swal.fire({
+                                                                        position:
+                                                                            "center",
+                                                                        icon: "success",
+                                                                        title: "Deleted Successfully",
+                                                                        showConfirmButton:
+                                                                            false,
+                                                                        timer: 1000,
+                                                                    }).then(() =>
+                                                                        setRefresh(prev=>!prev)
+                                                                    );
+                                                                })
+                                                                .catch((err) => {
+                                                                    Swal.fire({
+                                                                        position:
+                                                                            "center",
+                                                                        icon: "error",
+                                                                        title: "can't Deleted",
+                                                                        showConfirmButton:
+                                                                            false,
+                                                                        timer: 1000,
+                                                                    });
                                                                 });
-                                                            });
-                                                    }
-                                                });                
+                                                        }
+                                                    });                
 
-                                                
-                                            }}
-                                            className="rounded-md bg-btns-colors-secondry w-2/3"
-                                        >
-                                            Delete
-                                        </button>
+                                                    
+                                                }}
+                                                className="rounded-md bg-btns-colors-secondry w-2/3"
+                                            >
+                                                Delete
+                                            </button>
+                                            :null
+                                        }
                                     </td>
                                 );
                             },

@@ -24,25 +24,32 @@ interface AdvancesTableProps {
     className?: string;
     canDelete?:boolean;
     setTotal?:React.Dispatch<React.SetStateAction<number|null>>;
+    status?:string;
 }   
 
-const AdvancesTable: FC<AdvancesTableProps> = ({user_uuid , date , refresh , setRefresh ,setTotal,className , canDelete}) => {
+const AdvancesTable: FC<AdvancesTableProps> = ({status,user_uuid , date , refresh , setRefresh ,setTotal,className , canDelete}) => {
     const {auth} = useAuth()
     const {lang} = useContext(LanguageContext)
     const [currentPage, setCurrentPage] = useState(1)
-
-    const user__uuid =  {user__uuid:user_uuid ? user_uuid :auth.uuid}
+    const user__uuid = user_uuid ? {user__uuid:user_uuid} : {}
+    // const user__uuid = (
+    //     auth.is_superuser || auth.role === "OWNER"
+    // ) ? 
+    // user_uuid ? {user__uuid:user_uuid ? user_uuid : auth.uuid} : {} :  {user__uuid:user_uuid ? user_uuid : auth.uuid}
+    
     const dates = date ? {
-        created_at__date__gte: `${date.getFullYear()}-${date.getMonth()}-25`,
-        created_at__date__lte: `${date.getFullYear()}-${date.getMonth()+1}-26`,
+        created_at__date__gte: `${date.getFullYear()}-${date.getMonth()+1}-1`,
+        created_at__date__lte: `${date.getFullYear()}-${date.getMonth()+2}-1`,
 
     } : {}
+    const status_f = status ? {status} : {}
     const {data , loading} = useRequest<Advance>({
         url:"api/treasury/advance",
         method:"GET",
         params: {
             ...user__uuid,
             ...dates,
+            ...status_f,
             page:currentPage ,
         } 
     },[user_uuid , currentPage , refresh , date])

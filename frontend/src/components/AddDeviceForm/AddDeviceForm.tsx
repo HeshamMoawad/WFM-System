@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/auth";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import { TRANSLATIONS } from "../../utils/constants";
+import { checkPermission } from "../../utils/permissions/permissions";
 
 interface AddDevicesFormProps {
     refresh:number,
@@ -19,7 +20,7 @@ const AddDevicesForm: FC<AddDevicesFormProps> = ({refresh , setRefresh}) => {
     const {lang} = useContext(LanguageContext)
     const [loading , setLoading] = useState(false)
     const {auth} = useAuth()
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {is_active:"True"} : {department__name : auth.department.name , is_active:"True"}
+    // const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {is_active:"True"} : {department__name : auth.department.name , is_active:"True"}
 
     const onSubmit = (e:FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
@@ -48,6 +49,7 @@ const AddDevicesForm: FC<AddDevicesFormProps> = ({refresh , setRefresh}) => {
         
         // .then
     }
+    if (checkPermission(auth,"add_fingerprintid")){
     return (
         <Container className="relative w-full md:w-[500px]">
             {
@@ -68,7 +70,7 @@ const AddDevicesForm: FC<AddDevicesFormProps> = ({refresh , setRefresh}) => {
                         value: "uuid",
                         label: "username",
                     }}
-                    params={additionalFilter}
+                    params={{is_active:"True"}}
                     required={true}
                     searchOptions={{attr_name:"username__contains"}}
                 />
@@ -84,6 +86,8 @@ const AddDevicesForm: FC<AddDevicesFormProps> = ({refresh , setRefresh}) => {
             </form>
         </Container>
     );
+    }
+    return null
 };
 
 export default AddDevicesForm;

@@ -13,6 +13,7 @@ import Pagination from "../Pageination/Pageination";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import { TRANSLATIONS } from "../../utils/constants";
 import { Status } from "../../types/base";
+import { checkPermission } from "../../utils/permissions/permissions";
 
 interface RequestTableProps {
     className?: string;
@@ -29,7 +30,7 @@ const RequestTable: FC<RequestTableProps> = ({
     const [currentPage,setCurrentPage] = useState(1);
     const {lang}= useContext(LanguageContext)
     const { auth } = useAuth();
-
+    const canDelete = checkPermission(auth,"delete_requests")
     const additionalFilter = ()=>{
         let result = {page:currentPage}
         if (auth.role === "OWNER" || auth.is_superuser || auth.role === "HR") {
@@ -48,7 +49,7 @@ const RequestTable: FC<RequestTableProps> = ({
         {
             url: "api/users/request",
             method: "GET",
-            params:additionalFilter()
+            // params:additionalFilter()
         },
         [refresh , currentPage]
     );
@@ -144,8 +145,7 @@ const RequestTable: FC<RequestTableProps> = ({
                             },{
                                 key: "uuid",
                                 method: (uuid) => {
-                                    if (auth.role !== "AGENT"){
-
+                                    if (canDelete){
                                     return (
                                         <td
                                             key={Math.random()}

@@ -11,6 +11,7 @@ import Pagination from '../Pageination/Pageination';
 import { useAuth } from '../../hooks/auth';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
+import { checkPermission } from '../../utils/permissions/permissions';
 
 interface DevicesTableProps {
     refresh:number,
@@ -21,17 +22,18 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
     const {lang} = useContext(LanguageContext)
     const [currentPage,setCurrentPage] = useState(1)
     const {auth} = useAuth()
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {user__department__name : auth.department.name}
+    // const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {user__department__name : auth.department.name}
     const {data , loading } = useRequest<DeviceAccessDetails>({
         url: 'api/users/device-access' ,
         method: 'GET',
         params: {
             page:currentPage ,
-            ...additionalFilter
+            // ...additionalFilter
 
         }
     },[refresh,currentPage])
-
+    const canDelete = checkPermission(auth,"delete_fingerprintid")
+    if (checkPermission(auth,"view_fingerprintid")){
     return (
         <Container className='relative w-full md:w-[1000px]'>
             {
@@ -69,45 +71,49 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
                             method : (uuid)=>{
                                 return (
                                     <td key={Math.random()} className='px-3 py-1 flex justify-center items-center'>
-                                            <button onClick={(e)=>{
-                                                    e.preventDefault();
-                                                    Swal.fire({
-                                                        title: "Are you sure?",
-                                                        text: "You won't be able to revert this!",
-                                                        icon: "warning",
-                                                        showCancelButton: true,
-                                                        confirmButtonColor: "#3085d6",
-                                                        cancelButtonColor: "#d33",
-                                                        confirmButtonText: "Yes, delete it!"
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            sendRequest({url:"api/users/device-access",method:"DELETE", params: {uuid}})
-                                                                .then(data => {
-                                                                    Swal.fire({
-                                                                        position: "center",
-                                                                        icon: "success",
-                                                                        title: "Deleted Successfully",
-                                                                        showConfirmButton: false,
-                                                                        timer: 1000
-                                                                    }).then(()=>setRefresh(Math.random()))
-                                                                })
-                                                                .catch(err => {
-                                                                    Swal.fire({
-                                                                        position: "center",
-                                                                        icon: "error",
-                                                                        title: "can't Deleted",
-                                                                        showConfirmButton: false,
-                                                                        timer: 1000
+                                        {canDelete ?
+                                                <button onClick={(e)=>{
+                                                        e.preventDefault();
+                                                        Swal.fire({
+                                                            title: "Are you sure?",
+                                                            text: "You won't be able to revert this!",
+                                                            icon: "warning",
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: "#3085d6",
+                                                            cancelButtonColor: "#d33",
+                                                            confirmButtonText: "Yes, delete it!"
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                sendRequest({url:"api/users/device-access",method:"DELETE", params: {uuid}})
+                                                                    .then(data => {
+                                                                        Swal.fire({
+                                                                            position: "center",
+                                                                            icon: "success",
+                                                                            title: "Deleted Successfully",
+                                                                            showConfirmButton: false,
+                                                                            timer: 1000
+                                                                        }).then(()=>setRefresh(Math.random()))
                                                                     })
-                                                                })
-                                                        }
-                                                    });                
+                                                                    .catch(err => {
+                                                                        Swal.fire({
+                                                                            position: "center",
+                                                                            icon: "error",
+                                                                            title: "can't Deleted",
+                                                                            showConfirmButton: false,
+                                                                            timer: 1000
+                                                                        })
+                                                                    })
+                                                            }
+                                                        });                
 
-                                                    
-                                                                                    
-                                        }} className='rounded-md bg-btns-colors-secondry min-w-[70px] md:w-2/3'>
-                                                Delete
-                                            </button>
+                                                        
+                                                                                        
+                                            }} className='rounded-md bg-btns-colors-secondry min-w-[70px] md:w-2/3'>
+                                                    Delete
+                                                </button>
+
+                                        :null
+                                        }
                                     </td>
                                 )
                             }
@@ -125,6 +131,8 @@ const DevicesTable: FC<DevicesTableProps> = ({refresh , setRefresh}) => {
                     
         </Container>
     );
+    }
+    return null
 }
 
 export default DevicesTable;

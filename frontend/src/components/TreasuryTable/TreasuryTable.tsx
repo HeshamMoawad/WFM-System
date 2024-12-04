@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import Pagination from "../Pageination/Pageination";
 import { TRANSLATIONS } from "../../utils/constants";
 import { LanguageContext } from "../../contexts/LanguageContext";
+import { checkPermission } from "../../utils/permissions/permissions";
+import { useAuth } from "../../hooks/auth";
 
 interface TreasuryTableProps {
     label?: string;
@@ -22,6 +24,8 @@ interface TreasuryTableProps {
 const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh , setRefresh }) => {
     const { lang } = useContext(LanguageContext)
     const [currentPage, setCurrentPage] = useState(1)
+    const {auth} = useAuth()
+    const canDelete = checkPermission(auth,"delete_treasury")
     const { data, loading } = useRequest<TreasuryRecord>(
         {
             url: url,
@@ -101,7 +105,7 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh , s
                                 key: ["uuid","from_advance" , "from_basic" , "from_salary"],
                                 method: (args) => {
                                     const {uuid ,from_advance , from_basic , from_salary } = args as any;
-                                    const show_delete =  from_advance ? false : from_basic ? false : from_salary ? false : true //!(typeof from_advance === "string" || typeof from_basic === "string")
+                                    const show_delete = canDelete && (from_advance ? false : from_basic ? false : from_salary ? false : true) //!(typeof from_advance === "string" || typeof from_basic === "string")
                                     return (
                                         <td
                                             key={Math.random()}

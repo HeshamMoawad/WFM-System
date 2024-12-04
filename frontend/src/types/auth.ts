@@ -16,6 +16,8 @@ interface Profile {
     about:string|null,
 }
 
+type Permission = string[]
+
 interface User {
     uuid:string,
     username:string ,
@@ -30,10 +32,21 @@ interface User {
     is_superuser:boolean ,
     is_active:boolean ,
     password_normal?:string,
-    total?:number
+    total?:number,
 
 }
-interface Authintication extends User {
+
+
+interface Me extends User{
+    pages: number[];
+    permissions:{
+        permissions:Permission,
+        main_pages:number[],
+        sub_pages:number[]
+    } 
+}
+
+interface Authintication extends Me {
     Authorization:string ,
     expire : string
 }
@@ -237,6 +250,7 @@ export type {
     Lead ,
     Team ,
     Subscription ,
-    AdvanceType
+    AdvanceType ,
+    Me
 
 };

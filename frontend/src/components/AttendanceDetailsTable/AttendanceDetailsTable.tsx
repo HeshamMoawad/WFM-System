@@ -12,6 +12,7 @@ import Table from '../Table/Table';
 import DatePicker from 'react-datepicker';
 // import "react-datepicker/dist/react-datepicker.css";
 import '../CustomDatePicker/DatePicker.css';
+import { checkPermission } from '../../utils/permissions/permissions';
 
 
 interface AttendanceDetailsTableProps {
@@ -67,7 +68,8 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
         <div id="search" className='flex flex-row justify-between md:min-w-[1000px] w-[1000px] md:w-full'>
             <label className='p-2 w-fit text-2xl text-btns-colors-primary'>{label}</label>
             {
-                (auth.role === "OWNER" || auth.role === "MANAGER" || auth.role === "HR") && userBox && withDetails ?
+                checkPermission(auth,"view_admin_arrivingleaving") && userBox && withDetails ?
+                // (auth.role === "OWNER" || auth.role === "MANAGER" || auth.role === "HR") && userBox && withDetails ?
                 (
                     <div className='w-2/6 flex justify-evenly items-center'>
                     <SelectComponent
@@ -81,7 +83,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                             label:"username"
                         }}
                         setSelection={setUserID}
-                        params={additionalFilter}
+                        params={{is_superuser:"False",is_staff:"False"}}
                         moreOptions={[{label:"Me", value:auth.uuid}]}
                         // selected={[auth.username]}
                     />
@@ -198,7 +200,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                     
                     />
                     <div dir={lang === "en" ? "ltr" : "rtl"} className={`flex flex-row min-w-[950px] md:min-w-[1000px] items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full`}>
-                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.lateCount[lang]} : {data?.results?.filter((obj:ArrivingLeaving)=>obj.late > 60 ).length}</label>
+                        <label>{TRANSLATIONS.AttendanceDetails.bottomBar.lateCount[lang]} : {data?.results?.filter((obj:ArrivingLeaving)=>obj.deduction > 0 ).length}</label>
                         <label>{TRANSLATIONS.AttendanceDetails.bottomBar.departureCount[lang]} : {data?.results?.filter((obj:ArrivingLeaving)=> obj.departure > 60 ).length}</label>
                         <label>{TRANSLATIONS.AttendanceDetails.bottomBar.AttendanceCount[lang]} : {data?.results?.filter((obj:ArrivingLeaving)=> obj.arriving_at ).length}</label>
                         <label>{TRANSLATIONS.AttendanceDetails.bottomBar.DaysCount[lang]} : {data?.results?.length}</label>

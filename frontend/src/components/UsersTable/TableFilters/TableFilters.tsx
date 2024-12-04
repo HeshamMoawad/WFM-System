@@ -87,9 +87,8 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters , className , others = 
                         setFilters(prev => ({...prev, role}))
                     }
                 }}
-
-                
                 />
+            
             </div>
             <button className='w-[100px]' onClick={(e)=>{
                 setFilters({})

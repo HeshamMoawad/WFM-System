@@ -165,5 +165,13 @@ export function getArgsFrom(obj:any,args:string[]|string){
 
 
 
+export const textToNumber = (text:string):number=>{
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) {
+        hash += text.charCodeAt(i);
+    }
+    return hash;
+}
+
 
 

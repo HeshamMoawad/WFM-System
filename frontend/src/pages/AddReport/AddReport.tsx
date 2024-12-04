@@ -9,6 +9,7 @@ import LoadingPage from "../LoadingPage/LoadingPage";
 import { useNavigate } from "react-router-dom";
 import { Console } from "console";
 import Swal from "sweetalert2";
+import { checkPermission } from "../../utils/permissions/permissions";
 
 interface AddReportProps {}
 
@@ -29,7 +30,7 @@ type Inputs = {
 };
 
 const AddReport: FC<AddReportProps> = () => {
-    // const { auth } = useAuth();
+    const { auth } = useAuth();
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate()
 
@@ -87,7 +88,7 @@ const AddReport: FC<AddReportProps> = () => {
     return (
         <>
             {loading ? <LoadingPage /> : null}
-            {canReport ? (
+            {canReport && checkPermission(auth,"add_reportrecord") ? (
                 <>
                     <form
                         className="flex flex-col items-center"
@@ -96,7 +97,7 @@ const AddReport: FC<AddReportProps> = () => {
                         {/* Report Form */}
                         <ReportTable
                             register={register}
-                            required_indexes={[0,1,2]}
+                            required_indexes={[0,1]}
                             tableType="twitter"
                             rows={[
                                 {
@@ -119,7 +120,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="tiktok"
-                            required_indexes={[0,1]}
+                            required_indexes={[0]}
                             rows={[
                                 {
                                     type: "Account_Names",
@@ -138,7 +139,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="whatsapp"
-                            required_indexes={[0,1]}
+                            required_indexes={[0]}
                             rows={[
                                 {
                                     type: "Account_Names",
@@ -151,7 +152,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="Telegram"
-                            required_indexes={[0,1,2]}
+                            required_indexes={[0]}
                             rows={[
                                 {
                                     type: "Account_Names",
@@ -164,7 +165,7 @@ const AddReport: FC<AddReportProps> = () => {
                         <ReportTable
                             register={register}
                             tableType="jaco"
-                            required_indexes={[0]}
+                            // required_indexes={[0,1]}
                             rows={[
                                 {
                                     type: "Account_Names",

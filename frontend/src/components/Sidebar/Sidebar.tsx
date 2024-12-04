@@ -18,9 +18,12 @@ import { BiDevices } from "react-icons/bi";
 import {FaHandHoldingUsd} from "react-icons/fa";
 import { FaUsersLine } from "react-icons/fa6";
 import { TRANSLATIONS } from '../../utils/constants';
+import { textToNumber } from '../../utils/converter';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { HiOutlineDocumentReport , HiOutlineDocumentAdd , HiOutlineDocumentText   } from "react-icons/hi";
 import { MdOutlineAnalytics , MdDirectionsRun } from "react-icons/md";
+import { IconType } from 'react-icons';
+import { checkPagePermission } from '../../utils/permissions/permissions';
 
 
 
@@ -31,10 +34,12 @@ interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = () => {
     const {lang} = useContext(LanguageContext)
-    const Items : SideItem[] = [
+
+    const Items:SideItem[] = [
         {
             name : TRANSLATIONS.SideBar.DashBoard.title[lang] ,
             Icon : RxDashboard ,
+            index:textToNumber("main-dashboard"),
             permissions:[
                 "OWNER",
                 "MANAGER",
@@ -46,6 +51,7 @@ const Sidebar: FC<SidebarProps> = () => {
                     name:TRANSLATIONS.SideBar.DashBoard.title[lang],
                     href:'/dashboard',
                     Icon:RxDashboard , 
+                    index:textToNumber("dashboard"),
                     permissions:[
                         {role : "AGENT" , departments : ["*"]} ,
                         {role : "HR" , departments : ["*"]} ,
@@ -55,7 +61,8 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.DashBoard.market[lang],
                     href:'/dashboard-market',
-                    Icon:MdOutlineAnalytics , 
+                    Icon:MdOutlineAnalytics ,
+                    index:textToNumber("market-dashboard"),
                     permissions:[
                         {role : "MANAGER" , departments : ["Marketing"]} ,
                         {role : "OWNER" , departments : ["Marketing"]} ,
@@ -66,11 +73,18 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.FPDetails.title[lang],
             Icon : PiFingerprint ,
+            index:textToNumber("main-fp-details"),
+            permissions:[
+                "OWNER",
+                "MANAGER",
+                "AGENT",
+                ],
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.Requests[lang],
                     href:'/requests',
                     Icon:VscGitPullRequestNewChanges,
+                    index:textToNumber("requests"),
                     permissions:[
                         {role : "*" , departments : ["*"]} ,
                     ],
@@ -78,6 +92,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.AttendanceDetails[lang],
                     href:'/attendance-details',
+                    index:textToNumber("fp-details"),
                     Icon:IoCalendarNumberOutline,
                     permissions:[
                         {role : "*" , departments : ["*"]} ,
@@ -87,6 +102,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.AttendanceDetailsLated[lang],
                     href:'/attendance-details-lated',
+                    index:textToNumber("fp-details-lated"),
                     Icon:MdDirectionsRun,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -97,6 +113,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.SalaryList[lang],
                     href:'/my-salary-list',
+                    index:textToNumber("my-salary-list"),
                     Icon:FaHandHoldingUsd,
                     permissions:[
                         {role : "AGENT" , departments : ["*"]} ,
@@ -107,6 +124,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Treasury.Advance[lang],
                     href:'/advances',
+                    index:textToNumber("my-advances"),
                     Icon:PiHandCoins ,
                     permissions:[
                         {role : "AGENT" , departments : ["*"]} ,
@@ -122,6 +140,7 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name:TRANSLATIONS.SideBar.ReportSocial.title[lang],
             Icon:HiOutlineDocumentReport ,
+            index:textToNumber("main-report-social"),
             permissions:[
                 "OWNER",
                 "MANAGER",
@@ -131,6 +150,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.ReportSocial.report[lang],
                     href:'/add-report-social',
+                    index:textToNumber("add-report-social"),
                     Icon:HiOutlineDocumentAdd,
                     permissions:[
                         {role : "OWNER" , departments : ["Marketing"]} ,
@@ -141,6 +161,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.ReportSocial.view[lang],
                     href:'/reports',
+                    index:textToNumber("show-report-social"),
                     Icon:HiOutlineDocumentText,
                     permissions:[
                         {role : "OWNER" , departments : ["Marketing"]} ,
@@ -155,6 +176,7 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.Basic.title[lang],
             Icon:PiMoney ,
+            index:textToNumber("main-basic"),
             permissions:[
                 "OWNER",
                 // "MANAGER",
@@ -165,6 +187,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Basic.title[lang],
                     href:'/basic',
+                    index:textToNumber("basic"),
                     Icon:PiMoney,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -178,6 +201,7 @@ const Sidebar: FC<SidebarProps> = () => {
         },{
             name : TRANSLATIONS.SideBar.Commission.title[lang],
             Icon:PiWallet ,
+            index:textToNumber("main-commission"),
             permissions:[
                 "OWNER",
                 "MANAGER",
@@ -188,6 +212,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Commission.Marketing[lang],
                     href:'/salary-marketing',
+                    index:textToNumber("market-commission"),
                     Icon:BsPersonWorkspace ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -198,6 +223,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 },{
                     name:TRANSLATIONS.SideBar.Commission.Sales[lang],
                     href:'/salary-sales',
+                    index:textToNumber("sales-commission"),
                     Icon:RiCustomerService2Line ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -208,6 +234,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 },{
                     name:TRANSLATIONS.SideBar.Commission.Technical[lang],
                     href:'/salary-technichal',
+                    index:textToNumber("technical-commission"),
                     Icon:PiChartLine ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -218,6 +245,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 },{
                     name:TRANSLATIONS.SideBar.Commission.General[lang],
                     href:'/salary-general',
+                    index:textToNumber("general-commission"),
                     Icon:CgUserList ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -229,6 +257,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 },{
                     name:TRANSLATIONS.SideBar.Commission.All[lang],
                     href:'/salary-all',
+                    index:textToNumber("all-commission"),
                     Icon:PiUsersThree ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -238,6 +267,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 },{
                     name:TRANSLATIONS.SideBar.Commission.CoinChanger[lang],
                     href:'/coin-changer',
+                    index:textToNumber("coin-changer"),
                     Icon:BsCashCoin ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -248,6 +278,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 },{
                     name:TRANSLATIONS.SideBar.Commission.Leads[lang],
                     href:'/leads',
+                    index:textToNumber("market-leads"),
                     Icon:FaUsersLine, 
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -263,6 +294,7 @@ const Sidebar: FC<SidebarProps> = () => {
         },{
             name : TRANSLATIONS.SideBar.Users.title[lang],
             Icon : LiaUsersCogSolid ,
+            index:textToNumber("main-users"),
             permissions:[
                 "OWNER",
                 "MANAGER",
@@ -273,6 +305,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Users.AddUser[lang],
                     href:'/add-user',
+                    index:textToNumber("add-user"),
                     Icon:RiUserAddLine ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -284,6 +317,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Users.UsersList[lang],
                     href:'/users-list',
+                    index:textToNumber("users-list"),
                     Icon:PiUserList ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -295,6 +329,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Users.DeviceAccess[lang],
                     href:'/devices-access',
+                    index:textToNumber("devices-access"),
                     Icon:BiDevices ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -306,6 +341,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Users.Teams[lang],
                     href:'/teams',
+                    index:textToNumber("teams"),
                     Icon:RiTeamLine ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -320,6 +356,7 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.General.title[lang],
             Icon:RiListSettingsLine ,
+            index:textToNumber("main-general"),
             permissions:[
                 "OWNER",
                 // "MANAGER",
@@ -330,6 +367,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.General.Notification[lang],
                     href:'/notifications',
+                    index:textToNumber("notification"),////////////////////////////
                     Icon:GrNotification, 
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -344,6 +382,7 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name:TRANSLATIONS.SideBar.Treasury.title[lang],
             Icon:BsSafe,
+            index:textToNumber("main-treasury"),
             permissions:[
                 "OWNER",
                 // "MANAGER",
@@ -355,6 +394,7 @@ const Sidebar: FC<SidebarProps> = () => {
                     name:TRANSLATIONS.SideBar.Treasury.title[lang],
                     href:'/treasury',
                     Icon:BsSafe ,
+                    index:textToNumber("treasury"),
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
                     ],
@@ -363,6 +403,7 @@ const Sidebar: FC<SidebarProps> = () => {
                 {
                     name:TRANSLATIONS.SideBar.Treasury.Advance[lang],
                     href:'/advances',
+                    index:textToNumber("advances"),
                     Icon:PiHandCoins ,
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
@@ -394,20 +435,10 @@ const Sidebar: FC<SidebarProps> = () => {
             <nav>
                 {
                     Items.map((item,index)=>{
-
-                        if (!item.permissions) {
+                        if (checkPagePermission(auth,item.index)){
                             return (
                                 <SidebarItem  key={index}  {...{...item , index }} setOpened={setOpened}/>
                                 )
-                        }else {
-
-                            if (item.permissions.includes(auth.role) || auth.is_superuser) {
-                                return (
-                                    <SidebarItem  key={index}  {...{...item , index }} setOpened={setOpened}/>
-                                )
-                            }else {
-                                return null
-                            }
                         }
                     })
                 }

@@ -8,13 +8,16 @@ import { Lead } from '../../types/auth';
 import Pagination from '../Pageination/Pageination';
 import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
+import { checkPermission } from '../../utils/permissions/permissions';
+import { useAuth } from '../../hooks/auth';
 
 interface LeadsTableProps {}
 
 const LeadsTable: FC<LeadsTableProps> = () => {
+    const {auth} = useAuth()
     const [currentPage,setCurrentPage] = useState(1)
     const {data , loading} = useRequest<Lead>({url:"api/users/lead",method:"GET",params:{page:currentPage}},[currentPage])
-
+    const canDelete = checkPermission(auth,"delete_lead")
     return (
     <Container className='relative md:col-span-6 w-[100%] place-self-end min-h-[680px] h-fit'>
         {
@@ -59,7 +62,9 @@ const LeadsTable: FC<LeadsTableProps> = () => {
                                         key={Math.random()}
                                         className="px-3 py-1 min-w-[100px] flex justify-center items-center"
                                     >
-                                        <button
+                                        {
+                                            canDelete ? 
+                                            <button
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 sendRequest({
@@ -94,6 +99,8 @@ const LeadsTable: FC<LeadsTableProps> = () => {
                                         >
                                             Delete
                                         </button>
+                                        :null
+                                        }
                                     </td>
                                 );
                             },

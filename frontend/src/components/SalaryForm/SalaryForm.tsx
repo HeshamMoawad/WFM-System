@@ -10,6 +10,8 @@ import { SalaryType } from "../../pages/Salary/Salary";
 import { useNavigate } from "react-router-dom";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import { TRANSLATIONS } from "../../utils/constants";
+import { useAuth } from "../../hooks/auth";
+import { checkPermission } from "../../utils/permissions/permissions";
 
 interface SalaryFormProps extends React.HTMLProps<HTMLDivElement> {
     oldSalary?: SalaryType;
@@ -32,6 +34,7 @@ const SalaryForm: FC<SalaryFormProps> = ({
     user_uuid,
 }) => {
     const {lang} = useContext(LanguageContext)
+    const {auth} = useAuth()
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [salary, setSalary] = useState<SalaryType>(
@@ -377,19 +380,26 @@ const SalaryForm: FC<SalaryFormProps> = ({
                 {
                 oldSalary ? (
                     <div className="col-span-full flex flex-row-reverse gap-5">
-                        <button
-                            type="submit"
-                            className="col-span- h-10 bg-btns-colors-primary rounded-lg w-2/3 place-self-center my-2"
-                        >
-                            {TRANSLATIONS.Salary.form.update[lang]}
-                        </button>
-                        <button
-                            onClick={handleDelete}
-                            className="col-span-full h-10 bg-btns-colors-secondry rounded-lg w-2/3 place-self-center my-2"
-                        >
-                            {TRANSLATIONS.Delete[lang]}
-                        </button>
-
+                        {
+                            checkPermission(auth,"change_salary")?
+                            <button
+                                type="submit"
+                                className="col-span- h-10 bg-btns-colors-primary rounded-lg w-2/3 place-self-center my-2"
+                            >
+                                {TRANSLATIONS.Salary.form.update[lang]}
+                            </button>
+                            :null
+                        }
+                        {
+                            checkPermission(auth,"delete_salary")?
+                            <button
+                                onClick={handleDelete}
+                                className="col-span-full h-10 bg-btns-colors-secondry rounded-lg w-2/3 place-self-center my-2"
+                            >
+                                {TRANSLATIONS.Delete[lang]}
+                            </button>
+                            :null
+                        }
                     </div>
                 ) : (
                     <button

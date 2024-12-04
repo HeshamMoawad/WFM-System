@@ -10,6 +10,8 @@ import { sendRequest } from '../../calls/base';
 import Swal from 'sweetalert2';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
+import { useAuth } from '../../hooks/auth';
+import { checkPermission } from '../../utils/permissions/permissions';
 
 interface NotificationsTableProps {
     setRefresh:React.Dispatch<SetStateAction<boolean>>;
@@ -18,10 +20,11 @@ interface NotificationsTableProps {
 
 const NotificationsTable: FC<NotificationsTableProps> = ({setRefresh , refresh }) => {
     const {lang} = useContext(LanguageContext)
+    const {auth} = useAuth()
     const [currentPage,setCurrentPage] = useState(1)
     const {data , loading} = useRequest<NotificationType>(
         {url:"api/treasury/notifications",method:"GET",params:{page:currentPage}},[currentPage,refresh])
-
+    const canDelete = checkPermission(auth,"delete_notification")
     return (
     <Container className='relative w-5/6 h-fit'>
         {
@@ -66,45 +69,49 @@ const NotificationsTable: FC<NotificationsTableProps> = ({setRefresh , refresh }
                                         key={Math.random()}
                                         className="px-3 py-1 min-w-[100px] flex justify-center items-center"
                                     >
-                                        <button
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                sendRequest({
-                                                    url: "api/treasury/notifications",
-                                                    method: "DELETE",
-                                                    params: { uuid },
-                                                })
-                                                    .then((data) => {
-                                                        Swal.fire({
-                                                            position:
-                                                                "center",
-                                                            icon: "success",
-                                                            title: "Deleted Successfully",
-                                                            showConfirmButton:
-                                                                false,
-                                                            timer: 1000,
+                                        {
+                                            canDelete ?
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    sendRequest({
+                                                        url: "api/treasury/notifications",
+                                                        method: "DELETE",
+                                                        params: { uuid },
+                                                    })
+                                                        .then((data) => {
+                                                            Swal.fire({
+                                                                position:
+                                                                    "center",
+                                                                icon: "success",
+                                                                title: "Deleted Successfully",
+                                                                showConfirmButton:
+                                                                    false,
+                                                                timer: 1000,
+                                                            })
                                                         })
-                                                    })
-                                                    .catch((err) => {
-                                                        Swal.fire({
-                                                            position:
-                                                                "center",
-                                                            icon: "error",
-                                                            title: "can't Deleted",
-                                                            showConfirmButton:
-                                                                false,
-                                                            timer: 1000,
+                                                        .catch((err) => {
+                                                            Swal.fire({
+                                                                position:
+                                                                    "center",
+                                                                icon: "error",
+                                                                title: "can't Deleted",
+                                                                showConfirmButton:
+                                                                    false,
+                                                                timer: 1000,
+                                                            })
                                                         })
-                                                    })
-                                                    .finally(()=>{
-                                                        setRefresh(prev=>!prev)
-                                                    })
+                                                        .finally(()=>{
+                                                            setRefresh(prev=>!prev)
+                                                        })
 
-                                            }}
-                                            className="rounded-md bg-btns-colors-secondry w-2/3"
-                                        >
-                                            Delete
-                                        </button>
+                                                }}
+                                                className="rounded-md bg-btns-colors-secondry w-2/3"
+                                            >
+                                                Delete
+                                            </button>
+                                            :null
+                                        }
                                     </td>
                                 );
                             },

@@ -10,6 +10,8 @@ import BasicForm from '../../components/BasicForm/BasicForm';
 import LoadingPage from '../LoadingPage/LoadingPage';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
+import { checkPermission } from '../../utils/permissions/permissions';
+import { useAuth } from '../../hooks/auth';
 
 interface SalaryProps {}
 
@@ -31,6 +33,7 @@ export interface SalaryType {
 
 const Salary: FC<SalaryProps> = () => {
     const {lang} = useContext(LanguageContext)
+    const {auth} = useAuth()
     const [loading , setLoading] = useState(false);
     const {user_uuid="",date=""} = useParams()
     const date_parsed = parseDateFromParams(date)
@@ -81,7 +84,7 @@ const Salary: FC<SalaryProps> = () => {
         .finally(()=> setLoading(false) );
     },[])
 
-
+    const canSalary = checkPermission(auth,"add_salary")
     return (
     <div className='salary flex flex-col h-fit justify-center'>
     <label className='text-4xl text-center'>Salary | {userCommissionDetails?.user.first_name} {userCommissionDetails?.user.last_name} ({userCommissionDetails?.user.username}) | {date} </label>
@@ -92,10 +95,9 @@ const Salary: FC<SalaryProps> = () => {
         }
 
         {
-            analytics && basicDetails && userCommissionDetails? 
-            <>
-                <SalaryForm oldSalary={oldSalary ? oldSalary : undefined} analytics={analytics} user_uuid={userCommissionDetails?.user.uuid} basic={basicDetails} department={userCommissionDetails?.user.department.name.toLowerCase()}  subscriptions={subscriptions} className='col-span-4 place-self-center' date={date_parsed}/>
-            </>:null
+            canSalary && analytics && basicDetails && userCommissionDetails? 
+            <SalaryForm oldSalary={oldSalary ? oldSalary : undefined} analytics={analytics} user_uuid={userCommissionDetails?.user.uuid} basic={basicDetails} department={userCommissionDetails?.user.department.name.toLowerCase()}  subscriptions={subscriptions} className='col-span-4 place-self-center' date={date_parsed}/>
+            :null
         }
         <div className={`col-span-4 place-self-center`}>
             {

@@ -10,12 +10,15 @@ import RequestsTableBasic from '../RequestsTableBasic/RequestsTableBasic';
 import AdvancesTable from '../../components/AdvancesTable/AdvancesTable';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
+import { checkPermission } from '../../utils/permissions/permissions';
+import { useAuth } from '../../hooks/auth';
 
 interface UserBasicProps {}
 
 const UserBasic: FC<UserBasicProps> = () => {
     const {lang} = useContext(LanguageContext);
     const {user_uuid="",date=""} = useParams();
+    const {auth} = useAuth()
     const [userCommissionDetails,setUserCommissionDetails] = useState<CommissionDetails|null>(null);
     const [basicDetails , setBasicDetails] = useState<BasicDetails|null>(null);
     const [totalMoney, setTotalMoney] = useState<number|null>(null);
@@ -41,7 +44,7 @@ const UserBasic: FC<UserBasicProps> = () => {
     <>
     <div className='user-basic grid grid-cols-1 md:grid-cols-10 gap-3 m-1 px-2'>
         {
-            userCommissionDetails && user_uuid && date ? (
+            checkPermission(auth,"add_basicrecord") && userCommissionDetails && user_uuid && date ? (
             <>
                 <label className='text-2xl md:text-4xl md:col-span-10 text-center'>{TRANSLATIONS.Basic.title[lang]} | {userCommissionDetails.user.first_name} {userCommissionDetails.user.last_name}  ({userCommissionDetails?.user.username}) | {date} </label>
                 {
@@ -51,7 +54,7 @@ const UserBasic: FC<UserBasicProps> = () => {
                 }
                 <AttendanceDetailsTable setTotal={setTotalDays} className='md:col-span-7 place-self-center' label={TRANSLATIONS.AttendanceDetails.title[lang]} date={parseDateFromParams(date)} userID={user_uuid} withDetails={false}/>
                 <RequestsTableBasic className='md:col-span-7 w-full md:col-start-4 place-self-center'  date={parseDateFromParams(date)} user_uuid={userCommissionDetails.user.uuid}/>
-                <AdvancesTable setTotal={setTotalMoney} className='md:col-span-7 w-full md:col-start-4 place-self-center' user_uuid={userCommissionDetails.user.uuid} canDelete={true}/>
+                <AdvancesTable status='ACCEPTED' date={parseDateFromParams(date)} setTotal={setTotalMoney} className='md:col-span-7 w-full md:col-start-4 place-self-center' user_uuid={userCommissionDetails.user.uuid} canDelete={true}/>
             </>
             ) : <LoadingComponent/>
         }

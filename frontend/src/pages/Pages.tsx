@@ -61,19 +61,14 @@ const Pages: FC<PagesProps> = () => {
                 `}>
                     <div className={``}>
                         <BrowserRouter>
-                            
                                     <Routes>
                                         <Route path="/login" element={<Login/>}/>
                                     </Routes>
-                                    
                                     <MainLayout>
                                         <Routes>
                                             <Route path="/" element={<DashBoard/>}/>
                                             <Route path="/dashboard" element={<DashBoard/>}/>
-
-
                                             <Route path="/dashboard-market" element={<DashMarket/>}/>
-
                                             <Route path="/requests" element={<Requests/>}/>
                                             <Route path="/profile" element={<Profile/>}/>
                                             <Route path="/add-user" element={<AddUser/>}/>
@@ -90,7 +85,6 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/leads" element={<Leads/>}/>
                                             <Route path="/notifications" element={<Notifications/>}/>
                                             <Route path="/teams" element={<Teams/>}/>
-
                                             <Route path="/salary-all" element={<SalaryAll/>}/>
                                             <Route path="/salary-marketing" element={<SalaryAll department__name="Marketing"/>}/>
                                             <Route path="/salary-sales" element={<SalaryAll department__name="Sales"/>}/>
@@ -98,15 +92,10 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/salary-general" element={<SalaryAll department__name="General"/>}/>
                                             <Route path="/salary/:user_uuid/:date" element={<Salary/>}/>
                                             <Route path="/my-salary-list" element={<MySalaryList/>}/>
-
-
-
                                             <Route path="/add-report-social" element={<AddReport/>}/>
                                             <Route path="/reports" element={<Reports/>}/>
                                             <Route path="/project-report/:project_uuid" element={<ProjectReport/>}/>
-
                                             <Route path="*" element={<NotFound/>}/>
-
                                         </Routes>
                                     </MainLayout>
                             

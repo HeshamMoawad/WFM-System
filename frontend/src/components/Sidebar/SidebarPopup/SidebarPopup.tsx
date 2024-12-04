@@ -4,6 +4,7 @@ import { SideSection } from '../../../types/sidebar';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../hooks/auth';
 import { checkPermissions } from '../../../utils/params';
+import { checkPagePermission } from '../../../utils/permissions/permissions';
 
 interface SidebarPopupProps {
     name:string,
@@ -25,7 +26,7 @@ const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections , setOpened }:
         <ul className="pt-6 space-y-6">
             {
                 sections.map((section,index)=>{
-                    if (checkPermissions(auth,section.permissions)) {
+                    if (checkPagePermission(auth,section.index)) {
 
                         return (
                             <li key={index}>
