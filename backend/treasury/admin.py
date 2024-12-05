@@ -25,6 +25,30 @@ class TreasuryRecordAdminSite(admin.ModelAdmin):
             ]
     ]).fieldsets
 
+class TreasuryOutcomeAdminSite(admin.ModelAdmin):
+    list_display = ["creator" , "amount" , "details","project" ]
+    list_filter = ["creator","project"]
+    readonly_fields = ['uuid',"created_at","updated_at"]
+    search_fields = ['creator__username', 'amount' , "details" ,"treasury__name" ]  
+    fieldsets = FieldSets([
+            'Treasury Record Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'creator',
+                'amount',
+                'details',
+                'project',
+                'from_advance',
+                'from_salary',
+                'from_basic',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at"
+            ]
+    ]).fieldsets
+
 
 class AdvanceAdminSite(admin.ModelAdmin):
     list_display = ["creator" , "user" , "amount" ]
@@ -71,5 +95,5 @@ class NotificationAdminSite(admin.ModelAdmin):
 
 admin.site.register(Advance , AdvanceAdminSite)
 admin.site.register(TreasuryIncome , TreasuryRecordAdminSite)
-admin.site.register(TreasuryOutcome , TreasuryRecordAdminSite)
+admin.site.register(TreasuryOutcome , TreasuryOutcomeAdminSite)
 admin.site.register(Notification , NotificationAdminSite)

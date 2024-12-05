@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import pre_save , post_save
 from users.types import RequestStatuses
 from core.models import  BaseModel 
-from users.models import User , create_update_history
+from users.models import User , create_update_history , Project
 from django.utils.timezone import now , timedelta
 # from commission.models import BasicRecord
 
@@ -22,7 +22,8 @@ class Advance(BaseModel):
     # status = models.CharField(verbose_name="Advance Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
     status = models.CharField(verbose_name="Advance Status", max_length=50, choices=RequestStatuses.choices ,default=RequestStatuses.PENDING)
 
-
+    def __str__(self):
+        return f"{self.user} | {self.status} | {self.amount} "
 
 class TreasuryOutcome(BaseModel):
     creator = models.ForeignKey(User,verbose_name="Creator" ,  on_delete=models.SET_NULL , null=True , limit_choices_to={'role': 'OWNER'})#limit_choices_to={'role': 'OWNER'}
@@ -30,6 +31,7 @@ class TreasuryOutcome(BaseModel):
     from_advance =  models.ForeignKey(Advance,verbose_name="Advance" ,  on_delete=models.CASCADE , null=True , blank=True)
     from_salary =  models.ForeignKey("commission.Commission",verbose_name="Salary" ,  on_delete=models.CASCADE , null=True , blank=True)
     from_basic =  models.ForeignKey("commission.BasicRecord",verbose_name="Basic" ,  on_delete=models.CASCADE , null=True , blank=True)
+    project = models.ForeignKey(Project,verbose_name="Project",on_delete=models.SET_NULL,null=True)
     details = models.CharField(verbose_name="Details" , max_length=250 )
 
 

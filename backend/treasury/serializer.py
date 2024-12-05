@@ -1,7 +1,7 @@
 # from rest_framework.serializers import ModelSerializer
 from api_views.serializers import ModelSerializer , ForeignField , ManyToManyField
 from .models import TreasuryIncome , TreasuryOutcome ,Advance , Notification
-from users.serializers import UserSerializer , User 
+from users.serializers import UserSerializer , User ,ProjectSerializer , Project
 
 class TreasuryIncomeSerializer(ModelSerializer):
     creator = UserSerializer(read_only=True)
@@ -24,6 +24,7 @@ class TreasuryIncomeSerializer(ModelSerializer):
 
 class TreasuryOutcomeSerializer(ModelSerializer):
     creator = UserSerializer(read_only=True)
+    project = ProjectSerializer(read_only=True)
     class Meta:
         model = TreasuryOutcome
         fields = [
@@ -34,11 +35,13 @@ class TreasuryOutcomeSerializer(ModelSerializer):
             "from_advance",
             "from_basic",
             "from_salary",
+            "project",
             "created_at",
             "updated_at",
         ]
         foreign_models = {
-            "creator" : ForeignField("creator",User,"uuid")
+            "creator" : ForeignField("creator",User,"uuid"),
+            "project" :ForeignField("project",Project,"uuid"),
         }
 
 
