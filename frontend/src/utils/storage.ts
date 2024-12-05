@@ -1,4 +1,4 @@
-import Authintication , {DefaultAuthintication} from '../types/auth'
+import Authintication from '../types/auth'
 import { DarkModeType, Language } from '../types/base';
 
 export const AUTH_KEY:string = "Auth"
@@ -6,6 +6,7 @@ export const PERM_KEY:string = "Perm"
 export const MODE_KEY:string = "Mode"
 export const LANG_KEY:string = "Lang"
 export const CLIENT_ID_KEY:string = "uniqueID"
+export const VERSION_KEY : string = "Version"
 
 export const save = (key:string , obj:Object):any=>{
     localStorage.setItem( key ,JSON.stringify(obj)) 
@@ -36,6 +37,23 @@ export const saveID = (uniqueID:string)=>{
 
 export const loadID = ():string =>{
     return load(CLIENT_ID_KEY,()=>{return saveID("");})
+}
+
+export const saveVersion = (uniqueID:string)=>{
+    return save(VERSION_KEY,uniqueID) 
+};
+
+export const checkExist = (key:string):string|null =>{
+    return  localStorage.getItem(key)
+}
+
+export const loadVersion = ():string =>{
+    const ver = checkExist(VERSION_KEY)
+    if(ver === null ){
+        localStorage.setItem(VERSION_KEY,"")
+        return ""
+    }
+    return ver ? ver : "" 
 }
 
 

@@ -5,6 +5,7 @@ import Pages from './pages/Pages';
 import AuthContextProvider from './contexts/authContext';
 import ModeContextProvider from './contexts/DarkModeContext'; 
 import LanguageContextProvider from './contexts/LanguageContext';
+import VersionContextProvider from './contexts/versionContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,11 +14,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
-      <ModeContextProvider>
-        <LanguageContextProvider>
-          <Pages/>
-        </LanguageContextProvider>
-      </ModeContextProvider>
+      <VersionContextProvider>
+        <ModeContextProvider>
+          <LanguageContextProvider>
+            <Pages/>
+          </LanguageContextProvider>
+        </ModeContextProvider>
+      </VersionContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );

@@ -2,6 +2,8 @@ const t = (arKey:string,enKey:string)=> ({ar:arKey,en:enKey})
 
 export const BASE_URL = "http://192.168.11.251:8000/" // http://192.168.11.251:8000
 
+export const CURRENT_VERSION = "0.1.1"
+
 export const WEEK_DAYS = [
   t("الاحد","Sun"), 
   t("الاثنين","Mon"), 
