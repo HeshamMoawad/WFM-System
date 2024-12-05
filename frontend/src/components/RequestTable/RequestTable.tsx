@@ -137,9 +137,8 @@ const RequestTable: FC<RequestTableProps> = ({
                                         const date = new Date(_);
                                         return `${date.getFullYear()}-${
                                             date.getMonth() + 1
-                                        }-${date.getDate()}`;
+                                        }-${date.getDate()}  ${date.toLocaleTimeString("en-UK",{hour12:true ,hour:"2-digit",minute:"2-digit"})}`;
                                     }
-
                                     return "-";
                                 },
                             },{

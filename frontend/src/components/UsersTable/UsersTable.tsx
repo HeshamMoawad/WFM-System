@@ -52,7 +52,7 @@ const UsersTable: FC<UsersTableProps> = () => {
     const {data , loading } = useRequest<User>({
         url: 'api/users/user' ,
         method: 'GET',
-        params: {...filters , is_superuser:"False" },
+        params: {...filters , is_superuser:"False" ,page_size:1000},
     },[filters],undefined,1500)
 
     return (
@@ -136,7 +136,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 const {uuid,is_superuser=false,role = "AGENT"} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            {canEdit ? (
+                                            {canEdit && !is_superuser && role!=="OWNER" && role !== "MANAGER" ? (
                                                 <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
                                                     <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
                                                 </Link>
@@ -152,7 +152,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
                                         {
-                                            canDelete ? (
+                                            canDelete && !is_superuser && role!=="OWNER" && role !== "MANAGER" ? (
                                                 <a onClick={(e)=>{
                                                         e.preventDefault();
                                                         Swal.fire({

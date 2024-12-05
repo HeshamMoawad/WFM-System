@@ -83,15 +83,6 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
             }
         })
         }
-    // let type = ""
-    // for (let index = 0; index < TRANSLATIONS.Request.Types.length; index++) {
-    //     const element = TRANSLATIONS.Request.Types[index];
-    //     if(element.value === request.type){
-    //         type = element.translate[lang];
-    //         break;
-    //     }
-        
-    // }
     return (
         <div className='flex flex-row w-[100%] md:w-full h-fit gap-1 md:gap-6 items-center border-b p-2 rounded-lg shadow-lg md:m-1' id='card'>
                  
@@ -103,13 +94,12 @@ const RequestCard: FC<RequestCardProps> = ({request , refresh , setRefresh}) => 
                     <button onClick={onAccept} className='rounded-md bg-btns-colors-primary w-1/3 md:w-1/5 h-[35px]'> Accept </button>
                     <button onClick={onReject} className='rounded-md bg-btns-colors-secondry w-1/3 md:w-1/5 h-[35px]'> Reject </button>
                 </div>
-                <div className='flex flex-col md:flex-row justify-between w-full opacity-45 text-sm md:text-base'>
+                <div className='flex flex-col md:flex-row justify-between w-full opacity-60 text-sm md:text-base '>
                     <span className='block'>Type : {TRANSLATIONS.Request.Types.filter((d)=>d.value === request.type)[0].translate[lang]}</span>
-                    <span className='block'>Date : {`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`}</span>
-                    <span className='block'>Created : {created_at.toLocaleDateString("en-UK",{dateStyle:"medium"})} {created_at.toLocaleTimeString("en-UK",{hour12:true ,hour:"2-digit",minute:"2-digit"})}</span>
-                    {/* <span className='block'>Updated : {
-                        updated_at  ? `${updated_at.toLocaleDateString("en-UK",{dateStyle:"medium"})} ${updated_at.toLocaleTimeString("en-UK",{hour12:true ,hour:"2-digit",minute:"2-digit"})}` : " - "
-                    }</span> */}
+                    <span className='block'>{TRANSLATIONS.Request.Date[lang]} : {`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`}</span>
+                    <span className='block'>{request.user.department.name}</span>
+                    <span className='block'>{request.user.project.name}</span>
+                    <span className='block'>Created : {created_at.getFullYear()}-{created_at.getMonth() + 1}-{created_at.getDate()}</span>
                 </div>
             </div>
         </div>
