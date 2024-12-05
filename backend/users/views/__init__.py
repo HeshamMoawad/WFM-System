@@ -39,7 +39,7 @@ class CustomPagination(PageNumberPagination):
     max_page_size = 100
 
 class Pagination1K(PageNumberPagination):
-    page_size = 1000
+    page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
@@ -55,12 +55,12 @@ class UsersAPI(APIViewSet):
     requiered_fields = ['username',"password_normal"]
     updating_filters = ["username","password_normal","is_active","annual_count","role","is_staff","title","project","department","crm_username"]
     unique_field:str = 'uuid'
-    permissions_config = {
-        "GET": [IsSuperUser | IsOwner | IsManager | IsHR],
-        "POST": [IsSuperUser | IsOwner | IsManager | IsHR],
-        "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
-        "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
-    }
+    # permissions_config = {
+    #     "GET": [IsSuperUser | IsOwner | IsManager | IsHR],
+    #     "POST": [IsSuperUser | IsOwner | IsManager | IsHR],
+    #     "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
+    #     "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
+    # }
 
 class ProjectsAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
@@ -137,7 +137,7 @@ class LeadAPI(APIViewSet):
 
 class RequestAPI(APIViewSet):
     # permission_classes = [IsAuthenticated]
-    pagination_class = DefaultPagination
+    pagination_class = Pagination1K
     model = Request
     model_serializer= RequestSerializer
     order_by = ('-created_at',)

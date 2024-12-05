@@ -2,7 +2,8 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
-
+from django.contrib.auth import models 
+from django.contrib.contenttypes.models import ContentType
 from .models import (
     User , 
     Department ,
@@ -14,7 +15,11 @@ from .models import (
     Request , 
     FingerPrintID , 
     ZKConfig ,
-    ReportRecord
+    ReportRecord ,
+    Group ,
+    MainPage,
+    SubPage ,
+    GenericFilter
 )
 from utils.admin_utils import FieldSets
 
@@ -80,7 +85,7 @@ class UserAdminSite(ImportExportModelAdmin):
             [
                 'username',
                 'password_normal',
-                'groups',
+                'custom_groups',
                 'is_active',
                 'is_staff',
                 'is_superuser',
@@ -342,3 +347,13 @@ admin.site.register(UpdateHistory , UpdateHistoryAdminSite)
 admin.site.register(FingerPrintID , FingerPrintIDAdminSite)
 admin.site.register(ZKConfig , ZKConfigAdminSite)
 admin.site.register(ReportRecord , ReportRecordAdminSite)
+admin.site.register(models.Permission )
+admin.site.register(ContentType )
+admin.site.register(Group )
+admin.site.register(MainPage )
+admin.site.register(SubPage )    
+admin.site.register(GenericFilter )    
+
+
+
+admin.site.unregister(models.Group)

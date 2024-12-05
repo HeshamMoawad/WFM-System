@@ -1,10 +1,10 @@
 from typing import Dict, List
-from rest_framework.serializers import SerializerMethodField , DateField
+from rest_framework.serializers import SerializerMethodField , DateField 
 from api_views.serializers import ModelSerializer ,  ForeignField , ManyToManyField  
 import json
 from datetime import datetime
-from commission.models import UserCommissionDetails , DeductionRules
 from core.calculator import Calculator
+from django.contrib.auth.models import Permission
 from ..models import (
     Department,
     ReportRecord , 
@@ -15,7 +15,10 @@ from ..models import (
     Lead,
     Request ,
     UpdateHistory , 
-    FingerPrintID
+    FingerPrintID ,
+    MainPage,
+    SubPage ,
+    BasePage
     )
 
 
@@ -29,6 +32,13 @@ class MultiDateFormatField(DateField):
                 continue
         self.fail('invalid',format=' ,'.join(formats))
         
+class PermissionSerializer(ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = [
+            "name",
+            "codename",
+        ]
 
 class DepartmentSerializer(ModelSerializer):
 
@@ -277,3 +287,26 @@ class ReportRecordSerializer(ModelSerializer):
         ]
 
 
+
+class BasePageSerializer(ModelSerializer):
+    index = SerializerMethodField()
+
+    def get_index(self,obj:BasePage):
+        return obj.page_as_number()
+    
+    class Meta:
+        model = BasePage
+        fields = [
+            "index",
+        ]
+        abstract=True
+
+
+class MainPageSerializer(BasePageSerializer):
+    class Meta (BasePageSerializer.Meta):
+        model = MainPage
+        
+class SubPageSerializer(BasePageSerializer):
+    class Meta (BasePageSerializer.Meta):
+        model = SubPage
+        fields = BasePageSerializer.Meta.fields + ['main_page']

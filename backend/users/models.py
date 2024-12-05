@@ -10,7 +10,7 @@ from .managers import (
 from .types import UserTypes , RequestTypes , RequestStatuses
 from utils.models_utils import image_upload_path , validate_lead_number , validate_role , validate_user_number
 from django.db.models.signals import pre_save , post_save , post_delete
-from core.models import BaseModel
+from core.models import BaseModel, BasePage, BaseFilter
 import json
 from django.utils.timezone import now
 from django.urls import reverse
@@ -20,6 +20,7 @@ from zk.attendance import Attendance
 from zk.user import User as ZkUser
 from zk.finger import Finger
 from colorfield.fields import ColorField
+from django.contrib.auth.models import GroupManager
 
 class Project(BaseModel):
     name = models.CharField(verbose_name="Project Name", max_length=100)
@@ -34,6 +35,54 @@ class Department(BaseModel):
     def __str__(self):
         return self.name
 
+class MainPage(BasePage): ...
+    
+class SubPage(BasePage): 
+    main_page = models.ForeignKey(MainPage,on_delete=models.CASCADE,null=False)
+
+class Group(BaseModel):
+    name = models.CharField(max_length=150, unique=True)
+    permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='permissions',
+        blank=True,
+        related_name="group_permissions"
+    )
+    objects = GroupManager()
+    sub_pages = models.ManyToManyField(
+        SubPage,
+        verbose_name='sub_pages',
+        blank=True,
+    )
+    main_pages = models.ManyToManyField(
+        MainPage,
+        verbose_name='main_pages',
+        blank=True,
+    )
+    class Meta:
+        verbose_name = 'group'
+        verbose_name_plural = 'groups'
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        return (self.name,)
+
+class GenericFilter(BaseFilter):
+    groups =  models.ManyToManyField(
+        Group,
+        verbose_name='groups',
+        blank=True,
+        help_text="""
+            The groups this user belongs to. A user will get all permissions 
+            granted to each of their groups.
+        """,
+        related_name="filter_groups_set",
+        related_query_name="filter_groups",
+    )
+    def __str__(self):
+        return f"{self.get_queryset_text} | {self.content_type.app_label}.{self.content_type.model} | {''.join(self.groups.values_list('name',flat=True))}"
 
 class User(AbstractUser , BaseModel):
     ## managers with customization
@@ -43,6 +92,17 @@ class User(AbstractUser , BaseModel):
     agents = AgentObjects()
 
     ### other normal fields
+    custom_groups =  models.ManyToManyField(
+        Group,
+        verbose_name='groups',
+        blank=True,
+        help_text="""
+            The groups this user belongs to. A user will get all permissions 
+            granted to each of their groups.
+        """,
+        related_name="user_groups_set",
+        related_query_name="user_groups",
+    )
 
     password_normal = models.CharField(verbose_name='Password Without Hash (Required)', max_length=128)
     project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
@@ -169,6 +229,10 @@ class ReportRecord(BaseModel):
     class Meta:
         unique_together = ['user','date']
     
+
+
+
+
     
 def profile_creator_signal(sender:User, instance:User, created:bool, **kwargs):
     if created:

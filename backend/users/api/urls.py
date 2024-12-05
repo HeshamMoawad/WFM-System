@@ -1,5 +1,11 @@
 from django.urls import path , include
-from users.views.report_views import add_report , check_report , get_reports , get_leads_report , get_projects_to_report
+from users.views.report_views import (
+    add_report , 
+    check_report , 
+    get_reports , 
+    get_leads_report , 
+    get_projects_to_report
+    )
 from users.views.authenticate import login , logout
 from users.views import (
     ProjectsAPI , 
@@ -13,7 +19,7 @@ from users.views import (
      )
 from users.views.arrive_leave import arreive , leave , arrive_leave_details  , MonthlyHistoryView
 from users.views.forget_pass import forget_password
-from users.views.leads import upload_sheet , save_upload , user_leads
+from users.views.leads import upload_sheet , save_upload , user_leads , del_old_lead
 
 
 urlpatterns = [
@@ -45,5 +51,5 @@ urlpatterns = [
     path('leads-report',get_leads_report) ,
     path('get-my-projects',get_projects_to_report) ,
 
-
+    path('testing',del_old_lead)
 ]
