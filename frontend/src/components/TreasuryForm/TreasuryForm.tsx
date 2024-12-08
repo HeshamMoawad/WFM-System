@@ -8,29 +8,36 @@ import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import Swal from 'sweetalert2';
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
+import SelectComponent from '../SelectComponent/SelectComponent';
 
 interface TreasuryFormProps {
     creator_uuid: string;
     url: string;
     color: string;
     header: string;
-    setRefresh:React.Dispatch<SetStateAction<boolean>>
+    setRefresh:React.Dispatch<SetStateAction<boolean>>;
+    project?:boolean
 }
 
 
 
-const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header , setRefresh}) => {
+const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header , setRefresh,project=false}) => {
     const {lang} = useContext(LanguageContext)
     const [loading,setLoading] = useState<boolean>(false)
     const formRef = useRef<HTMLFormElement>(null);
     const onSubmit:FormEventHandler<HTMLFormElement> = (e) => {
-
+        const form_data = parseFormData(e)
+        const project_type = form_data.get("project")
+        if (project_type?.toString()==="*"){
+            form_data.delete("project")
+        }
+        
         e.preventDefault();
         setLoading(true)
         sendRequest({
             url: url,
             method: 'POST',
-            data: parseFormData(e)
+            data: form_data
         }).then(data=>{
             Swal.fire({
                 position: "center",
@@ -66,7 +73,20 @@ const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header 
 
             <label className='col-span-1 place-self-center' htmlFor="details">{TRANSLATIONS.Treasury.inform.details[lang]}</label>
             <textarea className={`col-span-4 ${DEFAULT_INPUT_STYLE}`} name="details" id="details" minLength={3} required/>
+            {
+                project ?
+                <SelectComponent 
+                    url='api/users/project'
+                    LabelName={TRANSLATIONS.UsersList.filters.project[lang]}
+                    LabelClassName='col-span-1 place-self-center'
+                    selectClassName={`col-span-4 w-2/3`}
+                    config={{label: 'name' , value: 'uuid'}}
+                    name='project'
+                    moreOptions={[{label:"-",value:"*"}]}
+                    />
+                : null
 
+            }
 
             <label className= 'col-span-1 place-self-center' htmlFor="amount">{TRANSLATIONS.Treasury.inform.amount[lang]}</label>
             <input className={`col-span-2 ${DEFAULT_INPUT_STYLE}`} inputMode='numeric' min={10} type="number" name="amount" id="amount" required/>

@@ -45,28 +45,29 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh , s
                 <>
                     <Table
                         headers={TRANSLATIONS.Treasury.intable.headers[lang]}
+                        className="text-sm"
                         data={convertObjectToArrays(data?.results, [
-                            {
-                                key: "creator",
-                                method: (_) => {
-                                    const item = _ as any;
-                                    return (
-                                        <td className="flex justify-center items-center">
-                                            {item?.profile?.picture ? (
-                                                <img
-                                                    src={getFullURL(
-                                                        item?.profile?.picture
-                                                    )}
-                                                    alt=""
-                                                    className="rounded-full w-[50px] h-[50px]"
-                                                />
-                                            ) : (
-                                                " "
-                                            )}
-                                        </td>
-                                    );
-                                },
-                            },
+                            // {
+                            //     key: "creator",
+                            //     method: (_) => {
+                            //         const item = _ as any;
+                            //         return (
+                            //             <td className="flex justify-center items-center">
+                            //                 {item?.profile?.picture ? (
+                            //                     <img
+                            //                         src={getFullURL(
+                            //                             item?.profile?.picture
+                            //                         )}
+                            //                         alt=""
+                            //                         className="rounded-full w-[50px] h-[50px]"
+                            //                     />
+                            //                 ) : (
+                            //                     " "
+                            //                 )}
+                            //             </td>
+                            //         );
+                            //     },
+                            // },
                             {
                                 key: "creator",
                                 method: (_) => {
@@ -86,6 +87,16 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh , s
                                 key: "details",
                                 method: (_) => {
                                     return <td className="px-3 py-1">{_}</td>;
+                                },
+                            },
+                            {
+                                key: ["project"],
+                                method: (_) => {
+                                    const {project} = _ as any;
+                                    if (project){
+                                        return <td className="px-3 py-1">{project.name}</td>;
+                                    }
+                                    return <td className="px-3 py-1">-</td>;
                                 },
                             },
                             {

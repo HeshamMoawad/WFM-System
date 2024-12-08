@@ -24,7 +24,7 @@ const Treasury: FC<TreasuryProps> = () => {
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
                 {   
                     checkPermission(auth,"add_treasuryoutcome") ?
-                    <TreasuryForm setRefresh={setRefresh} header={TRANSLATIONS.Treasury.outform.title[lang]} creator_uuid={auth?.uuid} color="btns-colors-secondry"  url="api/treasury/treasury-outcome"/>
+                    <TreasuryForm project setRefresh={setRefresh} header={TRANSLATIONS.Treasury.outform.title[lang]} creator_uuid={auth?.uuid} color="btns-colors-secondry"  url="api/treasury/treasury-outcome"/>
                     : null
                 }
                 {

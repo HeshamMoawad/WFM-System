@@ -11,6 +11,8 @@ import { MdOutlineClear } from "react-icons/md";
 interface TotalTreasuryProps {
     refresh: boolean;
     setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+    withDate?:boolean;
+    setDateOuter?:React.Dispatch<React.SetStateAction<Date|null>>;
 }
 interface TotalResponse{
     income: number;
@@ -19,7 +21,7 @@ interface TotalResponse{
 } 
 
 
-const TotalTreasury: FC<TotalTreasuryProps> = ({refresh , setRefresh}) => {
+const TotalTreasury: FC<TotalTreasuryProps> = ({refresh , setRefresh ,setDateOuter, withDate = true}) => {
     const [loading , setLoading] = useState(false)
     const [date, setDate] = useState<Date|null>(null)
     const {lang} = useContext(LanguageContext)
@@ -27,44 +29,52 @@ const TotalTreasury: FC<TotalTreasuryProps> = ({refresh , setRefresh}) => {
     useEffect(()=>{
         setLoading(true)
         sendRequest({url:"api/treasury/total-treasury", method:"GET" , params: date ? {date:`${date.getFullYear()}-${date.getMonth()+1}`} : undefined })
-         .then(data => {
-            setTotalInfo(data)
-          })
+         .then(data => setTotalInfo(data))
           .catch(err => console.error(err))
-          .finally(() => {                 
-                setLoading(false)
-             })
+          .finally(() => setLoading(false))
     },[refresh,date])
     return (
         <Container className="w-full md:w-2/6 flex flex-col justify-center items-center gap-4 p-3 relative">
             {
                 loading ? <LoadingComponent/> : <></>
             }
-            <div className='flex flex-row'>
-                <DatePicker 
-                    showIcon
-                    dateFormat="MM-yyyy"
-                    name='date' 
-                    renderMonthContent={ (month, shortMonth, longMonth, day) => {
-                        const fullYear = new Date(day).getFullYear();
-                        const tooltipText = `Tooltip for month: ${longMonth} ${fullYear}`;
-                        return <span title={tooltipText}>{shortMonth}</span>;
-                    }} 
-                    toggleCalendarOnIconClick
-                    showMonthYearPicker 
-                    className='md:w-full text-center border border-[gray]' 
-                    calendarIconClassName='w-4 h-4 fixed p-1'
-                    selected={date} 
-                    onChange={(date)=>{
-                        if(date && setDate) {
-                            setDate(date)
-                        };
-                    }
-                }/>
-                <MdOutlineClear className='w-[20%] h-[20%]' onClick={()=>{
-                    setDate(null)
-                }}/>
-            </div>
+            {
+                withDate ?
+                <div className='flex flex-row'>
+                    <DatePicker 
+                        showIcon
+                        dateFormat="MM-yyyy"
+                        name='date' 
+                        renderMonthContent={ (month, shortMonth, longMonth, day) => {
+                            const fullYear = new Date(day).getFullYear();
+                            const tooltipText = `Tooltip for month: ${longMonth} ${fullYear}`;
+                            return <span title={tooltipText}>{shortMonth}</span>;
+                        }} 
+                        toggleCalendarOnIconClick
+                        showMonthYearPicker 
+                        className='md:w-full text-center border border-[gray]' 
+                        calendarIconClassName='w-4 h-4 fixed p-1'
+                        selected={date} 
+                        onChange={(date)=>{
+                            if (date && setDateOuter){
+                                setDateOuter(date)
+                            }
+                            if(date && setDate) {
+                                setDate(date)
+                            };
+                        }
+                    }/>
+                    <MdOutlineClear className='w-[20%] h-[20%]' onClick={()=>{
+                        setDate(null)
+                        if (setDateOuter){
+                            setDateOuter(null)
+                        }
+
+                    }}/>
+                </div>
+                : <></>
+
+            }
             <span className={`text-4xl md:text-5xl ${totalInfo?.total > 0 ? 'text-btns-colors-primary' : 'text-btns-colors-secondry'}`}>{TRANSLATIONS.Treasury.total[lang]}</span>
             <span className="text-4xl md:text-7xl">
                 {totalInfo?.total?.toLocaleString("en-UK",numbersOptions )}
