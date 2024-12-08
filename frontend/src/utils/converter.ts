@@ -175,3 +175,23 @@ export const textToNumber = (text:string):number=>{
 
 
 
+
+export const serialDateToJSDate = (serial: number): Date => {
+    // Excel's base date is January 1, 1900
+    const baseDate = new Date(1900, 0, 1); // January 1, 1900
+    // Subtract 1 because Excel considers 1/1/1900 as day 1
+    // (unless the system is 1904-based, which is less common)
+    const daysSinceBase = Math.floor(serial) - 1;
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+    // Calculate the full date by adding days and fractional time
+    const fullDate = new Date(baseDate.getTime() + daysSinceBase * millisecondsPerDay);
+
+    // Add the fractional day as time
+    const fractionalDay = serial % 1; // The decimal part
+    const millisecondsFromFraction = fractionalDay * millisecondsPerDay;
+    fullDate.setTime(fullDate.getTime() + millisecondsFromFraction);
+
+    return fullDate;
+}
+

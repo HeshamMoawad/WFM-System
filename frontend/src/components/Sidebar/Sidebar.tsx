@@ -9,7 +9,7 @@ import {PiFingerprint , PiWallet , PiUserList , PiUsersThree , PiMoney , PiHandC
 import {LiaUsersCogSolid} from 'react-icons/lia';
 import {VscGitPullRequestNewChanges} from 'react-icons/vsc';
 import {BsPersonWorkspace,BsSafe , BsCashCoin } from 'react-icons/bs';
-import {IoCalendarNumberOutline} from 'react-icons/io5';
+import {IoCalendarNumberOutline , IoStatsChartOutline } from 'react-icons/io5';
 import {RiCustomerService2Line , RiUserAddLine , RiListSettingsLine , RiTeamLine} from 'react-icons/ri';
 import {CgUserList} from 'react-icons/cg';
 import { useAuth } from '../../hooks/auth';
@@ -395,6 +395,16 @@ const Sidebar: FC<SidebarProps> = () => {
                     href:'/treasury',
                     Icon:BsSafe ,
                     index:textToNumber("treasury"),
+                    permissions:[
+                        {role : "OWNER" , departments : ["*"]} ,
+                    ],
+    
+                },
+                {
+                    name:TRANSLATIONS.SideBar.Treasury.treasuryProjects[lang],
+                    href:'/treasury-projects',
+                    Icon:IoStatsChartOutline ,
+                    index:textToNumber("treasury-projects"),
                     permissions:[
                         {role : "OWNER" , departments : ["*"]} ,
                     ],

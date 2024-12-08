@@ -29,6 +29,7 @@ import ProjectReport from "./ProjectReport/ProjectReport";
 import DashMarket from "./DashMarket/DashMarket";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend , CategoryScale , LinearScale ,PointElement , LineElement , BarElement , BarController , LineController , DoughnutController} from 'chart.js';
 import AttendanceDetailsLated from "./AttendanceDetailsLated/AttendanceDetailsLated";
+import TreasuryProjects from "./TreasuryProjects/TreasuryProjects";
 
 interface PagesProps {}
 
@@ -77,7 +78,10 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/devices-access" element={<DevicesAccess/>}/>
                                             <Route path="/attendance-details" element={<AttendanceDetails/>}/>
                                             <Route path="/attendance-details-lated" element={<AttendanceDetailsLated/>}/>
+
                                             <Route path="/treasury" element={<Treasury/>}/>
+                                            <Route path="/treasury-projects" element={<TreasuryProjects/>}/>
+
                                             <Route path="/advances" element={<Advances/>}/>
                                             <Route path="/basic" element={<Basic/>}/>
                                             <Route path="/user-basic/:user_uuid/:date" element={<UserBasic/>}/>
