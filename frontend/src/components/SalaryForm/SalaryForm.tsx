@@ -19,6 +19,7 @@ interface SalaryFormProps extends React.HTMLProps<HTMLDivElement> {
     user_uuid: string;
     date: Date;
     subscriptions?: Subscription[] | null;
+    american?: Subscription[] | null;
     department?: string;
     analytics?: TotalLeads;
 }
@@ -30,6 +31,7 @@ const SalaryForm: FC<SalaryFormProps> = ({
     analytics,
     date,
     subscriptions,
+    american,
     department,
     user_uuid,
 }) => {
@@ -47,10 +49,12 @@ const SalaryForm: FC<SalaryFormProps> = ({
                   plus: 0,
                   american: 0,
                   american_count: 0,
-                  subscriptions: 0,
                   deduction: 0,
                   gift: 0,
+                  subscriptions: 0,
                   subscriptions_count: 0,
+                  american_subscriptions: 0,
+                  american_subscriptions_count: 0,
                   ...{ salary: basic ? parseInt(`${basic.basic}`) : 0 },
                   // salary : basic ? parseInt(`${}`) : 0 ,
               }
@@ -67,7 +71,8 @@ const SalaryForm: FC<SalaryFormProps> = ({
                     newValues.target +
                     newValues.plus +
                     newValues.american +
-                    newValues.subscriptions +
+                    newValues.subscriptions + 
+                    newValues.american_subscriptions +
                     newValues.gift -
                     newValues.deduction
             );
@@ -125,7 +130,7 @@ const SalaryForm: FC<SalaryFormProps> = ({
             </h1>
 
             <form
-                className="grid grid-cols-3 gap-1 my-2 overflow-x-hidden"
+                className="grid grid-cols-3 gap-1 my-2 overflow-x-hidden text-[0.95rem]"
                 onSubmit={(e) => {
                     e.preventDefault();
                     setLoading(true);
@@ -255,7 +260,8 @@ const SalaryForm: FC<SalaryFormProps> = ({
                                                 newValues.target +
                                                 newValues.plus +
                                                 newValues.american +
-                                                newValues.subscriptions +
+                                                newValues.subscriptions + 
+                                                newValues.american_subscriptions+
                                                 newValues.gift -
                                                 newValues.deduction
                                         );
@@ -310,6 +316,7 @@ const SalaryForm: FC<SalaryFormProps> = ({
                                                 newValues.plus +
                                                 newValues.american +
                                                 newValues.subscriptions +
+                                                newValues.american_subscriptions +
                                                 newValues.gift -
                                                 newValues.deduction
                                         );
@@ -329,6 +336,61 @@ const SalaryForm: FC<SalaryFormProps> = ({
                                 className="border-none text-center w-[47%] col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-primary  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg"
                                 type="number"
                                 name="subscriptions"
+                            />
+                        </div>
+
+                        <label
+                            className="col-span-1 place-self-center"
+                            htmlFor="american_subscriptions"
+                        >
+                            {TRANSLATIONS.Salary.form.americanSubscription[lang]}
+                        </label>
+                        <div className="col-span-2 place-self-center flex flex-row justify-center items-center gap-3">
+                            <input
+                                value={salary.american_subscriptions_count}
+                                onChange={(e) => {
+                                    setSalary((prev) => {
+                                        const newValues = {
+                                            ...prev,
+                                            american_subscriptions_count:
+                                                +e.target.value,
+                                                american_subscriptions: american
+                                                ? getSubscriptionValue(
+                                                      +e.target.value,
+                                                      american
+                                                  )
+                                                : 0,
+                                        };
+
+                                        const val = Number(
+                                            (basic
+                                                ? parseInt(`${basic.basic}`)
+                                                : 0) +
+                                                newValues.target_Team +
+                                                newValues.target +
+                                                newValues.plus +
+                                                newValues.american +
+                                                newValues.subscriptions +
+                                                newValues.american_subscriptions +
+                                                newValues.gift -
+                                                newValues.deduction
+                                        );
+
+                                        return {
+                                            ...newValues,
+                                            salary: val,
+                                        };
+                                    });
+                                }}
+                                className="col-span-2 place-self-center w-[20%] outline-none px-1 text-center rounded-lg border border-btns-colors-primary  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg"
+                                type="number"
+                                name="american_subscriptions_count"
+                            />
+                            <input
+                                value={salary.american_subscriptions}
+                                className="border-none text-center w-[47%] col-span-2 place-self-center outline-none px-4 rounded-lg border border-btns-colors-primary  bg-light-colors-login-third-bg dark:bg-dark-colors-login-third-bg"
+                                type="number"
+                                name="american_subscriptions"
                             />
                         </div>
                     </>

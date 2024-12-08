@@ -72,6 +72,7 @@ export const TRANSLATIONS = {
     Treasury:{
       title:t("الخزنة","Treasury"),
       Advance:t("السلف","Advance"),
+      treasuryProjects :t("خزنة البروجيكتات","Treasury-Projects")
     },
   },
   Labels:[
@@ -250,8 +251,8 @@ export const TRANSLATIONS = {
     intable:{
       title:t("جدول الواردات","Income Table"),
       headers:{
-        ar:["المستخدم","اسم المستخدم","القيمة","التفاصيل","تاريخ الانشاء","مسح"],
-        en:["creator","username","amount","details","created_at","delete"],
+        ar:["اسم المستخدم","القيمة","التفاصيل","البروجيكت","تاريخ الانشاء","مسح"],
+        en:["username","amount","details","project","created_at","delete"],
       },
     },
   },
@@ -362,6 +363,7 @@ export const TRANSLATIONS = {
       plus:t("بلس +2","Plus +2"),
       american:t("العملاء الامريكى","American Leads"),
       subscription:t("اشتراكات","Subscription"),
+      americanSubscription:t("اشتراكات امريكى","American Subscription"),
       deduction:t("خصم","Deduction"),
       gift:t("مكافأة","Gift"),
       update:t("تحديث","Update"),

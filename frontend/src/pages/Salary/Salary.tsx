@@ -26,6 +26,8 @@ export interface SalaryType {
     american_count: number;
     subscriptions:number;
     subscriptions_count:number;
+    american_subscriptions:number;
+    american_subscriptions_count:number;
     deduction: number;
     gift: number;
     salary: number;
@@ -41,6 +43,7 @@ const Salary: FC<SalaryProps> = () => {
     const [basicDetails , setBasicDetails] = useState<BasicDetails|null>(null)
     const [analytics, setAnalytics] = useState<TotalLeads|null>(null)
     const [subscriptions , setSubscriptions] = useState<Subscription[] | null>()
+    const [americanSubscriptions , setAmericanSubscriptions] = useState<Subscription[] | null>()
     const [coinChanger, setCoinChanger] = useState<{egp_to_sar:number , date:string}|undefined>(undefined)
     const [oldSalary , setOldSalary] = useState<SalaryType|null>(null)
     useEffect(()=>{
@@ -57,17 +60,19 @@ const Salary: FC<SalaryProps> = () => {
         }})
         const userLeadsPromise =   sendRequest({url:`api/users/user-leads`, method:"POST",params:{user_uuid:user_uuid , year : date_parsed.getFullYear() , month :date_parsed.getMonth()+1 }})
         const subscriptionPromise = sendRequest({url:`api/commission/subscription`, method:"GET" })  
+        const americanSubscriptionPromise = sendRequest({url:`api/commission/american-subscription`, method:"GET" })  
         const oldSalaryPromise = sendRequest({url:`api/commission/salary`, method:"GET",params:{
             user__uuid:user_uuid,
             date__year:date_parsed.getFullYear(),
             date__month:date_parsed.getMonth() + 1,
         }})
-        Promise.all([commissionPromise, detailsPromise , userLeadsPromise , subscriptionPromise , oldSalaryPromise ])
+        Promise.all([commissionPromise, detailsPromise , userLeadsPromise , subscriptionPromise , oldSalaryPromise ,americanSubscriptionPromise])
         .then(values=>{
             setUserCommissionDetails(values[0]?.results[0])
             setBasicDetails(values[1]?.results[0])
             setAnalytics(values[2])
             setSubscriptions(values[3].results)
+            setAmericanSubscriptions(values[5].results)
             if (values[0]?.results[0].user.department.name.toLowerCase() === "sales"){
                 sendRequest({url:`api/commission/coin-changer`, method:"GET" , 
                         params:{
@@ -96,7 +101,7 @@ const Salary: FC<SalaryProps> = () => {
 
         {
             canSalary && analytics && basicDetails && userCommissionDetails? 
-            <SalaryForm oldSalary={oldSalary ? oldSalary : undefined} analytics={analytics} user_uuid={userCommissionDetails?.user.uuid} basic={basicDetails} department={userCommissionDetails?.user.department.name.toLowerCase()}  subscriptions={subscriptions} className='col-span-4 place-self-center' date={date_parsed}/>
+            <SalaryForm oldSalary={oldSalary ? oldSalary : undefined} analytics={analytics} user_uuid={userCommissionDetails?.user.uuid} basic={basicDetails} department={userCommissionDetails?.user.department.name.toLowerCase()}  subscriptions={subscriptions} american={americanSubscriptions} className='col-span-4 place-self-center' date={date_parsed}/>
             :null
         }
         <div className={`col-span-4 place-self-center`}>
