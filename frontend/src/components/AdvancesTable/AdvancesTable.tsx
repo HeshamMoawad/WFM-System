@@ -39,7 +39,7 @@ const AdvancesTable: FC<AdvancesTableProps> = ({status,user_uuid , date , refres
     
     const dates = date ? {
         created_at__date__gte: `${date.getFullYear()}-${date.getMonth()+1}-1`,
-        created_at__date__lte: `${date.getFullYear()}-${date.getMonth()+2}-1`,
+        created_at__date__lte: `${date.getMonth() !== 11 ? date.getFullYear() : date.getFullYear()+1}-${date.getMonth() !== 11 ? date.getMonth() + 2 : 1}-1`,
 
     } : {}
     const status_f = status ? {status} : {}
