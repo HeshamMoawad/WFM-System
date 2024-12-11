@@ -30,6 +30,7 @@ import DashMarket from "./DashMarket/DashMarket";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend , CategoryScale , LinearScale ,PointElement , LineElement , BarElement , BarController , LineController , DoughnutController} from 'chart.js';
 import AttendanceDetailsLated from "./AttendanceDetailsLated/AttendanceDetailsLated";
 import TreasuryProjects from "./TreasuryProjects/TreasuryProjects";
+import TeamDetails from "./TeamDetails/TeamDetails";
 
 interface PagesProps {}
 
@@ -89,6 +90,7 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/leads" element={<Leads/>}/>
                                             <Route path="/notifications" element={<Notifications/>}/>
                                             <Route path="/teams" element={<Teams/>}/>
+                                            <Route path="/teams-details" element={<TeamDetails/>}/>
                                             <Route path="/salary-all" element={<SalaryAll/>}/>
                                             <Route path="/salary-marketing" element={<SalaryAll department__name="Marketing"/>}/>
                                             <Route path="/salary-sales" element={<SalaryAll department__name="Sales"/>}/>

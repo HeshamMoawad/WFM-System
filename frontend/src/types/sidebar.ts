@@ -13,7 +13,7 @@ interface SideSection{
     href:string, 
     Icon?:IconType ,
     index:number ,
-    permissions:Perm[]
+    // permissions:Perm[]
 }
 
 
@@ -22,7 +22,7 @@ interface SideItem {
     name : string ,
     Icon : IconType ,
     sections:SideSection[] ,
-    permissions:string[]
+    // permissions:string[]
 }
 
 

@@ -20,10 +20,9 @@ const TeamTable: FC<TeamTableProps> = () => {
     const [currentPage,setCurrentPage] = useState(1)
     const {auth} = useAuth()
     const canDelete = checkPermission(auth,"delete_team")
-    const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {leader__department__name : auth.department.name}
+    // const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? {} : {leader__department__name : auth.department.name}
     const {data , loading} = useRequest<Team>({url:"api/commission/team",method:"GET",params:{
         page:currentPage,
-        ...additionalFilter
     }},[currentPage])
 
     return (
