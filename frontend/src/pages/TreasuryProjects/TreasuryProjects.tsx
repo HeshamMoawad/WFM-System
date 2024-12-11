@@ -36,7 +36,7 @@ const TreasuryProjects = () => {
             <div className="col-span-4 w-full flex justify-center items-center">
                 <TotalTreasury setDateOuter={setDate} refresh={refresh} setRefresh={setRefresh}/>
             </div>
-            <div className="col-span-4 w-full flex flex-col md:grid md:grid-cols-5 gap-4 justify-center items-center">
+            <div className="col-span-4 w-full flex flex-col md:grid md:grid-cols-4 gap-4 justify-center ">
                 {
                     projects ?
                     Object.keys(projects).map((value,index,arr)=>{
