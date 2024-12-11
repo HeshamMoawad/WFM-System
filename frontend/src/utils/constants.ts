@@ -64,6 +64,7 @@ export const TRANSLATIONS = {
       UsersList:t("قائمة المستخدمين","Users List"),
       DeviceAccess:t("الاجهزة المسموحة","Device Access"),
       Teams:t("الفرق","Teams"),
+      TeamsPreview:t("تفاصيل الفرق","Team Details"),
     },
     General:{
       title:t("العام","General"),
@@ -232,6 +233,7 @@ export const TRANSLATIONS = {
       title:t("المصروفات","Outcome"),
       details:t("التفاصيل","Details"),
       amount:t("القيمة","Amount"),
+      clear:t("مسح","Clear"),
       submit:t("تاكيد","Submit") ,
     },
     inform:{
@@ -314,6 +316,7 @@ export const TRANSLATIONS = {
     filters:{
       department:t("القسم","Department"),
       project:t("البروجيكت","Project"),
+      group:t("البروجيكتات","Projects Group"),
       role:t("الصلاحيات","Role"),
 
     },

@@ -90,26 +90,23 @@ const TreasuryTable: FC<TreasuryTableProps> = ({ label, url, color , refresh , s
                                 },
                             },
                             {
-                                key: ["project"],
+                                key: ["group"],
                                 method: (_) => {
-                                    const {project} = _ as any;
-                                    if (project){
-                                        return <td className="px-3 py-1">{project.name}</td>;
+                                    const {group} = _ as any;
+                                    if (group){
+                                        return <td className="px-3 py-1">{group.name}</td>;
                                     }
                                     return <td className="px-3 py-1">-</td>;
                                 },
                             },
                             {
-                                key: "created_at",
+                                key: ['created_at',"date"],
                                 method: (_: any) => {
-                                    if (_) {
-                                        const date = new Date(_);
-                                        return `${date.getFullYear()}-${
-                                            date.getMonth() + 1
-                                        }-${date.getDate()}  -  ${date.getHours()}:${date.getMinutes()}`;
-                                    }
-
-                                    return "-";
+                                    const {date,created_at} = _;
+                                    const parsed_date = date ? new Date(date) : new Date(created_at)
+                                    return `${parsed_date.getFullYear()}-${
+                                        parsed_date.getMonth() + 1
+                                    }-${parsed_date.getDate()}`;
                                 },
                             },
                             {

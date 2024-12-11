@@ -16,20 +16,20 @@ interface TreasuryFormProps {
     color: string;
     header: string;
     setRefresh:React.Dispatch<SetStateAction<boolean>>;
-    project?:boolean
+    group?:boolean
 }
 
 
 
-const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header , setRefresh,project=false}) => {
+const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header , setRefresh,group=false}) => {
     const {lang} = useContext(LanguageContext)
     const [loading,setLoading] = useState<boolean>(false)
     const formRef = useRef<HTMLFormElement>(null);
     const onSubmit:FormEventHandler<HTMLFormElement> = (e) => {
         const form_data = parseFormData(e)
-        const project_type = form_data.get("project")
+        const project_type = form_data.get("group")
         if (project_type?.toString()==="*"){
-            form_data.delete("project")
+            form_data.delete("group")
         }
         
         e.preventDefault();
@@ -74,14 +74,14 @@ const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header 
             <label className='col-span-1 place-self-center' htmlFor="details">{TRANSLATIONS.Treasury.inform.details[lang]}</label>
             <textarea className={`col-span-4 ${DEFAULT_INPUT_STYLE}`} name="details" id="details" minLength={3} required/>
             {
-                project ?
+                group ?
                 <SelectComponent 
-                    url='api/users/project'
-                    LabelName={TRANSLATIONS.UsersList.filters.project[lang]}
+                    url='api/treasury/projects-group'
+                    LabelName={TRANSLATIONS.UsersList.filters.group[lang]}
                     LabelClassName='col-span-1 place-self-center'
                     selectClassName={`col-span-4 w-2/3`}
                     config={{label: 'name' , value: 'uuid'}}
-                    name='project'
+                    name='group'
                     moreOptions={[{label:"-",value:"*"}]}
                     />
                 : null
