@@ -38,7 +38,7 @@ class BaseFilter(BaseModel):
 class BasePage(BaseModel):
     name = models.CharField(verbose_name="Page name",max_length=150,unique=True)
     def page_as_number(self)-> int:
-        return sum(map(ord,self.name)) 
+        return "".join(list(map(lambda x :str(ord(x)),self.name)))
 
     class Meta:
         abstract = True
