@@ -9,6 +9,7 @@ from .models import (
     Commission , 
     Subscription ,
     Additional,
+    AmericanSubscription,
     )
 from utils.admin_utils import FieldSets
 
@@ -173,6 +174,8 @@ class CommissionAdminSite(admin.ModelAdmin):
                 "american_count" ,
                 "subscriptions" ,
                 "subscriptions_count",
+                "american_subscriptions" ,
+                "american_subscriptions_count",
                 "deduction" ,
                 "gift" ,
                 "salary" ,
@@ -228,5 +231,6 @@ admin.site.register(TargetSlice , TargetSliceAdminSite)
 admin.site.register(UserCommissionDetails , UserCommissionDetailsAdminSite)
 admin.site.register(BasicRecord , BasicRecordAdminSite)
 admin.site.register(Commission , CommissionAdminSite)
+admin.site.register(AmericanSubscription, SubscriptionAdminSite)
 admin.site.register(Subscription , SubscriptionAdminSite)
 admin.site.register(Additional , AdditionalAdminSite)

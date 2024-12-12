@@ -141,6 +141,8 @@ class CommissionSerializer(ModelSerializer):
             "american_count" ,
             "subscriptions" ,
             "subscriptions_count",
+            "american_subscriptions" ,
+            "american_subscriptions_count",
             "deduction" ,
             "gift" ,
             "salary" ,

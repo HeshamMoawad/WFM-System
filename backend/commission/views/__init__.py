@@ -2,6 +2,7 @@ from api_views.models import APIViewSet
 from permissions.users import IsSuperUser ,IsOwner
 from users.views import DefaultPagination , IsAuthenticated , Pagination1K
 from commission.models import (
+    AmericanSubscription,
     UserCommissionDetails , 
     DeductionRules,
     TargetSlice,
@@ -108,6 +109,15 @@ class SubscriptionAPI(APIViewSet):
     search_filters = ["uuid","count","value"]
     unique_field:str = 'uuid'
 
+class AmericanSubscriptionAPI(APIViewSet):
+    permission_classes = [IsSuperUser , IsOwner]
+    allowed_methods = ["GET"]
+    pagination_class = Pagination1K
+    model = AmericanSubscription
+    model_serializer= SubscriptionSerializer
+    search_filters = ["uuid","count","value"]
+    unique_field:str = 'uuid'
+
 
 class CommissionAPI(APIViewSet):
     permission_classes = [IsSuperUser , IsOwner]
@@ -127,6 +137,8 @@ class CommissionAPI(APIViewSet):
                 "american_count"  ,
                 "subscriptions"  ,
                 "subscriptions_count"  ,
+                "american_subscriptions"  ,
+                "american_subscriptions_count"  ,
                 "deduction" ,
                 "gift"  ,
                 "salary" ,

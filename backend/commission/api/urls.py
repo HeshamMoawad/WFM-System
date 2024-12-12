@@ -1,5 +1,6 @@
 from django.urls import path , include
 from commission.views import (
+    AmericanSubscriptionAPI,
     UserCommissionDetailsAPI , 
     DeductionRulesAPI , 
     TargetSlicesAPI , 
@@ -21,6 +22,7 @@ urlpatterns = [
     path('basic-details',BasicRecordAPI.as_view()),
     path('coin-changer',CoinChangerAPI.as_view()),
     path('subscription',SubscriptionAPI.as_view()),
+    path('american-subscription',AmericanSubscriptionAPI.as_view()),
     path('salary',CommissionAPI.as_view()),
     path('team',TeamAPI.as_view()),
     path('targets',get_target_slices),

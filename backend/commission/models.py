@@ -125,6 +125,8 @@ class Commission(BaseModel):
     american_count = models.IntegerField(verbose_name="American Leads Count" , default=0)
     subscriptions = models.FloatField(verbose_name="Subscriptions" , default=0)
     subscriptions_count = models.IntegerField(verbose_name="Subscriptions Count" , default=0)
+    american_subscriptions = models.FloatField(verbose_name="American Subscriptions" , default=0)
+    american_subscriptions_count = models.IntegerField(verbose_name="Amirecan Subscriptions Count" , default=0)
     deduction = models.FloatField(verbose_name="Deduction" , default=0)
     gift = models.FloatField(verbose_name="Gift" , default=0)
     salary = models.FloatField(verbose_name="Total of Salary" , default=0)
@@ -140,6 +142,10 @@ class Commission(BaseModel):
 
 class Subscription(BaseModel):
     count = models.IntegerField(verbose_name="Subscriptions Count",unique=True)
+    value = models.IntegerField(verbose_name="Money" )
+
+class AmericanSubscription(BaseModel):
+    count = models.IntegerField(verbose_name="American Subscriptions Count",unique=True)
     value = models.IntegerField(verbose_name="Money" )
 
 
