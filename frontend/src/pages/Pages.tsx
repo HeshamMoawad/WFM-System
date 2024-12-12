@@ -31,6 +31,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend , CategoryScale , LinearS
 import AttendanceDetailsLated from "./AttendanceDetailsLated/AttendanceDetailsLated";
 import TreasuryProjects from "./TreasuryProjects/TreasuryProjects";
 import TeamDetails from "./TeamDetails/TeamDetails";
+import AddOldLead from "./AddOldLead/AddOldLead";
 
 interface PagesProps {}
 
@@ -79,10 +80,8 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/devices-access" element={<DevicesAccess/>}/>
                                             <Route path="/attendance-details" element={<AttendanceDetails/>}/>
                                             <Route path="/attendance-details-lated" element={<AttendanceDetailsLated/>}/>
-
                                             <Route path="/treasury" element={<Treasury/>}/>
                                             <Route path="/treasury-projects" element={<TreasuryProjects/>}/>
-
                                             <Route path="/advances" element={<Advances/>}/>
                                             <Route path="/basic" element={<Basic/>}/>
                                             <Route path="/user-basic/:user_uuid/:date" element={<UserBasic/>}/>
@@ -101,6 +100,8 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/add-report-social" element={<AddReport/>}/>
                                             <Route path="/reports" element={<Reports/>}/>
                                             <Route path="/project-report/:project_uuid" element={<ProjectReport/>}/>
+                                            <Route path="/old-lead" element={<AddOldLead/>}/>
+
                                             <Route path="*" element={<NotFound/>}/>
                                         </Routes>
                                     </MainLayout>

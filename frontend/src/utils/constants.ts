@@ -46,7 +46,8 @@ export const TRANSLATIONS = {
     ReportSocial:{
       title:t("ريبورت سوشيال","Report Social"),
       report:t("اضافة ريبورت","Add Report"),
-      view:t("مشاهدة الريبورتات","View Reports")
+      view:t("مشاهدة الريبورتات","View Reports"),
+      oldlead:t("مسح عميل قديم","Delete Old Lead")
     },
     Commission:{
       title:t("كوميشن","Commission"),
@@ -404,4 +405,7 @@ export const TRANSLATIONS = {
       }
     }
   },
+  AddOldLead :{
+    title:t("مسح ليدز دابل","Delete double leads")
+  }
 }

@@ -24,6 +24,7 @@ import { HiOutlineDocumentReport , HiOutlineDocumentAdd , HiOutlineDocumentText 
 import { MdOutlineAnalytics , MdDirectionsRun } from "react-icons/md";
 import { IconType } from 'react-icons';
 import { checkPagePermission } from '../../utils/permissions/permissions';
+import { AiOutlineUserDelete } from "react-icons/ai";
 
 
 
@@ -109,6 +110,12 @@ const Sidebar: FC<SidebarProps> = () => {
                     href:'/reports',
                     index:textToNumber("show-report-social"),
                     Icon:HiOutlineDocumentText,
+                },
+                {
+                    name:TRANSLATIONS.SideBar.ReportSocial.oldlead[lang],
+                    href:'/old-lead',
+                    index:textToNumber("add-old-lead"),
+                    Icon:AiOutlineUserDelete,
                 },
 
             ]
