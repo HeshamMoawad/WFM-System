@@ -1,5 +1,5 @@
 from api_views.models import APIViewSet
-from permissions.users import IsSuperUser ,IsOwner
+from permissions.users import IsSuperUser ,IsOwner , IsAgent , IsManager
 from users.views import DefaultPagination , IsAuthenticated , Pagination1K
 from commission.models import (
     AmericanSubscription,
@@ -86,7 +86,7 @@ class TargetSlicesAPI(APIViewSet):
     unique_field:str = 'uuid'
 
 
-class  BasicRecordAPI(APIViewSet):
+class BasicRecordAPI(APIViewSet):
     permission_classes = [IsSuperUser , IsOwner]
     allowed_methods = ["GET","PUT","POST","DELETE"]
     pagination_class = DefaultPagination
@@ -120,7 +120,7 @@ class AmericanSubscriptionAPI(APIViewSet):
 
 
 class CommissionAPI(APIViewSet):
-    permission_classes = [IsSuperUser , IsOwner]
+    # permission_classes = [IsSuperUser , IsOwner , IsManager , IsAgent]
     allowed_methods = ["GET","PUT","POST","DELETE"]
     pagination_class = DefaultPagination
     model = Commission
@@ -155,6 +155,8 @@ class CommissionAPI(APIViewSet):
                 "american_count"  ,
                 "subscriptions"  ,
                 "subscriptions_count"  ,
+                "american_subscriptions"  ,
+                "american_subscriptions_count"  ,
                 "deduction" ,
                 "gift"  ,
                 "salary" ,
@@ -166,6 +168,8 @@ class CommissionAPI(APIViewSet):
                 "plus"  ,
                 "american"  ,
                 "american_count"  ,
+                "american_subscriptions"  ,
+                "american_subscriptions_count"  ,
                 "subscriptions"  ,
                 "subscriptions_count"  ,
                 "deduction" ,
