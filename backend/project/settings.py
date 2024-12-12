@@ -213,3 +213,10 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 AUTH_GROUP_MODEL = 'users.Group'
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'users.backends.CustomBackend',
+]
+
