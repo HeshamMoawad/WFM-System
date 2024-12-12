@@ -51,5 +51,5 @@ urlpatterns = [
     path('leads-report',get_leads_report) ,
     path('get-my-projects',get_projects_to_report) ,
 
-    path('testing',del_old_lead)
+    path('old-lead',del_old_lead)
 ]

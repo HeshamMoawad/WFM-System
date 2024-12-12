@@ -12,9 +12,10 @@ import datetime , numpy,calendar
 from django.db.models import Q , Case , Count
 from datetime import date
 from django.db.models.functions import TruncDate
+from utils.filters import filter_queryset_with_permissions
 from utils.parsers import parse_date
 from django.contrib.auth.models import Group
-from users.models import User
+from users.models import User , Project
 
 DATE_FORMATS = [
     "%Y-%m-%d - %H:%M", # 2024-09-08 - 06:35
@@ -169,16 +170,13 @@ def user_leads(request:Request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def del_old_lead(request:Request):
-    print(request.user)
-    print(request.user.groups)
-    for group in request.user.groups.all():
-        print(group.permissions.all())
-    print(request.user.has_perm("view_own_lead"))
-    print()
-    print()
-    # phone = request.data.get("phone",None)
-    # if not phone  :
-    #     return Response({},status=400)
-    
-
-    # pass
+    numbers = request.data.get("numbers",[])
+    project = request.data.get("project",None)
+    if project:
+        leads = Lead.objects.filter(phone__in=numbers,project__uuid=project)
+    else:
+        leads = Lead.objects.filter(phone__in=numbers,project=request.user.project)
+    leads = filter_queryset_with_permissions(request.user,leads,Lead)
+    count = leads.count()
+    leads.delete()
+    return Response({"count":count})
