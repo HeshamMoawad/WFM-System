@@ -117,9 +117,25 @@ class User(AbstractUser , BaseModel):
         return f"{self.username}"
     
     def save(self,*args,**kwargs):
-        
         self.set_password(self.password_normal)
         return super().save(*args,**kwargs)
+
+    def can_do(self, perm: str):
+        """
+        Checks if the user has a specific permission based on their custom groups.
+
+        Args:
+            perm (str): The permission code (e.g., "app_label.permission_codename").
+
+        Returns:
+            bool: True if the user has the permission, False otherwise.
+        """
+        # Collect all permissions from the user's custom groups
+        user_permissions = set()
+        for group in self.custom_groups.prefetch_related("permissions").all():
+            user_permissions.update(group.permissions.values_list('codename', flat=True))
+        # Check if the given permission exists in the user's permissions
+        return perm in user_permissions
 
     class Meta:
         verbose_name = "User"

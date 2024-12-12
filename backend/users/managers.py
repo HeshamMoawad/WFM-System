@@ -1,5 +1,6 @@
 from django.contrib.auth.models import BaseUserManager
 from .types import UserTypes
+from django.contrib.auth.backends import BaseBackend , ModelBackend
 
 
 class CustomUserManager(BaseUserManager):
@@ -35,3 +36,12 @@ class OwnerObjects(BaseUserManager):
 class AgentObjects(BaseUserManager):
     def get_queryset(self,*args,**kwargs):
         return super().get_queryset(*args, **kwargs).filter(role=UserTypes.AGENT)
+
+
+
+
+
+class CustomBackend(BaseBackend):
+
+    def has_perm(self, user_obj, perm, obj = ...):
+        return super().has_perm(user_obj, perm, obj) and user_obj.can_do(perm)
