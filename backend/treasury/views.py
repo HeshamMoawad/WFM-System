@@ -2,11 +2,13 @@ from rest_framework.decorators import api_view , permission_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 # from permissions.models import CustomBasePermission
-from django.db.models import Sum
+from django.db.models import Sum , Value
+from django.db.models.functions import Coalesce 
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from utils.parsers import parse_date
 from permissions.users import IsOwner, IsSuperUser , IsManager , IsHR
-from users.views import DefaultPagination
+from users.views import DefaultPagination , Project
 from .serializer import (
     AdvanceSerializer , 
     Advance , 
@@ -16,6 +18,8 @@ from .serializer import (
     TreasuryIncomeSerializer , 
     Notification ,
     NotificationSerializer,
+    ProjectsGroup,
+    ProjectsGroupSerializer,
     )
 from api_views.models import APIViewSet
 from django.utils.timezone import now
@@ -48,8 +52,21 @@ class OutcomeAPIView(APIViewSet):
     model_serializer= TreasuryOutcomeSerializer
     order_by = ('-created_at',)
     search_filters = ["uuid",'details',"creator","amount","created_at"]
-    creating_filters = ["details","creator","amount"]
+    creating_filters = ["details","creator","amount","group"]
     requiered_fields = ["details","creator","amount"]
+    unique_field:str = 'uuid'
+
+
+class ProjectsGroupAPIView(APIViewSet):
+    permission_classes = [IsSuperUser | IsOwner]
+    allowed_methods = ["GET"]
+    pagination_class = DefaultPagination
+    model = ProjectsGroup
+    model_serializer= ProjectsGroupSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid",'name',"projects__name","created_at"]
+    creating_filters = ["projects","name"]
+    requiered_fields = ["projects","name"]
     unique_field:str = 'uuid'
 
 
@@ -99,14 +116,45 @@ def total_treasury(request:Request):
     income = TreasuryIncome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
     outcome = TreasuryOutcome.objects.aggregate(total_sum=Sum('amount'))['total_sum']
     if date_parsed :
-        income = TreasuryIncome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
-        outcome = TreasuryOutcome.objects.filter(created_at__month=date_parsed.month , created_at__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
+        income = TreasuryIncome.objects.filter(date__month=date_parsed.month , date__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
+        outcome = TreasuryOutcome.objects.filter(date__month=date_parsed.month , date__year=date_parsed.year).aggregate(total_sum=Sum('amount'))['total_sum']
     
     return Response({
         "income":income if income else 0,
         "outcome":outcome if outcome else 0,
         "total":(income if income is not None else 0) - (outcome if outcome is not None else 0) ,
     })
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated , IsSuperUser | IsOwner])
+def treasury_projects(request:Request):
+    date = request.query_params.get("date",None)
+    date_parsed = parse_date(date,[
+                "%Y-%m", 
+                "%m-%Y",
+                "%m/%Y", 
+                "%Y/%m", 
+                ]) if date else None
+    
+    groups = ProjectsGroup.objects.values_list("name",flat=True).order_by("name")
+    if date_parsed :
+        results = (
+            TreasuryOutcome.objects.filter(group__isnull=False,date__month=date_parsed.month , date__year=date_parsed.year)
+            .values("group__name")  # Use project name for grouping
+            .order_by("group__name")
+            .annotate(total_amount=Coalesce(Sum("amount"),Value(0)))  # Calculate the sum of the amount
+        )
+    else :
+        results = (
+            TreasuryOutcome.objects.filter(group__isnull=False)
+            .values("group__name")  # Use project name for grouping
+            .order_by("group__name")
+            .annotate(total_amount=Coalesce(Sum("amount"),Value(0)))  # Calculate the sum of the amount
+        )
+    # Convert the QuerySet to a dictionary
+    data = {pro:0 for pro in groups}
+    data.update({item["group__name"]: item["total_amount"] for item in results})
+    return Response(data)
 
 
 @api_view(["GET"])
@@ -127,3 +175,14 @@ def seen_notification(request:Request):
     noti.seen_by_users.add(request.user)
     return Response(NotificationSerializer(noti).data) 
 
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_bulk_outcomes(request:Request):
+    group_uuid = request.data.get("group")
+    if group_uuid :
+        group = ProjectsGroup.objects.get(uuid=group_uuid)
+        TreasuryOutcome.objects.bulk_create(map(lambda x : TreasuryOutcome(**x,group=group,creator=request.user),request.data.get("records",[])))
+        return Response({"success":True})
+
+    return Response({},HTTP_400_BAD_REQUEST)

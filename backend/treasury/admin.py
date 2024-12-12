@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import  TreasuryIncome , TreasuryOutcome , Advance , Notification
+from .models import  TreasuryIncome , TreasuryOutcome , Advance , Notification , ProjectsGroup
 from utils.admin_utils import FieldSets
 # Register your models here.
 
@@ -17,6 +17,7 @@ class TreasuryRecordAdminSite(admin.ModelAdmin):
             [
                 'creator',
                 'amount',
+                'date',
                 'details',
             ],[
                 "uuid" ,
@@ -26,8 +27,8 @@ class TreasuryRecordAdminSite(admin.ModelAdmin):
     ]).fieldsets
 
 class TreasuryOutcomeAdminSite(admin.ModelAdmin):
-    list_display = ["creator" , "amount" , "details","project" ]
-    list_filter = ["creator","project"]
+    list_display = ["creator" , "amount" , "details","group" ]
+    list_filter = ["creator","group"]
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['creator__username', 'amount' , "details" ,"treasury__name" ]  
     fieldsets = FieldSets([
@@ -38,10 +39,30 @@ class TreasuryOutcomeAdminSite(admin.ModelAdmin):
                 'creator',
                 'amount',
                 'details',
-                'project',
+                'group',
+                'date',
                 'from_advance',
                 'from_salary',
                 'from_basic',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at"
+            ]
+    ]).fieldsets
+
+class ProjectsGroupAdminSite(admin.ModelAdmin):
+    list_display = ["name"]
+    list_filter = ["projects"]
+    readonly_fields = ['uuid',"created_at","updated_at"]
+    search_fields = ['name__contains', 'projects' ]  
+    fieldsets = FieldSets([
+            'Projects Group Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'name',
+                'projects',
             ],[
                 "uuid" ,
                 "created_at",
@@ -97,3 +118,4 @@ admin.site.register(Advance , AdvanceAdminSite)
 admin.site.register(TreasuryIncome , TreasuryRecordAdminSite)
 admin.site.register(TreasuryOutcome , TreasuryOutcomeAdminSite)
 admin.site.register(Notification , NotificationAdminSite)
+admin.site.register(ProjectsGroup , ProjectsGroupAdminSite)

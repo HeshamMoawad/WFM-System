@@ -9,10 +9,16 @@ from django.utils.timezone import now , timedelta
 def tomorrow():
     return now() + timedelta(days=1)
 
+class ProjectsGroup(BaseModel):
+    name = models.CharField(verbose_name="Group Name", max_length=100)
+    projects = models.ManyToManyField(Project,verbose_name="Project")
+
+
 class TreasuryIncome(BaseModel):
     creator = models.ForeignKey(User,verbose_name="Creator" , on_delete=models.SET_NULL , null=True ,  limit_choices_to={'role': 'OWNER'} )#limit_choices_to={'role': 'OWNER'}
     amount = models.PositiveIntegerField(verbose_name="Amount")
     details = models.CharField(verbose_name="Details" , max_length=250 )
+    date = models.DateField(verbose_name="Date",null=True)
 
 
 class Advance(BaseModel):
@@ -31,9 +37,9 @@ class TreasuryOutcome(BaseModel):
     from_advance =  models.ForeignKey(Advance,verbose_name="Advance" ,  on_delete=models.CASCADE , null=True , blank=True)
     from_salary =  models.ForeignKey("commission.Commission",verbose_name="Salary" ,  on_delete=models.CASCADE , null=True , blank=True)
     from_basic =  models.ForeignKey("commission.BasicRecord",verbose_name="Basic" ,  on_delete=models.CASCADE , null=True , blank=True)
-    project = models.ForeignKey(Project,verbose_name="Project",on_delete=models.SET_NULL,null=True)
+    group = models.ForeignKey(ProjectsGroup,verbose_name="Project Group",on_delete=models.SET_NULL,null=True)
     details = models.CharField(verbose_name="Details" , max_length=250 )
-
+    date = models.DateField(verbose_name="Date",null=True)
 
 class Notification(BaseModel):
     creator = models.ForeignKey(User,verbose_name="Creator" ,  on_delete=models.SET_NULL , null=True , limit_choices_to={'role': 'OWNER'})#limit_choices_to={'role': 'OWNER'}
