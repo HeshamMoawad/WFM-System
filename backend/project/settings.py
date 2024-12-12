@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&8e6#vd%stkfp%1@&h5b5n(*1!0g4#n*o6*j2-y_qq2(bby%-c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -196,7 +196,7 @@ REST_FRAMEWORK = {
 
 ### jwt Config
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=8),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
     'AUTH_COOKIE': 'Authorization',
     'AUTH_HEADER': 'Authorization',
