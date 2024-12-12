@@ -30,8 +30,8 @@ def wrap_data(user:User,token,test:bool=False):
     sub_pages = set()
     for g in groups :
         permissions.update(g.permissions.values_list("codename",flat=True))
-        main_pages.update(map(lambda x : sum(map(ord,x)),g.main_pages.values_list("name",flat=True)))
-        sub_pages.update(map(lambda x : sum(map(ord,x)),g.sub_pages.values_list("name",flat=True)))
+        main_pages.update(map(lambda y : "".join(list(map(lambda x :str(ord(x)),y))),g.main_pages.values_list("name",flat=True)))
+        sub_pages.update(map(lambda y : "".join(list(map(lambda x :str(ord(x)),y))),g.sub_pages.values_list("name",flat=True)))
     data.update(permissions={ 
         "permissions":list(permissions),
         "main_pages":main_pages,
