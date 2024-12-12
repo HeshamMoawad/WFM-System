@@ -13,5 +13,8 @@ def filter_queryset_with_permissions(user:User,queryset:QuerySet,model:Model)->Q
     if not user.is_superuser:
         cont_type = ContentType.objects.get_for_model(model)
         filters_text_list = GenericFilter.objects.filter(groups__in=user.custom_groups.values_list("uuid"),content_type=cont_type).values_list("get_queryset_text",flat=True) 
-        exec("".join(filters_text_list),{},context) if filters_text_list else None
+        if filters_text_list :
+            exec("".join(filters_text_list),{},context)
+        else :
+            context['queryset'] = queryset.none()
     return context['queryset']
