@@ -31,7 +31,7 @@ def add_report(request: Request):
 def check_report(request: Request):
     user:User = request.user
     obj = ReportRecord.objects.filter(user=request.user,date = timezone.now().date() )
-    return Response({"canReport":  False if obj or not user.has_perm("add_reportrecord") else True})
+    return Response({"canReport":  False if obj else True})
 
 
 
@@ -39,30 +39,30 @@ def check_report(request: Request):
 @permission_classes([IsLeader|IsOwner|IsSuperUser|IsManager])
 def get_reports(request: Request):
     user:User = request.user
-    if user.has_perm("view_reportrecord"):
-        proj_filterd = request.query_params.get("project",None)
-        date_filterd = request.query_params.get("date",None)
-        if date_filterd :
-            date_filterd = datetime.strptime(date_filterd , '%Y-%m-%d')
+    # if user.has_perm("view_reportrecord"):
+    proj_filterd = request.query_params.get("project",None)
+    date_filterd = request.query_params.get("date",None)
+    if date_filterd :
+        date_filterd = datetime.strptime(date_filterd , '%Y-%m-%d')
+    
+    users_in_project = Project.objects.get(uuid=proj_filterd).user_set.filter(department__name="Marketing",is_active=True)
+    reports_exist_subquery = ReportRecord.objects.filter(
+        user = OuterRef('uuid'),
+        date = date_filterd , 
+        user__is_active=True,
+    )
+    users_with_exist_flag = users_in_project.annotate(
+        exist=Exists(reports_exist_subquery)
+    ).filter(exist=False)
+    objs = ReportRecord.objects.filter(user__in= users_in_project , user__is_active=True, date = date_filterd.date()).all()
+    reports=[]
+    for user in users_with_exist_flag:
+        reports.append(ReportRecord(user=user,date=date_filterd,json_data="{}"))
         
-        users_in_project = Project.objects.get(uuid=proj_filterd).user_set.filter(department__name="Marketing",is_active=True)
-        reports_exist_subquery = ReportRecord.objects.filter(
-            user = OuterRef('uuid'),
-            date = date_filterd , 
-            user__is_active=True,
-        )
-        users_with_exist_flag = users_in_project.annotate(
-            exist=Exists(reports_exist_subquery)
-        ).filter(exist=False)
-        objs = ReportRecord.objects.filter(user__in= users_in_project , user__is_active=True, date = date_filterd.date()).all()
-        reports=[]
-        for user in users_with_exist_flag:
-            reports.append(ReportRecord(user=user,date=date_filterd,json_data="{}"))
-            
-        return Response({
-            "results" : ReportRecordSerializer(list(chain(objs , reports)),many=True).data
-        })
-    return Response({},status=HTTP_400_BAD_REQUEST)
+    return Response({
+        "results" : ReportRecordSerializer(list(chain(objs , reports)),many=True).data
+    })
+    # return Response({},status=HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])

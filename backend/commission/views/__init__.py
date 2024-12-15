@@ -26,7 +26,7 @@ from commission.serializers import (
 
 class UserCommissionDetailsAPI(APIViewSet):
     allowed_methods = ["GET","PUT"]
-    permission_classes = [IsSuperUser ,IsOwner]
+    # permission_classes = [IsSuperUser ,IsOwner]
     pagination_class = DefaultPagination
     model = UserCommissionDetails
     model_serializer= UserCommissionDetailsSerializer
@@ -37,7 +37,7 @@ class UserCommissionDetailsAPI(APIViewSet):
 
 
 class DeductionRulesAPI(APIViewSet):
-    permission_classes = [IsSuperUser ,IsOwner]
+    # permission_classes = [IsSuperUser ,IsOwner]
     pagination_class = DefaultPagination
     model = DeductionRules
     model_serializer= DeductionRulesSerializer
@@ -49,7 +49,7 @@ class DeductionRulesAPI(APIViewSet):
     unique_field:str = 'uuid'
 
 class TeamAPI(APIViewSet):
-    permission_classes = [IsSuperUser ,IsOwner]
+    # permission_classes = [IsSuperUser ,IsOwner]
     pagination_class = DefaultPagination
     model = Team
     model_serializer= TeamSerializer
@@ -62,7 +62,7 @@ class TeamAPI(APIViewSet):
 
 class CoinChangerAPI(APIViewSet):
     allowed_methods = ["GET","POST","DELETE"]
-    permission_classes = [IsSuperUser|IsOwner]
+    # permission_classes = [IsSuperUser|IsOwner]
     pagination_class = DefaultPagination
     model = CoinChanger
     model_serializer= CoinChangerSerializer
@@ -74,7 +74,7 @@ class CoinChangerAPI(APIViewSet):
 
 
 class TargetSlicesAPI(APIViewSet):
-    permission_classes = [IsSuperUser ,IsOwner]
+    # permission_classes = [IsSuperUser ,IsOwner]
     pagination_class = DefaultPagination
     model = TargetSlice
     model_serializer= TargetSliceSerializer
@@ -87,7 +87,7 @@ class TargetSlicesAPI(APIViewSet):
 
 
 class BasicRecordAPI(APIViewSet):
-    permission_classes = [IsSuperUser , IsOwner]
+    # permission_classes = [IsSuperUser , IsOwner]
     allowed_methods = ["GET","PUT","POST","DELETE"]
     pagination_class = DefaultPagination
     model = BasicRecord
@@ -101,7 +101,7 @@ class BasicRecordAPI(APIViewSet):
     
     
 class SubscriptionAPI(APIViewSet):
-    permission_classes = [IsSuperUser , IsOwner]
+    # permission_classes = [IsSuperUser , IsOwner]
     allowed_methods = ["GET"]
     pagination_class = Pagination1K
     model = Subscription
@@ -110,7 +110,7 @@ class SubscriptionAPI(APIViewSet):
     unique_field:str = 'uuid'
 
 class AmericanSubscriptionAPI(APIViewSet):
-    permission_classes = [IsSuperUser , IsOwner]
+    # permission_classes = [IsSuperUser , IsOwner]
     allowed_methods = ["GET"]
     pagination_class = Pagination1K
     model = AmericanSubscription
