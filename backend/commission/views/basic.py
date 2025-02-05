@@ -19,6 +19,8 @@ def get_users_with_has_basic(request:Request):
         users_with_basic_annotation = User.objects\
             .filter(is_superuser=False)\
             .exclude(role="OWNER")\
+            .prefetch_related("usercommissiondetails")\
+            .annotate(basic=F("usercommissiondetails__basic"))\
             .annotate(
                 has_basic=Case(
                     When(
