@@ -172,10 +172,13 @@ def user_leads(request:Request):
 def del_old_lead(request:Request):
     numbers = request.data.get("numbers",[])
     project = request.data.get("project",None)
-    if project:
+    if project and (request.user.is_superuser or  request.user.role == "OWNER" or request.user.role == "MANAGER"):
         leads = Lead.objects.filter(phone__in=numbers,project__uuid=project)
     else:
-        leads = Lead.objects.filter(phone__in=numbers,project=request.user.project)
+        team = Team.objects.filter(leader=request.user).first()
+        if team :
+            projects = Project.objects.filter(user__in=team.agents.all()).distinct()
+        leads = Lead.objects.filter(phone__in=numbers,project__in=projects)
     leads = filter_queryset_with_permissions(request.user,leads,Lead)
     count = leads.count()
     leads.delete()
