@@ -1,6 +1,6 @@
 import os , re
 from django.core.exceptions import ValidationError
-from users.types import UserTypes
+from users.custom_types import UserTypes
 
 SAOUDI_NUMBER_REGEX = r"^[\+]?(?:966|0)(5\d{8})$"
 EGYPTION_NUMBER_REGEX = r"^0(11|12|10|15)(\d{8})$"

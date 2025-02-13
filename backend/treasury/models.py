@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.signals import pre_save , post_save
-from users.types import RequestStatuses
+from users.custom_types import RequestStatuses
 from core.models import  BaseModel 
 from users.models import User , create_update_history , Project
 from django.utils.timezone import now , timedelta

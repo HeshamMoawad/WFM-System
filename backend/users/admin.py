@@ -334,8 +334,16 @@ class ReportRecordAdminSite(ImportExportModelAdmin):
             ]
     ]).fieldsets
 
+class GenericFilterAdminSite(ImportExportModelAdmin):
+    list_display = ["get_queryset_text" , "content_type" , "layer_index"]
+    list_filter = ["groups","content_type"]
+    readonly_fields = ['uuid', "created_at", "updated_at"]
+    search_fields = ['name', 'groups__name']
+
+
 admin.site.site_title = "WFM-System"
 admin.site.site_header = "WFM-System"
+
 admin.site.register(User , UserAdminSite)
 admin.site.register(Department, DepartmentAdminSite)
 admin.site.register(Project , ProjectAdminSite)
@@ -352,8 +360,5 @@ admin.site.register(ContentType )
 admin.site.register(Group )
 admin.site.register(MainPage )
 admin.site.register(SubPage )    
-admin.site.register(GenericFilter )    
-
-
-
+admin.site.register(GenericFilter, GenericFilterAdminSite)
 admin.site.unregister(models.Group)

@@ -1,5 +1,5 @@
 from django.contrib.auth.models import BaseUserManager
-from .types import UserTypes
+from .custom_types import UserTypes
 
 
 class CustomUserManager(BaseUserManager):

@@ -7,7 +7,7 @@ from .managers import (
         ManagerObjects ,
         OwnerObjects
     )
-from .types import UserTypes , RequestTypes , RequestStatuses
+from .custom_types import UserTypes , RequestTypes , RequestStatuses
 from utils.models_utils import image_upload_path , validate_lead_number , validate_role , validate_user_number
 from django.db.models.signals import pre_save , post_save , post_delete
 from core.models import BaseModel, BasePage, BaseFilter
