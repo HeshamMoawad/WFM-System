@@ -153,6 +153,29 @@ class Additional(BaseModel):
     plus = models.IntegerField(verbose_name="Plus +2 Price")
     american_leads = models.IntegerField(verbose_name="American Leads Price" )
 
+class Rule(BaseModel):
+    class Types(models.TextChoices):
+        FROM_TO_MONEY = "ftm","FROM TO MONEY"
+        MORE_THAN_MONEY = "mtm" , "MORE THAN MONEY"
+        BEST_MONEY = "bm" , "BEST MONEY"
+        BEST_MORE_THAN_MONEY = "bmtm" , "BEST MORE THAN MONEY"
+
+    money = models.IntegerField()
+    type = models.CharField(max_length=6,choices=Types.choices ,default=Types.FROM_TO_MONEY)
+    count_from = models.IntegerField()
+    count_to = models.IntegerField()
+    more_than = models.IntegerField()
+    best_index = models.IntegerField()
+
+
+class Deal(BaseModel):
+    start_at = models.DateField()
+    end_at = models.DateField()
+    period = models.IntegerField()
+    rules = models.ManyToManyField(Rule)
+    # agents = 
+    ...
+
 
 def create_user_commission_details(sender, instance:User, created ,**kwargs):
     if created :
