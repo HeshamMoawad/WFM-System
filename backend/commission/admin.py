@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import (
+    ActionPlan,
     Team , 
     CoinChanger , 
     DeductionRules , 
@@ -223,7 +224,29 @@ class AdditionalAdminSite(admin.ModelAdmin):
             ]
     ]).fieldsets
 
+class ActionPlanAdminSite(admin.ModelAdmin):
+    list_display = ["user","name","creator","date"]
+    readonly_fields = ['uuid',"created_at","updated_at"]
+    fieldsets = FieldSets([
+            'ActionPlan Fields' ,
+            'Other Fields'
+        ],[
+            [
+                "user",
+                "name",
+                "description",
+                "date",
+                "deduction_days" ,
+                "creator",
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at",
+            ]
+    ]).fieldsets
 
+
+admin.site.register(ActionPlan , ActionPlanAdminSite)
 admin.site.register(Team , TeamAdminSite)
 admin.site.register(CoinChanger, CoinChangerAdminSite)
 admin.site.register(DeductionRules,DedactionRulesAdminSite)

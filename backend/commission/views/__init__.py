@@ -11,6 +11,7 @@ from commission.models import (
     CoinChanger ,
     Team ,
     Subscription,
+    ActionPlan
     )
 from commission.serializers import (
     UserCommissionDetailsSerializer , 
@@ -20,9 +21,22 @@ from commission.serializers import (
     CommissionSerializer ,
     CoinChangerSerializer,
     TeamSerializer , 
-    SubscriptionSerializer
+    SubscriptionSerializer ,
+    ActionPlanSerializer
     )
 
+
+class ActionPlanAPI(APIViewSet):
+    allowed_methods = ["GET","POST","DELETE"]
+    # permission_classes = [IsSuperUser ,IsOwner]
+    pagination_class = DefaultPagination
+    model = ActionPlan
+    model_serializer= ActionPlanSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid","user"]
+    creating_filters = ["user","name","description","date","deduction_days","creator"]
+    requiered_fields = ["user","name","description","date","deduction_days","creator"]    
+    unique_field:str = 'uuid'
 
 class UserCommissionDetailsAPI(APIViewSet):
     allowed_methods = ["GET","PUT"]

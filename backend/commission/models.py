@@ -1,11 +1,13 @@
 from django.db import models 
 from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_save , post_save , post_delete
-from users.models import  User ,Department , create_update_history
+from users.custom_types import RequestStatuses
+from users.models import  User ,Department , create_update_history , Request
 from core.models import BaseModel
 import typing , datetime
 from django.utils.timezone import now
 from treasury.models import TreasuryOutcome
+from treasury.signals import notify
 # Create your models here.
 
 
@@ -149,6 +151,16 @@ class AmericanSubscription(BaseModel):
     value = models.IntegerField(verbose_name="Money" )
 
 
+class ActionPlan(BaseModel):
+    user = models.ForeignKey(User, verbose_name="User", on_delete=models.SET_NULL , null=True)
+    name = models.CharField(verbose_name="Action Plan Name", max_length=100)
+    description = models.TextField(verbose_name="Description")
+    date = models.DateField(verbose_name="Date", default=now )
+    deduction_days = models.FloatField(verbose_name="Deduction Days")
+    creator = models.ForeignKey(User, verbose_name="Creator", on_delete=models.SET_NULL,related_name="creator" , null=True)
+
+
+
 class Additional(BaseModel):
     plus = models.IntegerField(verbose_name="Plus +2 Price")
     american_leads = models.IntegerField(verbose_name="American Leads Price" )
@@ -243,6 +255,18 @@ def delete_annual(sender:BaseModel, instance:BasicRecord, **kwargs):
         instance.user.save()
         
 
+
+def notify_action_plan(sender, instance:ActionPlan, created ,**kwargs):
+    if created :
+        notify(f"{instance.creator} مبرووك عندك جزاء😜 من",instance.user)
+    
+
+def notify_request_change(sender, instance:Request, created ,**kwargs):
+    if not created and (instance.status == RequestStatuses.ACCEPTED or instance.status == RequestStatuses.REJECTED) :
+        notify(f"ريكويست : '{instance.details}' n {instance.status} تم تغيير حالة الريكويست الى ",instance.user)
+        
+
+
 pre_save.connect(create_update_history,sender=Team)
 pre_save.connect(create_update_history,sender=CoinChanger)
 pre_save.connect(create_update_history, sender=TargetSlice)
@@ -257,3 +281,7 @@ post_delete.connect(delete_annual,sender=BasicRecord)
 post_save.connect(create_user_commission_details,sender=User)
 # post_save.connect(create_Outcome_record,sender=BasicRecord)
 post_save.connect(create_Outcome_record_salary,sender=Commission)
+
+
+post_save.connect(notify_action_plan,sender=ActionPlan)
+post_save.connect(notify_request_change,sender=Request)

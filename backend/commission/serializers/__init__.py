@@ -4,6 +4,7 @@ from api_views.serializers import ModelSerializer
 from rest_framework.serializers import Serializer
 from users.models import User
 from commission.models import (
+    ActionPlan,
     CoinChanger,
     DeductionRules,
     TargetSlice,
@@ -173,3 +174,25 @@ class AdditionalSerializer(ModelSerializer):
             "plus",
             "american_leads",
         ]
+
+
+class ActionPlanSerializer(ModelSerializer):
+    user = UserSerializer(read_only=True)
+    creator = UserSerializer(read_only=True)
+    class Meta :
+        model = ActionPlan
+        fields = [
+            "uuid",
+            "user",
+            "name",
+            "description",
+            "date",
+            "deduction_days",
+            "creator",
+            "created_at",
+        ]
+        foreign_models = {
+            "creator": ForeignField("creator",User,'uuid') ,
+            "user": ForeignField("user",User,'uuid') ,
+        }
+

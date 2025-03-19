@@ -8,7 +8,8 @@ from commission.views import (
     CoinChangerAPI , 
     TeamAPI , 
     SubscriptionAPI ,
-    CommissionAPI
+    CommissionAPI , 
+    ActionPlanAPI
     )
 from ..views.basic import get_users_with_has_basic , get_users_with_basic_commission
 from ..views.targets import get_target_slices 
@@ -26,4 +27,6 @@ urlpatterns = [
     path('salary',CommissionAPI.as_view()),
     path('team',TeamAPI.as_view()),
     path('targets',get_target_slices),
+    path('action-plan',ActionPlanAPI.as_view()),
+
 ]
