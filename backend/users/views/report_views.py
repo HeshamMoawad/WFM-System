@@ -17,14 +17,17 @@ from itertools import chain
 @permission_classes([IsAuthenticated])
 def add_report(request: Request):
     user:User = request.user
-    # if user.has_perm("add_reportrecord"):
+    date = request.data.get("date",None)
+    if date :
+        date = datetime.strptime(date , '%Y-%m-%d')
+    else :
+        date = timezone.now().date()
     data = request.data.copy()
-    obj = ReportRecord(user=request.user,date = timezone.now().date() , json_data=json.dumps(data))
+    data.pop("date")
+    obj = ReportRecord(user=request.user,date = date , json_data=json.dumps(data))
     obj.save()
     return Response(ReportRecordSerializer(obj).data)
-    # else :
-    #     return Response({},status=HTTP_400_BAD_REQUEST)
-    
+ 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
