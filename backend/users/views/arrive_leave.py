@@ -165,7 +165,10 @@ class MonthlyHistoryView(APIView):
         user = User.objects.get(uuid=user_id)
         history = get_monthly_history(user, int(year), int(month))
         cache= {}
-        rules = DeductionRules.objects.filter(is_global=True).order_by("-late_time").values("late_time","deduction_days")
+        if user.usercommissiondetails.set_deduction_rules:
+            rules = DeductionRules.objects.filter(is_global=True).order_by("-late_time").values("late_time","deduction_days")
+        else :
+            rules = user.usercommissiondetails.deduction_rules.order_by("-late_time").values("late_time","deduction_days")
         serializer = ArrivingLeavingSerializer(history,rules=rules,cache=cache, many=True)
         return Response({"results":serializer.data , "count":len(history)})
         
