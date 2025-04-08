@@ -164,16 +164,16 @@ class ArrivingLeavingSerializer(ModelSerializer):
         if getattr(obj,'will_arrive_at',None):
             if obj.arriving_at :
                 late_time = self._calculator.calc_late(obj)
-                total= 0 
-                if getattr(obj,"set_deduction_rules",True) :
-                    total += self._calculator.calc_deduction(late_time,self.__rules)
-                else :
-                    if obj.user not in self.__cache :
-                        rules = obj.user.usercommissiondetails.deduction_rules.values("deduction_days","late_time")
-                        self.__cache[obj.user] = rules
-                    else :
-                        rules = self.__cache[obj.user]
-                    total += self._calculator.calc_deduction(late_time,rules)
+                total = 0 
+                # if getattr(obj.user.usercommissiondetails,"set_deduction_rules",True) :
+                total += self._calculator.calc_deduction(late_time,self.__rules)
+                # else :
+                #     if obj.user not in self.__cache :
+                #         rules = obj.user.usercommissiondetails.deduction_rules.values("deduction_days","late_time")
+                #         self.__cache[obj.user] = rules
+                #     else :
+                #         rules = self.__cache[obj.user]
+                #     total += self._calculator.calc_deduction(late_time,rules)
                 return total 
         return 1
 
