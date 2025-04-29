@@ -258,7 +258,7 @@ def delete_annual(sender:BaseModel, instance:BasicRecord, **kwargs):
 
 def notify_action_plan(sender, instance:ActionPlan, created ,**kwargs):
     if created :
-        notify(f"{instance.creator} مبرووك عندك جزاء😜 من",instance.user)
+        notify(f"{instance.creator}  عندك جزاء من",instance.user)
     
 
 def notify_request_change(sender, instance:Request, created ,**kwargs):
