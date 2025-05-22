@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import  { useState, useEffect, useCallback } from 'react';
 import { sendRequest , sendRequestKwargs } from '../calls/base';
 
 
@@ -17,14 +17,21 @@ function useRequest<ResultsType>(reqConfig: sendRequestKwargs, dependency:any[] 
     const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<ListData<ResultsType>|null>(null); 
     const [error, setError] = useState<any>(null);
-    const runner = ()=>{
-                setLoading(true);
-                sendRequest(reqConfig)
-                    .then(responseData => setData(responseData))
-                    .catch(err => setError(err))
-                    .finally(() => setLoading(false)); // Set loading to false after request completion
-            }
-    useEffect(() =>runner(),[])
+    
+    const runner = useCallback(() => {
+            setLoading(true);
+            sendRequest(reqConfig)
+                .then(responseData => setData(responseData))
+                .catch(err => setError(err))
+                .finally(() => setLoading(false)); // Set loading to false after request completion
+        }, [reqConfig]);
+            
+    useEffect(() =>{
+        if (intervalTimer){
+            runner()
+        }
+    },dependency)
+
     useEffect(() => {
         let interval:NodeJS.Timer|undefined
         let handler:NodeJS.Timer
@@ -39,8 +46,8 @@ function useRequest<ResultsType>(reqConfig: sendRequestKwargs, dependency:any[] 
             runner()
         }
         return () => {
-            clearInterval(interval)
-            clearInterval(handler)
+            if (interval) clearInterval(interval)
+            if (handler) clearInterval(handler)
         }
     }, dependency);
 

@@ -12,16 +12,18 @@ import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
 import { checkPermission } from '../../utils/permissions/permissions';
 import { useAuth } from '../../hooks/auth';
+import { Project } from '../../types/auth';
 
 interface SalaryProps {}
 
 export interface SalaryType {
     uuid:string;
-    basic?:BasicDetails;
-    user?:User;
+    basic?:BasicDetails|string;
+    user?:User|string;
     target: number;
     target_Team: number;
     plus: number;
+    plus_10: number;
     american: number;
     american_count: number;
     subscriptions:number;
@@ -31,6 +33,7 @@ export interface SalaryType {
     deduction: number;
     gift: number;
     salary: number;
+    project:Project|null;
 }
 
 const Salary: FC<SalaryProps> = () => {
@@ -89,7 +92,7 @@ const Salary: FC<SalaryProps> = () => {
         .finally(()=> setLoading(false) );
     },[])
 
-    const canSalary = checkPermission(auth,"add_salary")
+    const canSalary = checkPermission(auth,"add_commission")
     return (
     <div className='salary flex flex-col h-fit justify-center'>
     <label className='text-4xl text-center'>Salary | {userCommissionDetails?.user.first_name} {userCommissionDetails?.user.last_name} ({userCommissionDetails?.user.username}) | {date} </label>

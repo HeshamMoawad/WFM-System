@@ -1,7 +1,7 @@
 import { Authintication } from "../../types/auth";
 
 
-export const checkPagePermission=(user:Authintication,page_index:number,sub:boolean|undefined=undefined):boolean=>{
+export const checkPagePermission=(user:Authintication,page_index:string,sub:boolean|undefined=undefined):boolean=>{
     if (user.is_superuser){
         return true
     }

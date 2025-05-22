@@ -1,8 +1,8 @@
 const t = (arKey:string,enKey:string)=> ({ar:arKey,en:enKey})
 
-export const BASE_URL = "http://192.168.11.251:8000/" // http://192.168.11.251:8000
+export const BASE_URL = "" // http://192.168.11.251:8000/
 
-export const CURRENT_VERSION = "0.1.1"
+export const CURRENT_VERSION = "0.2.1"
 
 export const WEEK_DAYS = [
   t("الاحد","Sun"), 
@@ -42,6 +42,7 @@ export const TRANSLATIONS = {
     },
     Basic:{
       title:t("الأساسي","Basic"),
+      actionPlan:t("الجزاءات","Action Plan"),
     },
     ReportSocial:{
       title:t("ريبورت سوشيال","Report Social"),
@@ -70,6 +71,7 @@ export const TRANSLATIONS = {
     General:{
       title:t("العام","General"),
       Notification:t("التنبيهات","Notification"),
+      SalaryHistory:t("قبض الناس","SalaryHistory"),
     },
     Treasury:{
       title:t("الخزنة","Treasury"),
@@ -177,8 +179,8 @@ export const TRANSLATIONS = {
     title:t("تفاصيل البصمة","Attendance Details"),
     table:{
       headers: {
-        ar:["التاريخ","يوم الاسبوع","حضور","انصراف","مدة الشيفت" , "التاخير" , "الانصراف مبكرا","الخصم"],
-        en:["date","DayOfWeek","arrived at","leaving at","deuration" , "late" , "departure","deduction"],
+        ar:["التاريخ","يوم الاسبوع","البروجيكت","حضور","انصراف","مدة الشيفت" , "التاخير" , "الانصراف مبكرا","الخصم"],
+        en:["date","DayOfWeek","project","arrived at","leaving at","deuration" , "late" , "departure","deduction"],
       },
     },
     bottomBar:{
@@ -356,15 +358,16 @@ export const TRANSLATIONS = {
     table:{
       title:t("جدول الرواتب","Salary Table"),
       headers:{
-        ar:["الصورة","اسم المستخدم","الصلاحيات","اللقب","القسم","البروجيكت","الاساسى","المرتب كامل"],
-        en:["picture","username","role","title","department","project","basic","total-salary"],
+        ar:["الصورة","بروجيكت التقفيل","اسم المستخدم","الصلاحيات","اللقب","القسم","البروجيكت","الاساسى","المرتب كامل"],
+        en:["picture","Basic_project","username","role","title","department","project","basic","total-salary"],
       },
     },
     form:{
       title:t("الراتب","Salary"),
       target:t("التارجت","Target"),
       targetteam:t("تارجت الفريق","Target Team"),
-      plus:t("بلس +2","Plus +2"),
+      plus:t("بلس +5","Plus +5"),
+      plus_10:t("بلس +10","Plus +10"),
       american:t("العملاء الامريكى","American Leads"),
       subscription:t("اشتراكات","Subscription"),
       americanSubscription:t("اشتراكات امريكى","American Subscription"),
@@ -380,8 +383,8 @@ export const TRANSLATIONS = {
     table:{
       title:t("جدول الاساسى","Basic Table"),
       headers:{
-        ar:["الصورة","اسم المستخدم","الصلاحيات","اللقب","القسم","البروجيكت","",""],
-        en:["picture","username","role","title","department","project","basic","",""],
+        ar:["الصورة","بروجيكت الاساسى","اسم المستخدم","الصلاحيات","اللقب","الاساسى","القسم","البروجيكت","الاساسى الماخوذ",""],
+        en:["picture","basic_project","username","role","title","basic","department","project","taked_basic",""],
       },
     },
     form:{
@@ -407,5 +410,22 @@ export const TRANSLATIONS = {
   },
   AddOldLead :{
     title:t("مسح ليدز دابل","Delete double leads")
+  },
+  ActionPlan :{
+    title:t("الجزاءات","Action Plans"),
+    table:{
+      headers:{
+        ar:["اسم المستخدم","الخصم","عنوان","وصف","التاريخ","الخاصم","تاريخ الانشاء","مسح"],
+        en:["Username","Deduction_days","Title","Description","Date","Creator","Created_at","Delete"],
+      },
+      headersBasic:{
+        ar:["الخصم","عنوان","وصف","التاريخ","الخاصم","تاريخ الانشاء"],
+        en:["Deduction_days","Title","Description","Date","Creator","Created_at"],
+      }
+    },
+    Form:{
+      name:t("العنوان","Title"),
+      deduction_days:t("ايام الخصم","Deduction Days")
+    }
   }
 }

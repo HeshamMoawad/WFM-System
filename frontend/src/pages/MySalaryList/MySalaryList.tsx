@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { type FC,Suspense } from 'react';
 import useRequest from '../../hooks/calls';
 import { useAuth } from '../../hooks/auth';
 import Table from '../../components/Table/Table';
@@ -7,22 +7,27 @@ import { SalaryType } from '../Salary/Salary';
 import Container from '../../layouts/Container/Container';
 import { BasicDetails } from '../../types/auth';
 
-interface MySalaryListProps {}
+interface MySalaryListProps {
+    user_uuid?:string;
+}
 
-const MySalaryList: FC<MySalaryListProps> = () => {
+const MySalaryList: FC<MySalaryListProps> = ({user_uuid }) => {
     const {auth} = useAuth()
+
     const {data , error} = useRequest<SalaryType>({
         url: 'api/commission/salary',
         method: 'GET',
         params:{
-            user__uuid: auth.uuid,
+            user__uuid: user_uuid ? user_uuid : auth.uuid ,
         }
+        
     })
     let total_money = 0
     return (
 
     <div className='my-salary-list flex justify-center '>
     <Container className='w-[80vw] h-fit ' >
+
             {
                 data? (
             <>

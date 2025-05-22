@@ -4,12 +4,11 @@ import ReportTable from "../../components/ReportTable/ReportTable";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { sendRequest } from "../../calls/base";
-import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import LoadingPage from "../LoadingPage/LoadingPage";
 import { useNavigate } from "react-router-dom";
-import { Console } from "console";
 import Swal from "sweetalert2";
 import { checkPermission } from "../../utils/permissions/permissions";
+import DatePicker from "react-datepicker";
 
 interface AddReportProps {}
 
@@ -22,6 +21,7 @@ interface SectionProps {
     posts?: string[];
 }
 type Inputs = {
+    date: string;
     twitter: SectionProps ;
     tiktok: SectionProps;
     whatsapp: SectionProps;
@@ -32,6 +32,7 @@ type Inputs = {
 const AddReport: FC<AddReportProps> = () => {
     const { auth } = useAuth();
     const [loading, setLoading] = useState(true);
+    const [date, setDate] = useState(new Date());
     const navigate = useNavigate()
 
     const [canReport, setCanReport] = useState(false);
@@ -49,7 +50,10 @@ const AddReport: FC<AddReportProps> = () => {
         sendRequest({
             url: "api/users/add-report",
             method: "POST",
-            data: JSON.stringify(data),
+            data: JSON.stringify({...data,date:`${date.getFullYear()}-${
+                                            date.getMonth() + 1
+                                        }-${date.getDate()}`
+                                    }),
             headers: { "Content-Type": "application/json" },
         })
         .then(response =>{
@@ -94,6 +98,8 @@ const AddReport: FC<AddReportProps> = () => {
                         className="flex flex-col items-center"
                         onSubmit={handleSubmit(onSubmit)}
                     >
+                        <label className="text-3xl text-center text-primary">Add Report</label>
+
                         {/* Report Form */}
                         <ReportTable
                             register={register}
@@ -178,9 +184,28 @@ const AddReport: FC<AddReportProps> = () => {
                                 },
                             ]}
                         />
+                        <div className="mt-3 flex flex-row items-center w-11/12 justify-center gap-12">
+                            <label className="text-3xl text-center">Date</label>
+                            <DatePicker 
+                                showIcon 
+                                toggleCalendarOnIconClick
+                                dateFormat="dd-MM-yyyy" 
+                                className='text-center w-full border border-[gray]' 
+                                calendarIconClassName='w-8 h-8 fixed p-1'
+                                required
+                                selected={date} 
+                                name="date"
+                                // {...register("date")}
+                                onChange={(date)=>{
+                                    if(date && setDate) {
+                                        setDate(date)
+                                    }
+                                }}
+                                />
+                        </div>
                         <button
                             type="submit"
-                            className="bg-btns-colors-primary h-7 md:w-36 md:h-10 rounded-lg mt-4"
+                            className="bg-btns-colors-primary h-7 md:w-36 md:h-10 rounded-lg mt-5"
                         >
                             Submit
                         </button>
@@ -190,7 +215,7 @@ const AddReport: FC<AddReportProps> = () => {
                 </>
             ) : <>
             
-            <div className="flex flex-col justify-evenly h-[50vh] gap-10 items-center text-center">
+            <div className="lex flex-col justify-evenly h-[50vh] gap-10 items-center text-center">
                 <label htmlFor="" className="text-4xl text-primary drop-shadow-xl">Today Report Already Sent ...</label>
                 <button className="bg-btns-colors-primary h-8 text-2xl text-center w-40 md:h-14 rounded-lg mt-4" onClick={()=>{
                     navigate(-1)

@@ -12,6 +12,7 @@ import { LanguageContext } from '../../contexts/LanguageContext';
 import { TRANSLATIONS } from '../../utils/constants';
 import { checkPermission } from '../../utils/permissions/permissions';
 import { useAuth } from '../../hooks/auth';
+import ActionPlanTableBasic from '../../components/ActionPlanTableBasic/ActionPlanTableBasic';
 
 interface UserBasicProps {}
 
@@ -46,13 +47,14 @@ const UserBasic: FC<UserBasicProps> = () => {
         {
             checkPermission(auth,"add_basicrecord") && userCommissionDetails && user_uuid && date ? (
             <>
-                <label className='text-2xl md:text-4xl md:col-span-10 text-center'>{TRANSLATIONS.Basic.title[lang]} | {userCommissionDetails.user.first_name} {userCommissionDetails.user.last_name}  ({userCommissionDetails?.user.username}) | {date} </label>
+                <label className='text-2xl md:text-4xl md:col-span-10 text-center'>{TRANSLATIONS.Basic.title[lang]} | {userCommissionDetails.user.first_name} {userCommissionDetails.user.last_name}  ({userCommissionDetails?.user.username}) | {userCommissionDetails.user.project.name} | {date} </label>
                 {
                     basicDetails  || (totalMoney !== null && totalDays !== null )? (
                     <BasicForm deductionMoney={totalMoney ? totalMoney : undefined} deductionDays={totalDays ? totalDays : undefined } className='w-[100%] md:col-span-3 place-self-center' basicDetails={basicDetails ? basicDetails : undefined} date={date} userCommissionDetails={userCommissionDetails} />
                     ): null
                 }
                 <AttendanceDetailsTable setTotal={setTotalDays} className='md:col-span-7 place-self-center' label={TRANSLATIONS.AttendanceDetails.title[lang]} date={parseDateFromParams(date)} userID={user_uuid} withDetails={false}/>
+                <ActionPlanTableBasic className='md:col-span-7 w-full md:col-start-4 place-self-center' setTotal={setTotalMoney} date={parseDateFromParams(date)} user_uuid={userCommissionDetails.user.uuid} />
                 <RequestsTableBasic className='md:col-span-7 w-full md:col-start-4 place-self-center'  date={parseDateFromParams(date)} user_uuid={userCommissionDetails.user.uuid}/>
                 <AdvancesTable status='ACCEPTED' date={parseDateFromParams(date)} setTotal={setTotalMoney} className='md:col-span-7 w-full md:col-start-4 place-self-center' user_uuid={userCommissionDetails.user.uuid} canDelete={true}/>
             </>

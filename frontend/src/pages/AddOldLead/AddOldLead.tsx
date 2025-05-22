@@ -1,4 +1,4 @@
-import{ FC, useContext, useState } from 'react';
+import{ FC, useContext, useState  , useRef} from 'react';
 import Container from '../../layouts/Container/Container';
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
@@ -22,6 +22,7 @@ const AddOldLead : FC<AddOldLeadProps> = () => {
     const [numbers,setNumbers] = useState<string[]>([])
     const [loading,setLoading] = useState(false)
     const [project,setProject] = useState<string>("*")
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     let debounceTimer:NodeJS.Timer;
     return (
         <div className='p-5 flex justify-center w-full items-center'>
@@ -53,6 +54,7 @@ const AddOldLead : FC<AddOldLeadProps> = () => {
                         }
                         <textarea 
                             placeholder={`+9665XXXXXXXX\n9665XXXXXXXX\n05XXXXXXXX\n5XXXXXXXX`} 
+                            ref={textAreaRef}
                             className='md:min-h-[20rem] md:min-w-[20rem] md:resize outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'
                             onChange={(e)=>{
                                 e.preventDefault()
@@ -82,7 +84,7 @@ const AddOldLead : FC<AddOldLeadProps> = () => {
                             }
                         </div>
                         <button
-                            disabled={numbers.length < 1 || project === "*"}
+                            disabled={numbers.length < 1 || (checkPermission(auth,"old_admin_lead") && project === "*")}
                             onClick={(e) => {
                                 e.preventDefault();
                                 setLoading(true)
@@ -113,7 +115,10 @@ const AddOldLead : FC<AddOldLeadProps> = () => {
                                         timer: 2000
                                     })
                                 ).finally(() => {
-                                    setLoading(false)
+                                    setLoading(false);
+                                    if (textAreaRef.current) {
+                                        textAreaRef.current.value = "";
+                                    }
                                 })                        
                             }}
                             dir={TRANSLATIONS.Direction[lang]}

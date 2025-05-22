@@ -19,13 +19,13 @@ interface RequestsTableBasicProps {
 
 const RequestsTableBasic: FC<RequestsTableBasicProps> = ({className ,user_uuid, date }) => {
     const {lang} = useContext(LanguageContext)
-    const [currentPage,setCurrentPage] = useState(1)
+    const [currentPage,setCurrentPage] = useState(1)    
     const {data , loading } = useRequest<RequestType>({
         url:"api/users/request",
         method:"GET",
         params:{
             user__uuid:user_uuid,
-            date__gte: `${date.getFullYear()}-${date.getMonth()}-25`,
+            date__gte: date.getMonth() === 0 ? `${date.getFullYear()-1}-12-25`: `${date.getFullYear()}-${date.getMonth()}-25` ,
             date__lte: `${date.getFullYear()}-${date.getMonth()+1}-26`,
             page:currentPage
 

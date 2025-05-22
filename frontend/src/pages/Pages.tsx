@@ -32,6 +32,11 @@ import AttendanceDetailsLated from "./AttendanceDetailsLated/AttendanceDetailsLa
 import TreasuryProjects from "./TreasuryProjects/TreasuryProjects";
 import TeamDetails from "./TeamDetails/TeamDetails";
 import AddOldLead from "./AddOldLead/AddOldLead";
+import AdminSalaryHistory from "./AdminSalaryHistory/AdminSalaryHistory";
+import UserSalaryHistory from "./UserSalaryHistory/UserSalaryHistory";
+import ActionPlans from "./ActionPlans/ActionPlans";
+import MyActionPlans from "./MyActionPlans/MyActionPlans";
+import BasicView from "../components/BasicView/BasicView";
 
 interface PagesProps {}
 
@@ -100,12 +105,15 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/add-report-social" element={<AddReport/>}/>
                                             <Route path="/reports" element={<Reports/>}/>
                                             <Route path="/project-report/:project_uuid" element={<ProjectReport/>}/>
+                                            <Route path="/user-salary-history/:user_uuid" element={<UserSalaryHistory/>}/>
                                             <Route path="/old-lead" element={<AddOldLead/>}/>
-
+                                            <Route path="/salary-history" element={<AdminSalaryHistory/>}/>
+                                            <Route path="/action-plans" element={<ActionPlans/>}/>
+                                            <Route path="/my-action-plans" element={<MyActionPlans/>}/>
+                                            {/* <Route path="/my-basic-view" element={<BasicView/>}/> */}
                                             <Route path="*" element={<NotFound/>}/>
                                         </Routes>
                                     </MainLayout>
-                            
                         </BrowserRouter>
                     </div>  
                     <DarkModeButton/>

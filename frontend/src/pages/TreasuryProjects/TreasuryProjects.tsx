@@ -6,11 +6,12 @@ import Container from '../../layouts/Container/Container';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import { sendRequest } from '../../calls/base';
 import UploadOutcome from '../../components/UploadOutcome/UploadOutcome';
+import { checkPermission } from '../../utils/permissions/permissions';
 
 
 
 const TreasuryProjects = () => {
-    // const {auth} = useAuth()
+    const {auth} = useAuth()
     // const {lang} = useContext(LanguageContext)
     const [loading , setLoading] = useState(false)
     const [refresh,setRefresh] = useState<boolean>(false);
@@ -34,7 +35,9 @@ const TreasuryProjects = () => {
                 loading ? <LoadingComponent/> : <></>
             }
             <div className="col-span-4 w-full flex justify-center items-center">
-                <TotalTreasury setDateOuter={setDate} refresh={refresh} setRefresh={setRefresh}/>
+                {
+                    checkPermission(auth,"view_total_treasury") ? <TotalTreasury setDateOuter={setDate} refresh={refresh} setRefresh={setRefresh}/> : null
+                }
             </div>
             <div className="col-span-4 w-full flex flex-col md:grid md:grid-cols-4 gap-4 justify-center ">
                 {
@@ -51,7 +54,9 @@ const TreasuryProjects = () => {
                 }
             </div>
             <div className="col-span-4 w-full justify-center items-center">
-                <UploadOutcome/>
+                {
+                    checkPermission(auth,"upload_outcome") ? <UploadOutcome/> : null
+                }
             </div>
         </div>
     );

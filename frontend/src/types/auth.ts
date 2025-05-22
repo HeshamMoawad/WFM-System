@@ -1,4 +1,5 @@
 
+
 interface Project {
     uuid:string;
     name : string ,
@@ -33,6 +34,9 @@ interface User {
     is_active:boolean ,
     password_normal?:string,
     total?:number,
+    has_basic?:number,
+    has_commission?:number,
+    basic_project_name?:string
 
 }
 
@@ -41,8 +45,8 @@ interface Me extends User{
     pages: number[];
     permissions:{
         permissions:Permission,
-        main_pages:number[],
-        sub_pages:number[]
+        main_pages:string[],
+        sub_pages:string[]
     } 
 }
 
@@ -77,6 +81,17 @@ interface ArrivingLeaving {
     late:number;
     departure:number;
 
+}
+interface ActionPlanType {
+    uuid:string;
+    created_at:string;
+    updated_at:string;
+    user:Authintication;
+    creator:Authintication;
+    name:string;
+    description:string;
+    date:string;
+    deduction_days:number;
 }
 
 interface RequestType{
@@ -168,6 +183,7 @@ interface BasicDetails {
     kpi:number,
     gift:number,
     take_annual:number,
+    project:Project|null,
     basic:number,
 }
 
@@ -251,6 +267,7 @@ export type {
     Team ,
     Subscription ,
     AdvanceType ,
-    Me
+    Me , 
+    ActionPlanType
 
 };

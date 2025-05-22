@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, type FC } from 'react';
+import { useContext, useEffect, useRef, useState, type FC } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { sendRequest } from '../../calls/base';
 import LoadingPage from '../LoadingPage/LoadingPage';
@@ -17,6 +17,7 @@ import {
 import { ModeContext } from "../../contexts/DarkModeContext";
 import CustomTableRow from '../../components/CustomTableRow/CustomTableRow';
 import DatePicker from 'react-datepicker';
+import { useReactToPrint } from "react-to-print";
 
 interface ProjectReportProps {}
 
@@ -49,6 +50,7 @@ const ProjectReport: FC<ProjectReportProps> = () => {
     const [agents,setAgents] = useState<User[]>([])
     const [loading,setLoading] = useState<boolean>(false)
     const [date,setDate] = useState(new Date())
+
     useEffect(()=>{
         setLoading(true)
         sendRequest({url:"api/users/get-reports" , method:"GET" , params:{project:project_uuid,date:`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`}})
@@ -73,7 +75,6 @@ const ProjectReport: FC<ProjectReportProps> = () => {
                     />
 
                 {/* Add your reports here */}
-
                 <Table data={{nodes:agents}} theme={theme}>
                     {(tableList: any) => (
                         <>

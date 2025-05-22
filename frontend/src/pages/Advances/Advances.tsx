@@ -14,7 +14,7 @@ const Advances: FC<AdvancesProps> = () => {
         <div className='grid justify-items-center md:grid-cols-3'>
             {
                 checkPermission(auth,"add_advance") ?
-                <AdvanceForm className={` ${auth.role === "OWNER" || auth.is_superuser ? "col-span-1" : "col-span-full md:max-w-[400px]"}`} setRefresh={setRefresh} />
+                <AdvanceForm className={` ${auth.role === "OWNER" || auth.is_superuser || auth.role ==="HR" ? "col-span-1" : "col-span-full md:max-w-[400px]"}`} setRefresh={setRefresh} />
                 :null
             }
             {

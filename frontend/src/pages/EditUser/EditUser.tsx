@@ -10,7 +10,7 @@ interface EditUserProps {}
 const EditUser: FC<EditUserProps> = () => {
     const {user_uuid} = useParams()
     const {auth}= useAuth()
-    if(checkPermission(auth,"") && user_uuid){
+    if(checkPermission(auth,"change_user") && user_uuid){
     return (
     <div className='edit-user flex flex-col justify-center items-center'>
             <EditLoginInfo uuid={user_uuid}/>

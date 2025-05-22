@@ -12,13 +12,13 @@ interface SideSection{
     name:string ,
     href:string, 
     Icon?:IconType ,
-    index:number ,
+    page_index:string ,
     // permissions:Perm[]
 }
 
 
 interface SideItem {
-    index:number
+    page_index:string
     name : string ,
     Icon : IconType ,
     sections:SideSection[] ,

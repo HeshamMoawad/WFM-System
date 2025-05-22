@@ -1,8 +1,8 @@
-import  {type FC , useContext, useState} from 'react';
+import  {type FC , useContext, useEffect, useState} from 'react';
 import Container from '../../layouts/Container/Container';
 import useRequest from '../../hooks/calls';
 import { convertObjectToArrays, getFullURL } from '../../utils/converter';
-import { User } from '../../types/auth';
+import { Department, Project, User } from '../../types/auth';
 import { FaHandHoldingUsd, FaUserEdit } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
@@ -14,22 +14,20 @@ import { TRANSLATIONS } from '../../utils/constants';
 import DatePicker from 'react-datepicker';
 import TableFilters from '../../components/UsersTable/TableFilters/TableFilters';
 import { checkPermission } from '../../utils/permissions/permissions';
+import { loadDateFilter , saveDateFilter , loadSearchFilter , saveSearchFilter } from '../../utils/storage';
 
 interface SalaryAllProps {
     department__name?: string;
 }
 
+
 const SalaryAll: FC<SalaryAllProps> = ({department__name}) => {
-    var d = new Date();
-    d.setMonth(d.getMonth()-1)
-    const [date, setDate] = useState<Date>(d);
-    const {auth} = useAuth()
-    const {lang} = useContext(LanguageContext)
+    const [date, setDate] = useState<Date>(new Date());
+    const {auth} = useAuth();
+    const {lang} = useContext(LanguageContext);
+    // const [projects,setProjects] = useState<Set<Project>>()
+    const [projects,setProjects] = useState<Set<string | undefined>>()
     const additionalFilter = department__name ? {department__name} : {}
-    // const additionalFilter = auth.role === "OWNER" || auth.is_superuser ? 
-    //                 department__name ? {department__name} : {}
-    //                 : {}
-                    // {department__name:auth.department.name} 
     const [filters, setFilters] = useState<object>()
     const { data, loading } = useRequest<User>(
         {
@@ -37,24 +35,38 @@ const SalaryAll: FC<SalaryAllProps> = ({department__name}) => {
             method: "GET",
             params: { 
                 date :`${date.getFullYear()}-${date.getMonth()+1}` ,
-                // ...(department ? {department} : {}),
                 ...filters ,
                 ...additionalFilter ,
             },
         },
         [date , department__name , filters],
-        undefined,1000
+        undefined,500
     );
-    if (checkPermission(auth,"view_salary")){
+    useEffect(()=>{
+        // setProjects(new Set(
+        //     data?.results.map((val , indx , arr)=> val.project ).filter((obj,ind,arr)=>{
+        //         return ind === arr.findIndex((other)=>  other.uuid === obj.uuid && other.name === obj.name )})
+        // ))       
+        setProjects(new Set(
+            data?.results.filter((obj,ind,arr)=>obj.basic_project_name ? true :false).map((val , indx , arr)=> val.basic_project_name ).filter((obj,ind,arr)=>{
+                return obj &&  ind === arr.findIndex((other)=>  other === obj )})
+        ))
+    },[data])
+    useEffect(()=>{
+        const location = window.location.pathname.toString()
+        setDate(loadDateFilter(location))
+        setFilters(loadSearchFilter(location))
+    },[])
+    if (checkPermission(auth,"view_commission")){
         const canBasic = checkPermission(auth,"add_basic")
-        const canSalary = checkPermission(auth,"add_salary")
+        const canSalary = checkPermission(auth,"add_commission")
 
         return (
         <div className='flex justify-center'>
             <Container className='w-fit md:w-screen h-fit min-h-[500px] relative gap-3 justify-center items-center '>
             <h1 className='text-2xl text-btns-colors-primary text-center w-full'>{TRANSLATIONS.Salary.title[lang]} - {department__name ? department__name : "All"} - {date.getFullYear()}-{date.getMonth()+1}</h1>
             <div className="col-span-full mt-4 gap-8 flex justify-center">
-                <TableFilters className='md:px-16' setFilters={setFilters} others={false}/>
+                <TableFilters className='md:px-16' setFilters={setFilters} searchValue={filters ?( filters as {username__contains:string}).username__contains : ""} filtersCallBack={(filters:object)=>saveSearchFilter(window.location.pathname.toString(),filters)} others={false}/>
                 <h1 className="text-2xl text-center ">
                     {TRANSLATIONS.Date[lang]} 
                 </h1>
@@ -74,6 +86,7 @@ const SalaryAll: FC<SalaryAllProps> = ({department__name}) => {
                     selected={date} 
                     onChange={(date)=>{
                         if(date && setDate) {
+                            saveDateFilter(window.location.pathname.toString(),date)
                             setDate(date)
                         };
                     }
@@ -101,10 +114,26 @@ const SalaryAll: FC<SalaryAllProps> = ({department__name}) => {
                                             </td>
                                     )}
         
-                            },{
+                            },
+                            {
+                                key:["basic_project_name","project"],
+                                method: (_) => {
+                                    const {basic_project_name="-" , project={name:"-"} } = _ as any;
+                                    return basic_project_name ? basic_project_name : (
+                                        <td
+                                            key={Math.random()}
+                                            className="text-center w-[40px] h-[40px] px-3 py-1"
+                                        >
+                                            {project.name}
+                                        </td>
+                                    );
+                                }
+                            },
+                            {
                                 key:"username",
                                 method:null
-                            },{
+                            },
+                            {
                                 key:"role",
                                 method:null
                             },{
@@ -160,6 +189,22 @@ const SalaryAll: FC<SalaryAllProps> = ({department__name}) => {
                         ])}
                     
                     />
+                    <div className='flex flex-row rounded-md h-10 min-w-[950px] md:min-w-[1000px] items-center justify-evenly bg-light-colors-dashboard-third-bg dark:bg-dark-colors-login-third-bg md:w-full'>
+                        {
+                            projects ? 
+                            
+                            Array.from(projects).map((val)=>{
+                                return <div className='w-full text-center' key={Math.random()}>
+                                    {val} : {data?.results.filter((u,ind,arr)=>u?.basic_project_name===val).reduce((total,obj)=>total+ ( obj?.has_commission ? obj?.has_commission : 0),0)} EGP
+                                </div>
+                                }
+                            ) 
+                            :
+
+                            <></>
+                        }
+
+                    </div>
                     </>
                 ):<></>
             }

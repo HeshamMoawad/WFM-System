@@ -165,12 +165,11 @@ export function getArgsFrom(obj:any,args:string[]|string){
 
 
 
-export const textToNumber = (text:string):number=>{
-    let hash = 0;
-    for (let i = 0; i < text.length; i++) {
-        hash += text.charCodeAt(i);
-    }
-    return hash;
+export const textToNumber = (text:string):string=>{
+    return text
+        .split('')
+        .map((char) => char.charCodeAt(0).toString())
+        .join('');
 }
 
 
@@ -181,7 +180,7 @@ export const serialDateToJSDate = (serial: number): Date => {
     const baseDate = new Date(1900, 0, 1); // January 1, 1900
     // Subtract 1 because Excel considers 1/1/1900 as day 1
     // (unless the system is 1904-based, which is less common)
-    const daysSinceBase = Math.floor(serial) - 1;
+    const daysSinceBase = Math.floor(serial) ;
     const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
     // Calculate the full date by adding days and fractional time

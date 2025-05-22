@@ -19,7 +19,10 @@ const Treasury: FC<TreasuryProps> = () => {
     return (
         <div className="treasury flex flex-col md:grid md:grid-cols-4 gap-5 place-items-start md:p-3">
             <div className="col-span-4 w-full flex justify-center items-center">
-                <TotalTreasury refresh={refresh} setRefresh={setRefresh}/>
+                {
+                    checkPermission(auth,"view_total_treasury") ? <TotalTreasury refresh={refresh} setRefresh={setRefresh}/> : null
+                }
+                
             </div>
             <div className="flex flex-col justify-center items-center col-span-2 w-full">
                 {   

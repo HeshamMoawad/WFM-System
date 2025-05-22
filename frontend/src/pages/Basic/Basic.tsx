@@ -1,4 +1,4 @@
-import { type FC, useState, useContext } from "react";
+import { type FC, useState, useContext , useEffect } from "react";
 import Container from "../../layouts/Container/Container";
 import useRequest from "../../hooks/calls";
 import { convertObjectToArrays, getFullURL } from "../../utils/converter";
@@ -14,30 +14,45 @@ import { LanguageContext } from "../../contexts/LanguageContext";
 import DatePicker from "react-datepicker";
 import { checkPermission } from "../../utils/permissions/permissions";
 import { useAuth } from "../../hooks/auth";
+import TableFilters from "../../components/UsersTable/TableFilters/TableFilters";
+import { loadDateFilter , saveDateFilter , loadSearchFilter , saveSearchFilter } from '../../utils/storage';
+
 
 interface BasicProps {}
 
 const Basic: FC<BasicProps> = () => {
     const { lang } = useContext(LanguageContext)
     const [date, setDate] = useState<Date>(new Date());
+    const [filters, setFilters] = useState<object>()
     const {auth} = useAuth()
     const { data, loading } = useRequest<User>(
         {
             url: "api/commission/users-basic",
             method: "GET",
-            params: { date :`${date.getFullYear()}-${date.getMonth()+1}` },
+            params: { 
+                date :`${date.getFullYear()}-${date.getMonth()+1}` ,
+                ...filters
+            },
         },
-        [date]
+        [date , filters],
+        undefined,500
     );
+    useEffect(()=>{
+        const location = window.location.pathname.toString()
+        setDate(loadDateFilter(location))
+        setFilters(loadSearchFilter(location))
+    },[])
     const canAddBasic = checkPermission(auth,"add_basicrecord")
     if(checkPermission(auth,"view_basicrecord")){
         return (
             <div className="flex justify-center">
                 <Container className="w-fit md:w-screen h-fit min-h-[300px] relative gap-3 justify-center items-center ">
                     <div className="w-full grid md:grid-cols-8">
-                        <h1 className="md:col-span-5 text-2xl text-center text-btns-colors-primary w-full place-self-center">
+                        <h1 className="md:col-span-3 text-2xl text-center text-btns-colors-primary w-full place-self-center">
                             {TRANSLATIONS.Basic.title[lang]} 
                         </h1>
+                        <TableFilters className='md:col-span-2 md:px-16' setFilters={setFilters} searchValue={filters ?( filters as {username__contains:string}).username__contains : ""} filtersCallBack={(filters:object)=>saveSearchFilter(window.location.pathname.toString(),filters)} others={false}/>
+
                         <h1 className="col-span-1 text-2xl text-center w-full place-self-center">
                             {TRANSLATIONS.Date[lang]}  
                         </h1>
@@ -57,9 +72,10 @@ const Basic: FC<BasicProps> = () => {
                             selected={date} 
                             onChange={(date)=>{
                                 if(date && setDate) {
+                                    saveDateFilter(window.location.pathname.toString(),date)
                                     setDate(date)
                                 };
-                            }
+                                    }
                         }/>
                     </div>
 
@@ -68,7 +84,7 @@ const Basic: FC<BasicProps> = () => {
                     {data ? (
                         <>
                             <Table
-                                className="mb-2"
+                                className="mb-2 justify-center items-center"
                                 headers={TRANSLATIONS.Basic.table.headers[lang]} 
                                 data={convertObjectToArrays(data?.results, [
                                     {
@@ -100,6 +116,20 @@ const Basic: FC<BasicProps> = () => {
                                         },
                                     },
                                     {
+                                        key: "basic_project_name",
+                                        method: (_) => {
+                                            const item = _ as any;
+                                            return item ? item : (
+                                                <td
+                                                    key={Math.random()}
+                                                    className="text-center w-[40px] h-[40px] px-3 py-1"
+                                                >
+                                                    -
+                                                </td>
+                                            );
+                                        }
+                                    },
+                                    {
                                         key: "username",
                                         method: null,
                                     },
@@ -110,6 +140,12 @@ const Basic: FC<BasicProps> = () => {
                                     {
                                         key: "title",
                                         method: null,
+                                    },
+                                    {
+                                        key: "basic",
+                                        method: (_) => {
+                                            return String(_) 
+                                        },
                                     },
                                     {
                                         key: "department",

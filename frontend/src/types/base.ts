@@ -1,5 +1,5 @@
 
-type Childrens = string | JSX.Element | null | JSX.Element[]
+type Childrens = React.ReactNode;
 
 type DarkModeType = boolean// "light"|'dark' 
 

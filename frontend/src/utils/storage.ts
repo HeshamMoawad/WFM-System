@@ -8,6 +8,7 @@ export const LANG_KEY:string = "Lang"
 export const CLIENT_ID_KEY:string = "uniqueID"
 export const VERSION_KEY : string = "Version"
 
+
 export const save = (key:string , obj:Object):any=>{
     localStorage.setItem( key ,JSON.stringify(obj)) 
     return obj
@@ -16,6 +17,7 @@ export const save = (key:string , obj:Object):any=>{
 export const load = (key:string ,save:()=>Object):any=>{
     const local = localStorage.getItem(key)
     if (typeof local === typeof null ){ // typeof local === typeof undefined || 
+        console.log(key,'will generate new')
         return save()
     }else {
         return JSON.parse(local as string)
@@ -79,4 +81,46 @@ export const loadLang = ():Language =>{
     const loadedLang = load(LANG_KEY,()=>{return saveLang('en');})
     return loadedLang
 }
+
+
+export const saveDateFilter = (location:string,date:Date)=>{
+    return save(`${location}|Date`,date.toString())
+}
+
+export const loadDateFilter = (location:string):Date=>{
+    const date =  load(`${location}|Date`,()=>{return saveDateFilter(location,new Date())})
+    if (date) {
+        return new Date(date)
+    }
+    return new Date()
+}   
+
+export const saveSearchFilter = (location:string,search:object)=>{
+    return save(`${location}|Search`,search)
+}
+
+export const loadSearchFilter = (location:string)=>{
+    const search =  load(`${location}|Search`,()=>{return saveSearchFilter(location,{})})    
+    return  search 
+}   
+
+
+export const saveSearchFilterSelect = (location:string,search:string)=>{
+    return save(`${location}|Search|Select`,search)
+}
+
+export const loadSearchFilterSelect = (location:string)=>{
+    const search =  load(`${location}|Search|Select`,()=>{return saveSearchFilterSelect(location,"")})    
+    return  search  ? search : ""
+}   
+
+
+// export const saveSelected = (location:string,search:string)=>{
+//     return save(`${location}|Select`,search)
+// }
+
+// export const loadSelected = (location:string)=>{
+//     const selected =  load(`${location}|Select`,()=>{return saveSelected(location,"")})    
+//     return  selected  ? selected : ""
+// }   
 
