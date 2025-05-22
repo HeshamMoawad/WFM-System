@@ -52,7 +52,7 @@ const UsersTable: FC<UsersTableProps> = () => {
     const {data , loading } = useRequest<User>({
         url: 'api/users/user' ,
         method: 'GET',
-        params: {...filters , is_superuser:"False" ,page_size:1000},
+        params: {...filters , is_superuser:"False",is_active:"True" ,page_size:1000},
     },[filters],undefined,1500)
 
     return (
@@ -93,7 +93,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                             key:["password_normal" , "is_superuser" , "role"],
                             method:(_)=>{
                                 const { password_normal , is_superuser = false , role = "AGENT"} = _ as any;
-                                return <td className={``} >{!(is_superuser || role === "OWNER" || role === "MANAGER") ? <PwdComponent content={password_normal}/> : null}</td> 
+                                return <td className={``} >{checkPermission(auth,"view_password_user") && !is_superuser && role!== "OWNER" ? <PwdComponent content={password_normal}/> : null}</td> 
                             }
                         },{
                             key:"is_active",
@@ -136,7 +136,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 const {uuid,is_superuser=false,role = "AGENT"} = args as any;
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
-                                            {canEdit && !is_superuser && role!=="OWNER" && role !== "MANAGER" ? (
+                                            {is_superuser || canEdit ? (
                                                 <Link className='rounded-md w-2/3 h-8' to={`/edit-user/${uuid}`} >
                                                     <FaUserEdit className='w-full h-6 text-center fill-btns-colors-primary'/>
                                                 </Link>
@@ -152,7 +152,7 @@ const UsersTable: FC<UsersTableProps> = () => {
                                 return (
                                     <td key={Math.random()} className='px-3 py-1'>
                                         {
-                                            canDelete && !is_superuser && role!=="OWNER" && role !== "MANAGER" ? (
+                                            canDelete && !is_superuser && role!=="OWNER" ? (
                                                 <a onClick={(e)=>{
                                                         e.preventDefault();
                                                         Swal.fire({

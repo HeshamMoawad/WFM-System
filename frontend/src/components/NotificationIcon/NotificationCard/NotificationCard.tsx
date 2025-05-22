@@ -47,7 +47,14 @@ const NotificationCard: FC<NotificationCardProps> = ({text , time , uuid , setRe
             }
             
             <p className="w-8/12 md:w-10/12">
-                {text}
+                {text.split(" n ").map((v,i,a)=>{
+                    return (
+                        <>
+                        {v}
+                        <br/>
+                        </>
+                    )
+                })}
             </p>
         </div>
     );

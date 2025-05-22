@@ -1,8 +1,9 @@
-import {  ReactElement, SetStateAction, useState } from 'react';
+import {  ReactElement, SetStateAction, useState , useEffect } from 'react';
 import useRequest from '../../hooks/calls';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import { getArgsFrom } from '../../utils/converter';
 import { useAuth } from '../../hooks/auth';
+import { saveSearchFilterSelect , loadSearchFilterSelect } from '../../utils/storage';
 // import {Department} from '../../types/auth';
 
 interface SelectComponentProps {
@@ -36,7 +37,15 @@ function SelectComponent<ValuesType>({name,LabelName,url,selectClassName ,params
         method:"GET",
         url,
         params:searchOptions ? {...params,[searchOptions.attr_name]:search} : {...params},
-    }, [refresh ,search , params])
+    }, 
+    [refresh ,search , params],
+        undefined , 500
+    )
+    useEffect(()=>{
+        const location = window.location.pathname.toString()
+        setSearch(loadSearchFilterSelect(location))
+    },[])
+
     return (
     <>
         {
@@ -45,7 +54,7 @@ function SelectComponent<ValuesType>({name,LabelName,url,selectClassName ,params
         <label htmlFor={name} className={`${LabelClassName}`}>{LabelName}</label>
         {
             searchOptions ? (        
-            <input type="text" className={searchClassName} placeholder='Search' value={search} onChange={(e)=>{setSearch(e.target.value)}} />
+            <input type="text" className={searchClassName} placeholder='Search' value={search} onChange={(e)=>{setSearch(e.target.value);saveSearchFilterSelect(window.location.pathname.toString(),e.target.value)}} />
             ) : <></>
         }
         <select onChange={(e)=>setSelection?setSelection(e.currentTarget.value) : null} multiple={multiple} name={name} className={`${selectClassName}`} required={required}>

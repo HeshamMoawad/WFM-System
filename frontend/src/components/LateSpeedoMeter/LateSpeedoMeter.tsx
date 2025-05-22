@@ -20,7 +20,7 @@ const LateSpeedoMeter: FC<LateSpeedoMeterProps> = ({date,userID}) => {
         method:"GET",
         params:{
             user__uuid:userID ,
-            date__gte: `${date.getFullYear()}-${date.getMonth()}-26`,
+            date__gte: date.getMonth() === 0 ? `${date.getFullYear()-1}-12-25`: `${date.getFullYear()}-${date.getMonth()}-25`,
             date__lte: `${date.getFullYear()}-${date.getMonth()+1}-25`,
         }
     },[date,userID])
@@ -37,6 +37,7 @@ const LateSpeedoMeter: FC<LateSpeedoMeterProps> = ({date,userID}) => {
                         <ReactSpeedometer segmentColors={["rgb(122,218,44)","rgb(212,231,37)","rgb(243,168,31)","rgb(255,71,26)"]} minValue={0} maxValue={100} value={ data.results.length !== 0 ? Math.floor(((data.results.length - data.results.filter((obj:ArrivingLeaving)=>obj.late < 60 ).length )/data.results.length) *100) : 0 } height={210} width={320} segments={4} needleColor='black'/>
                     ) : <ReactSpeedometer segmentColors={["rgb(122,218,44)","rgb(212,231,37)","rgb(243,168,31)","rgb(255,71,26)"]} minValue={0} maxValue={100} value={0} height={210} width={320} segments={4} needleColor='black'/>
                 }
+                
             </div>
         </Container>
 );

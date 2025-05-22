@@ -1,4 +1,4 @@
-import { SetStateAction, useContext, useEffect, useState, type FC } from 'react';
+import { SetStateAction, useContext, useEffect, useRef, useState, type FC } from 'react';
 import Container from '../../layouts/Container/Container';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import { convertObjectToArrays, formatTime, getLastDayOfMonth } from '../../utils/converter';
@@ -13,6 +13,7 @@ import DatePicker from 'react-datepicker';
 // import "react-datepicker/dist/react-datepicker.css";
 import '../CustomDatePicker/DatePicker.css';
 import { checkPermission } from '../../utils/permissions/permissions';
+import { useReactToPrint } from 'react-to-print';
 
 
 interface AttendanceDetailsTableProps {
@@ -25,9 +26,10 @@ interface AttendanceDetailsTableProps {
     withDetails?: boolean;
     className?: string;
     setTotal?:React.Dispatch<SetStateAction<number|null>>;
+    ref?:React.RefObject<HTMLDivElement>;
 }
 
-const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID , setTotal, setUserID,date , setDate,className, userBox=true , withDetails=true}) => {
+const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({ref,label , userID , setTotal, setUserID,date , setDate,className, userBox=true , withDetails=true}) => {
     const [percentage,setPercantage] = useState(0)
     const {lang} = useContext(LanguageContext)
     const {auth} = useAuth()
@@ -61,7 +63,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
         }
     },[data])
     return (
-        <Container className={`${className} h-fit relative pb-2`} >
+        <Container ref={ref} className={`${className} h-fit relative pb-2`} >
         {
             loading ? <LoadingComponent/> : <></>
         }
@@ -69,12 +71,13 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
             <label className='p-2 w-fit text-2xl text-btns-colors-primary'>{label}</label>
             {
                 checkPermission(auth,"view_admin_arrivingleaving") && userBox && withDetails ?
-                // (auth.role === "OWNER" || auth.role === "MANAGER" || auth.role === "HR") && userBox && withDetails ?
                 (
-                    <div className='w-2/6 flex justify-evenly items-center'>
+                    <div className='w-2/6 flex justify-evenly items-center gap-3'>
+
                     <SelectComponent
                         selectClassName='md:w-2/3'
                         LabelClassName='text-xl font-bold'
+                        searchClassName='w-1/3'
                         LabelName={lang === "en" ? "User" : "الموظف"}
                         url='api/users/user'
                         name='user'
@@ -83,6 +86,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                             label:"username"
                         }}
                         setSelection={setUserID}
+                        searchOptions={{attr_name:"username__contains"}}
                         params={{is_superuser:"False",is_staff:"False"}}
                         moreOptions={[{label:"Me", value:auth.uuid}]}
                         // selected={[auth.username]}
@@ -132,6 +136,14 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                             key:"date",
                             method:(item) => WEEK_DAYS[new Date(item as string).getDay()][lang],
                         }, 
+                        
+                        {
+                            key:"project",
+                            method:(item) => {
+                                const project = item as any;
+                                return project ? project : "-" 
+                            },
+                        }, 
                         {
                             key:["arriving_at","deduction"],
                             method:(item) => {
@@ -143,7 +155,7 @@ const AttendanceDetailsTable: FC<AttendanceDetailsTableProps> = ({label , userID
                                 if ( deduction > 0 && deduction < 0.5){
                                     color =  "#ee9898"
                                 }
-                                if (deduction > 0.5 && deduction < 1 ){
+                                if (deduction > 0.25 && deduction < 1 ){
                                     color =  "#e64444"
                                 }
                                 if (deduction >= 1 ){

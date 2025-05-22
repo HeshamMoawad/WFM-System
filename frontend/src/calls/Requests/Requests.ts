@@ -10,10 +10,10 @@ import { Language } from '../../types/base';
 
 
 
-export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.Dispatch<React.SetStateAction<boolean>> , setRefresh?:React.Dispatch<React.SetStateAction<boolean>> ) => {
+export const onSubmitRequest = (e:FormEvent , lang:Language ,  setLoading:React.Dispatch<React.SetStateAction<boolean>> , setRefresh?:React.Dispatch<React.SetStateAction<boolean>>,url:string="api/users/request" ) => {
     setLoading(true)
     e.preventDefault()
-    sendRequest({url:"api/users/request",method:"POST",data:parseFormData(e)})
+    sendRequest({url,method:"POST",data:parseFormData(e)})
         .then(data => {
              Swal.fire({
                 position: "center",

@@ -28,6 +28,7 @@ const BasicForm: FC<BasicFormProps> = ({className  , deductionDays ,deductionMon
         kpi:0,
         gift:0,
         take_annual:0,
+        project: null,
         basic: Math.round(userCommissionDetails.basic - (deductionDays ?  deductionDays * ( userCommissionDetails.basic/30 ) : 0) - (deductionMoney ? deductionMoney : 0)),
 
     } )
@@ -82,9 +83,11 @@ const BasicForm: FC<BasicFormProps> = ({className  , deductionDays ,deductionMon
                 }}>
                 <label className='text-2xl text-btns-colors-primary place-self-center col-span-3 mb-1'>{TRANSLATIONS.Basic.title[lang]}</label>
                 
+                <label className='text-2xl place-self-center col-span-3 mb-1'>{TRANSLATIONS.Basic.title[lang]} : {userCommissionDetails.basic}</label>
                 <label className='text-2xl place-self-center col-span-3 mb-1'>{TRANSLATIONS.Basic.annual[lang]} : {userCommissionDetails.user.annual_count}</label>
 
                 <input disabled={disabled} type="hidden" name="user" value={userCommissionDetails.user.uuid} />
+                <input disabled={disabled} type="hidden" name="project" value={userCommissionDetails.user.project.uuid} />
                 {/* <input type="hidden" name="date" value={parseDateFromParams(date)} /> */}
 
 

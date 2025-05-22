@@ -26,7 +26,7 @@ const SidebarPopup: FC<SidebarPopupProps> = ({name,index,sections , setOpened }:
         <ul className="pt-6 space-y-6">
             {
                 sections.map((section,index)=>{
-                    if (checkPagePermission(auth,section.index)) {
+                    if (checkPagePermission(auth,section.page_index)) {
 
                         return (
                             <li key={index}>

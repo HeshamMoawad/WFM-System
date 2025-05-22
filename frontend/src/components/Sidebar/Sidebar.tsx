@@ -25,6 +25,8 @@ import { MdOutlineAnalytics , MdDirectionsRun } from "react-icons/md";
 import { IconType } from 'react-icons';
 import { checkPagePermission } from '../../utils/permissions/permissions';
 import { AiOutlineUserDelete } from "react-icons/ai";
+import { TbCalendarDollar } from "react-icons/tb";
+import { MdOutlineMoneyOff } from "react-icons/md";
 
 
 
@@ -40,55 +42,61 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.DashBoard.title[lang] ,
             Icon : RxDashboard ,
-            index:textToNumber("main-dashboard"),
+            page_index:textToNumber("main-dashboard"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.DashBoard.title[lang],
                     href:'/dashboard',
                     Icon:RxDashboard , 
-                    index:textToNumber("dashboard"),
+                    page_index:textToNumber("dashboard"),
                 },
                 {
                     name:TRANSLATIONS.SideBar.DashBoard.market[lang],
                     href:'/dashboard-market',
                     Icon:MdOutlineAnalytics ,
-                    index:textToNumber("market-dashboard"),
+                    page_index:textToNumber("market-dashboard"),
                 },
             ]
         },
         {
             name : TRANSLATIONS.SideBar.FPDetails.title[lang],
             Icon : PiFingerprint ,
-            index:textToNumber("main-fp-details"),
+            page_index:textToNumber("main-fp-details"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.Requests[lang],
                     href:'/requests',
                     Icon:VscGitPullRequestNewChanges,
-                    index:textToNumber("requests"),
+                    page_index:textToNumber("requests"),
                 },
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.AttendanceDetails[lang],
                     href:'/attendance-details',
-                    index:textToNumber("fp-details"),
+                    page_index:textToNumber("fp-details"),
                     Icon:IoCalendarNumberOutline,
                 },
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.AttendanceDetailsLated[lang],
                     href:'/attendance-details-lated',
-                    index:textToNumber("fp-details-lated"),
+                    page_index:textToNumber("fp-details-lated"),
                     Icon:MdDirectionsRun,
+                },
+                {
+                    name:TRANSLATIONS.ActionPlan.title[lang],
+                    href:'/my-action-plans',
+                    page_index:textToNumber("my-action-plans"),
+                    Icon:MdOutlineMoneyOff,
                 },
                 {
                     name:TRANSLATIONS.SideBar.FPDetails.SalaryList[lang],
                     href:'/my-salary-list',
-                    index:textToNumber("my-salary-list"),
+                    page_index:textToNumber("my-salary-list"),
                     Icon:FaHandHoldingUsd,
                 },
                 {
                     name:TRANSLATIONS.SideBar.Treasury.Advance[lang],
                     href:'/advances',
-                    index:textToNumber("my-advances"),
+                    page_index:textToNumber("my-advances"),
                     Icon:PiHandCoins ,    
                 }
 
@@ -97,24 +105,24 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name:TRANSLATIONS.SideBar.ReportSocial.title[lang],
             Icon:HiOutlineDocumentReport ,
-            index:textToNumber("main-report-social"),
+            page_index:textToNumber("main-report-social"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.ReportSocial.report[lang],
                     href:'/add-report-social',
-                    index:textToNumber("add-report-social"),
+                    page_index:textToNumber("add-report-social"),
                     Icon:HiOutlineDocumentAdd,
                 },
                 {
                     name:TRANSLATIONS.SideBar.ReportSocial.view[lang],
                     href:'/reports',
-                    index:textToNumber("show-report-social"),
+                    page_index:textToNumber("show-report-social"),
                     Icon:HiOutlineDocumentText,
                 },
                 {
                     name:TRANSLATIONS.SideBar.ReportSocial.oldlead[lang],
                     href:'/old-lead',
-                    index:textToNumber("add-old-lead"),
+                    page_index:textToNumber("add-old-lead"),
                     Icon:AiOutlineUserDelete,
                 },
 
@@ -123,13 +131,19 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.Basic.title[lang],
             Icon:PiMoney ,
-            index:textToNumber("main-basic"),
+            page_index:textToNumber("main-basic"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.Basic.title[lang],
                     href:'/basic',
-                    index:textToNumber("basic"),
+                    page_index:textToNumber("basic"),
                     Icon:PiMoney,
+                },
+                {
+                    name:TRANSLATIONS.SideBar.Basic.actionPlan[lang],
+                    href:'/action-plans',
+                    page_index:textToNumber("action-plans"),
+                    Icon:MdOutlineMoneyOff,
                 },
             ]
     
@@ -137,43 +151,43 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.Commission.title[lang],
             Icon:PiWallet ,
-            index:textToNumber("main-commission"),
+            page_index:textToNumber("main-commission"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.Commission.Marketing[lang],
                     href:'/salary-marketing',
-                    index:textToNumber("market-commission"),
+                    page_index:textToNumber("market-commission"),
                     Icon:BsPersonWorkspace ,
                 },{
                     name:TRANSLATIONS.SideBar.Commission.Sales[lang],
                     href:'/salary-sales',
-                    index:textToNumber("sales-commission"),
+                    page_index:textToNumber("sales-commission"),
                     Icon:RiCustomerService2Line ,
     
                 },{
                     name:TRANSLATIONS.SideBar.Commission.Technical[lang],
                     href:'/salary-technichal',
-                    index:textToNumber("technical-commission"),
+                    page_index:textToNumber("technical-commission"),
                     Icon:PiChartLine ,
                 },{
                     name:TRANSLATIONS.SideBar.Commission.General[lang],
                     href:'/salary-general',
-                    index:textToNumber("general-commission"),
+                    page_index:textToNumber("general-commission"),
                     Icon:CgUserList ,
                 },{
                     name:TRANSLATIONS.SideBar.Commission.All[lang],
                     href:'/salary-all',
-                    index:textToNumber("all-commission"),
+                    page_index:textToNumber("all-commission"),
                     Icon:PiUsersThree ,
                 },{
                     name:TRANSLATIONS.SideBar.Commission.CoinChanger[lang],
                     href:'/coin-changer',
-                    index:textToNumber("coin-changer"),
+                    page_index:textToNumber("coin-changer"),
                     Icon:BsCashCoin ,
                 },{
                     name:TRANSLATIONS.SideBar.Commission.Leads[lang],
                     href:'/leads',
-                    index:textToNumber("market-leads"),
+                    page_index:textToNumber("market-leads"),
                     Icon:FaUsersLine, 
                 }
             ]
@@ -182,36 +196,36 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.Users.title[lang],
             Icon : LiaUsersCogSolid ,
-            index:textToNumber("main-users"),
+            page_index:textToNumber("main-users"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.Users.AddUser[lang],
                     href:'/add-user',
-                    index:textToNumber("add-user"),
+                    page_index:textToNumber("add-user"),
                     Icon:RiUserAddLine ,
                 },
                 {
                     name:TRANSLATIONS.SideBar.Users.UsersList[lang],
                     href:'/users-list',
-                    index:textToNumber("users-list"),
+                    page_index:textToNumber("users-list"),
                     Icon:PiUserList ,
                 },
                 {
                     name:TRANSLATIONS.SideBar.Users.DeviceAccess[lang],
                     href:'/devices-access',
-                    index:textToNumber("devices-access"),
+                    page_index:textToNumber("devices-access"),
                     Icon:BiDevices ,
                 },
                 {
                     name:TRANSLATIONS.SideBar.Users.Teams[lang],
                     href:'/teams',
-                    index:textToNumber("teams"),
+                    page_index:textToNumber("teams"),
                     Icon:RiTeamLine ,
                 },
                 {
                     name:TRANSLATIONS.SideBar.Users.TeamsPreview[lang],
                     href:'/teams-details',
-                    index:textToNumber("teams-details"),
+                    page_index:textToNumber("teams-details"),
                     Icon:BiSolidUserDetail ,
                 },
             ]
@@ -220,13 +234,19 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name : TRANSLATIONS.SideBar.General.title[lang],
             Icon:RiListSettingsLine ,
-            index:textToNumber("main-general"),
+            page_index:textToNumber("main-general"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.General.Notification[lang],
                     href:'/notifications',
-                    index:textToNumber("notification"),////////////////////////////
+                    page_index:textToNumber("notification"),////////////////////////////
                     Icon:GrNotification,     
+                },
+                {
+                    name:TRANSLATIONS.SideBar.General.SalaryHistory[lang],
+                    href:'/salary-history',
+                    page_index:textToNumber("salary-history"),////////////////////////////
+                    Icon:TbCalendarDollar ,     
                 },
             ]
     
@@ -234,24 +254,24 @@ const Sidebar: FC<SidebarProps> = () => {
         {
             name:TRANSLATIONS.SideBar.Treasury.title[lang],
             Icon:BsSafe,
-            index:textToNumber("main-treasury"),
+            page_index:textToNumber("main-treasury"),
             sections:[
                 {
                     name:TRANSLATIONS.SideBar.Treasury.title[lang],
                     href:'/treasury',
                     Icon:BsSafe ,
-                    index:textToNumber("treasury"),
+                    page_index:textToNumber("treasury"),
                 },
                 {
                     name:TRANSLATIONS.SideBar.Treasury.treasuryProjects[lang],
                     href:'/treasury-projects',
                     Icon:IoStatsChartOutline ,
-                    index:textToNumber("treasury-projects"),
+                    page_index:textToNumber("treasury-projects"),
                 },
                 {
                     name:TRANSLATIONS.SideBar.Treasury.Advance[lang],
                     href:'/advances',
-                    index:textToNumber("advances"),
+                    page_index:textToNumber("advances"),
                     Icon:PiHandCoins ,
                 }
             ]
@@ -279,7 +299,7 @@ const Sidebar: FC<SidebarProps> = () => {
             <nav>
                 {
                     Items.map((item,index)=>{
-                        if (checkPagePermission(auth,item.index)){
+                        if (checkPagePermission(auth,item.page_index)){
                             return (
                                 <SidebarItem  key={index}  {...{...item , index }} setOpened={setOpened}/>
                                 )

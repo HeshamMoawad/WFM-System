@@ -4,7 +4,7 @@ interface LoadingComponentProps {}
 
 const LoadingComponent: FC<LoadingComponentProps> = () => {
     return (        
-    <div className="loading absolute inset-0 w-[100%] bg-[rgba(0,0,0,0.5)]  flex justify-center items-center">
+    <div className="loading absolute inset-0 w-full h-full bg-[rgba(0,0,0,0.5)]  flex justify-center items-center">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 100 100"

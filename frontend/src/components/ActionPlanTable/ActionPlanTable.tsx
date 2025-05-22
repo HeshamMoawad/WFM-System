@@ -2,7 +2,7 @@ import React, { SetStateAction, useContext, useState, type FC } from "react";
 import Container from "../../layouts/Container/Container";
 import Table from "../Table/Table";
 import { convertObjectToArrays, getFullURL } from "../../utils/converter";
-import { RequestType } from "../../types/auth";
+import { ActionPlanType } from "../../types/auth";
 import useRequest from "../../hooks/calls";
 import { useAuth } from "../../hooks/auth";
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
@@ -15,13 +15,13 @@ import { TRANSLATIONS } from "../../utils/constants";
 import { Status } from "../../types/base";
 import { checkPermission } from "../../utils/permissions/permissions";
 
-interface RequestTableProps {
+interface ActionPlanTableProps {
     className?: string;
     refresh: boolean;
     setRefresh: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const RequestTable: FC<RequestTableProps> = ({
+const ActionPlanTable: FC<ActionPlanTableProps> = ({
     className,
     refresh,
     setRefresh,
@@ -30,10 +30,10 @@ const RequestTable: FC<RequestTableProps> = ({
     const [currentPage,setCurrentPage] = useState(1);
     const {lang}= useContext(LanguageContext)
     const { auth } = useAuth();
-    const canDelete = checkPermission(auth,"delete_requests")
-    const { data, loading } = useRequest<RequestType>(
+    const canDelete = checkPermission(auth,"delete_actionplan")
+    const { data, loading } = useRequest<ActionPlanType>(
         {
-            url: "api/users/request",
+            url: "api/commission/action-plan",
             method: "GET",
             params:{
                 page_size:20,
@@ -48,7 +48,7 @@ const RequestTable: FC<RequestTableProps> = ({
 
             <div className="flex flex-row justify-between items-center">
                 <label className="text-2xl text-btns-colors-primary">
-                    {TRANSLATIONS.Requests.title[lang]}
+                    {TRANSLATIONS.ActionPlan.title[lang]}
                 </label>
                 <button
                     onClick={(e) => setRefresh(prev=>!prev)}
@@ -62,18 +62,8 @@ const RequestTable: FC<RequestTableProps> = ({
                     <Table
                         className="mb-5"
                         key={Math.random()}
-                        headers={TRANSLATIONS.Requests.table.headers[lang]}
-                        data={convertObjectToArrays<RequestType>(data.results, [
-                            // {
-                            //     key:"user",
-                            //     method : (_)=>{
-                            //         const item = _ as any;
-                            //         return (<div className='flex justify-center items-center bg-[red]'>
-                            //         <img src={getFullURL(item.profile.picture)} alt="" className='rounded-full w-[40px] h-[40px]'/>
-                            //         </div>)
-                            //         // return item.username
-                            //     },
-                            // },
+                        headers={TRANSLATIONS.ActionPlan.table.headers[lang]}
+                        data={convertObjectToArrays<ActionPlanType>(data.results, [
                             {
                                 key: "user",
                                 method: (_) => {
@@ -82,44 +72,49 @@ const RequestTable: FC<RequestTableProps> = ({
                                 },
                             },
                             {
-                                key: "type",
-                                method: (type_)=>{
-                                    return TRANSLATIONS.Request.Types.filter((d)=>d.value === type_)[0].translate[lang]
-                                },
-                            },
-                            {
-                                key: "status",
+                                key: "deduction_days",
                                 method: (_) => {
-                                    const status : Status = _ as any
                                     return (
                                         <td
                                             key={Math.random()}
-                                            className={`px-3 py-1 ${
-                                                status === "PENDING"
-                                                    ? "text-[rgb(234,179,8)]"
-                                                    : status === "REJECTED"
-                                                    ? "text-[red]"
-                                                    : status === "ACCEPTED"
-                                                    ? "text-[green]"
-                                                    : ""
-                                            }`}
+                                            className="px-3 py-1 min-w-[100px] flex justify-center items-center"
                                         >
-                                            {TRANSLATIONS.Request.Status[status][lang]}
+
+                                        <p className="text-[red]">{_} Day</p>
                                         </td>
-                                    );
+                                    )
                                 },
                             },
                             {
-                                key: "details",
-                                method: null,
+                                key: "name",
+                                method: null
+                            },
+                            {
+                                key: "description",
+                                method: (_) => {
+                                    return (
+                                        <td
+                                            key={Math.random()}
+                                            className="px-3 py-1 min-w-[100px] flex justify-center items-center"
+                                        >
+
+                                        <p>{_}</p>
+                                        </td>
+                                    )
+                                },
                             },
                             {
                                 key: "date",
                                 method: (_) => (_ ? _ : "-"),
-                            },{
-                                key: "note",
-                                method: (_) => (_ ? _ : "-"),
-                            },{
+                            },
+                            {
+                                key: "creator",
+                                method: (_) => {
+                                    const item = _ as any;
+                                    return item ? item?.username : "-";
+                                },
+                            },
+                            {
                                 key: "created_at",
                                 method: (_: any) => {
                                     if (_) {
@@ -153,7 +148,7 @@ const RequestTable: FC<RequestTableProps> = ({
                                                     }).then((result) => {
                                                         if (result.isConfirmed) {
                                                             sendRequest({
-                                                                url: "api/users/request",
+                                                                url: "api/commission/action-plan",
                                                                 method: "DELETE",
                                                                 params: { uuid },
                                                             })
@@ -212,4 +207,4 @@ const RequestTable: FC<RequestTableProps> = ({
     );
 };
 
-export default RequestTable;
+export default ActionPlanTable;

@@ -216,7 +216,6 @@ const EditLoginInfo: FC<EditLoginInfoProps> = ({uuid}) => {
                         </div>
                         <label htmlFor="fp_id" className='text-end' >{TRANSLATIONS.AddUser.form.fp_id[lang]}</label>
                         <input type="text" value={loginInfo.fp_id} placeholder={TRANSLATIONS.AddUser.form.fp_id[lang]} disabled name="fp_id" id="fp_id" className='col-span-2 max-w-32 place-content-center outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg'/>
-
                         <div className="col-span-3 md:col-span-6 flex justify-evenly">
                             <button onClick={(e)=>{e.preventDefault();setRefresh(prev=>!prev)}}  className="bg-btns-colors-secondry w-24 h-7 md:w-36 md:h-10 rounded-lg">Cancel</button>
                             <button type="submit" className="bg-btns-colors-primary w-24 h-7 md:w-36 md:h-10 rounded-lg">update</button>

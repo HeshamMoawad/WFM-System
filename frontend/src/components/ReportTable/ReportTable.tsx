@@ -21,6 +21,7 @@ interface ReportTableProps {
     disabled?: boolean;
     name?: string;
     required_indexes?: number[];
+    section_ref?: React.RefObject<HTMLElement>;
 }
 
 const ReportTable: FC<ReportTableProps> = ({ register , tableType ,name  , rows  , required_indexes=[0], disabled=false}) => {
@@ -43,11 +44,12 @@ const ReportTable: FC<ReportTableProps> = ({ register , tableType ,name  , rows 
         });
     const range = (n:number) => Array.from({length: n}, (value, key) => key)
     return (
-        <section className="flex flex-col col-span-full">
+        <section  className="flex flex-col col-span-full">
             <label className="text-3xl text-center">{tableType.toUpperCase()} - {name}</label>
             <Table data={data} theme={theme} >
                 {(tableList: any) => (
                     <>
+                    
                         <Header>
                             <HeaderRow>
                                 <HeaderCell className="h-0"></HeaderCell>
@@ -61,6 +63,7 @@ const ReportTable: FC<ReportTableProps> = ({ register , tableType ,name  , rows 
                             </HeaderRow>
                         </Header>
                         <Body>
+                            
                             {tableList.map(
                                 (item: any, index: number, all: Array<any>) => {
                                     return (

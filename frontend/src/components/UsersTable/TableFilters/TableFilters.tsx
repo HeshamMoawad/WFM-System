@@ -7,18 +7,26 @@ import { TRANSLATIONS } from '../../../utils/constants';
 
 interface TableFiltersProps {
     setFilters:React.Dispatch<SetStateAction<Filters>>;
+    searchValue?:string;
+    filtersCallBack?:Function;
     className?:string;
     others?:boolean
 }
 
-const TableFilters: FC<TableFiltersProps> = ({setFilters , className , others = true}) => {
+const TableFilters: FC<TableFiltersProps> = ({setFilters , filtersCallBack , searchValue , className , others = true}) => {
     const {lang} = useContext(LanguageContext)
     const [refresh , setRefresh] = useState<boolean>(false)
     // 'flex flex-row w-[1000px] md:w-full gap-3 justify-evenly md:px-16'
     return (
     <div className={className}>
-        <input type="text" className='mr-3' placeholder='Search' onChange={e=>{
-                setFilters(prev => ({...prev, username__contains: e.target.value}))
+        <input type="text" className='mr-3' placeholder='Search' value={searchValue?searchValue : ""} onChange={e=>{
+                setFilters(prev =>{ 
+                    const newFilters = {...prev, username__contains: e.target.value};
+                    if (filtersCallBack){
+                        filtersCallBack(newFilters)
+                    }
+                    return newFilters
+                })
             }} />
         {
             others ? 
@@ -33,10 +41,19 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters , className , others = 
                         if (department__uuid === "*"){
                             setFilters(prev => {
                                 const { department__uuid ,...newFilters } = prev;
+                                if (filtersCallBack){
+                                    filtersCallBack(newFilters)
+                                }
                                 return newFilters;
                             })
                         }else {
-                            setFilters(prev => ({...prev, department__uuid}))
+                            setFilters(prev => {
+                                const newFilters = {...prev, department__uuid}
+                                if (filtersCallBack){
+                                    filtersCallBack(newFilters)
+                                }
+                                return newFilters
+                            })
                         }
                     }}
                     moreOptions={[{label:"All",value:"*"}]}
@@ -54,10 +71,19 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters , className , others = 
                         if (project__uuid === "*"){
                             setFilters(prev => {
                                 const { project__uuid , ...newFilters } = prev;
+                                if (filtersCallBack){
+                                    filtersCallBack(newFilters)
+                                }
                                 return newFilters;                
                             })
                         }else {
-                            setFilters(prev => ({...prev, project__uuid}))
+                            setFilters(prev => {
+                                const NewFilters = {...prev, project__uuid}
+                                if (filtersCallBack){
+                                    filtersCallBack(NewFilters)
+                                }
+                                return NewFilters
+                            })
                         }
                     }}
                     moreOptions={[{label:"All",value:"*"}]}
@@ -81,10 +107,19 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters , className , others = 
                     if (role === "*"){
                         setFilters(prev => {
                             const { role , ...newFilters } = prev;
+                            if (filtersCallBack){
+                                filtersCallBack(newFilters)
+                            }
                             return newFilters;                
                         })
                     }else {
-                        setFilters(prev => ({...prev, role}))
+                        setFilters(prev =>{ 
+                            const NewFilters={...prev, role};
+                            if (filtersCallBack){
+                                filtersCallBack(NewFilters)
+                            }
+                            return NewFilters
+                        })
                     }
                 }}
                 />
@@ -92,6 +127,10 @@ const TableFilters: FC<TableFiltersProps> = ({setFilters , className , others = 
             </div>
             <button className='w-[100px]' onClick={(e)=>{
                 setFilters({})
+                if (filtersCallBack){
+                    filtersCallBack({})
+                }
+                
                 setRefresh(prev => !prev)
                 }}><FaFilterCircleXmark className='w-7 h-7 fill-btns-colors-secondry'/></button>
             </>: null

@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 interface SidebarItemProps extends  SideItem{
     href?: string;
     setOpened?: React.Dispatch<React.SetStateAction<boolean>>;
+    index?:number
 }
 
 

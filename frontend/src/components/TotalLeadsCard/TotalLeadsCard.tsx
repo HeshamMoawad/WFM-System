@@ -16,6 +16,9 @@ export interface TotalLeads{
     plus:number,
     plus_value:number,
     plus_price:number,
+    plus_10:number,
+    plus_10_value:number,
+    plus_10_price:number,
     american_leads_price:number,
     teams:{
         name: string,
@@ -34,27 +37,40 @@ const TotalLeadsCard: FC<TotalLeadsCardProps> = ({uuid , year ,className, month 
         <h1 className='text-3xl text-btns-colors-primary text-center w-full'>Leads</h1>
 
         <section className='grid grid-cols-12 text-lg gap-5 my-3'>
-            <div className='col-span-6 place-self-center text-center border-[3px] border-btns-colors-secondry w-full rounded-lg'>
-                <label className=''>Plus Price : 1 x {data?.plus_price} EGP</label>
+            <div className='col-span-4 place-self-center text-center border-[3px] border-btns-colors-secondry w-full rounded-lg'>
+                <label className='col-span-1'>(+5) : {data?.plus_price} EGP</label>
+            </div>
+            
+            <div className='col-span-4 place-self-center  text-center border-[3px] border-btns-colors-secondry w-full rounded-lg'>
+                <label className='col-span-1'>(+10) : {data?.plus_10_price} EGP</label>
             </div>
 
-            <div className='col-span-6 place-self-center  text-center border-[3px] border-btns-colors-secondry w-full rounded-lg'>
-                <label className='col-span-1'>American Price : 1 x {data?.american_leads_price} EGP</label>
+            <div className='col-span-4 place-self-center  text-center border-[3px] border-btns-colors-secondry w-full rounded-lg'>
+                <label className='col-span-1'>American : {data?.american_leads_price} EGP</label>
             </div>
 
 
-            <div className='col-span-3 flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
+            <div className='col-span-full flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
                 <label className='col-span-1'>Total Leads</label>
                 <label className='col-span-1'>{data?.total}</label>
             </div>
-            <div className='col-span-3 flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
-                <label className='col-span-1'>Plus +2</label>
+            <div className='col-span-5 flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
+                <label className='col-span-1'>Plus +5</label>
                 <label className='col-span-1'>{data?.plus}</label>
             </div>
 
-            <div className='col-span-6 flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
-                <label className='col-span-1'>Plus +2 </label>
+            <div className='col-span-7 flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
+                <label className='col-span-1'>Plus +5 </label>
                 <label className='col-span-1'>{data?.plus} x {data?.plus_price} = {data?.plus_value} EGP</label>
+            </div>
+            <div className='col-span-5 flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
+                <label className='col-span-1'>Plus +10</label>
+                <label className='col-span-1'>{data?.plus_10}</label>
+            </div>
+
+            <div className='col-span-7 flex flex-col place-self-center text-center border-[3px] border-btns-colors-primary w-full rounded-lg'>
+                <label className='col-span-1'>Plus +10 </label>
+                <label className='col-span-1'>{data?.plus_10} x {data?.plus_10_price} = {data?.plus_10_value} EGP</label>
             </div>
         </section>
         {

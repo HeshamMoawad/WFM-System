@@ -72,7 +72,7 @@ const AdvanceForm: FC<AdvanceFormProps> = ({setRefresh , className}) => {
                                     LabelClassName='place-self-center'
                                     url='api/users/user'
                                     name='user'
-                                    params={{is_superuser:"False",is_staff:"False",is_active:"True"}}
+                                    params={{is_superuser:"False",is_staff:"False",is_active:"True",page_size:1000}}
                                     config={{
                                         value:"uuid",
                                         label:"username"

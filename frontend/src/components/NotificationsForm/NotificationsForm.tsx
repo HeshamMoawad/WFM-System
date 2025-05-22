@@ -97,7 +97,7 @@ const NotificationsForm: FC<NotificationsFormProps> = ({setRefresh}) => {
                         label: "username",
                         
                     }}
-                    params={search ? {department__uuid:search} : undefined}
+                    params={search ? {department__uuid:search ,is_active:"True"} : {is_active:"True"}}
                     required={true}
                 />
 

@@ -1,10 +1,13 @@
-import { useState, type FC } from 'react';
+import { useRef, useState, type FC } from 'react';
 import {
     Row,
     Cell,
 } from "@table-library/react-table-library/table";
 import ReportTable from '../ReportTable/ReportTable';
 import { useForm } from 'react-hook-form';
+import { useReactToPrint } from 'react-to-print';
+import { checkPermission } from '../../utils/permissions/permissions';
+import { useAuth } from '../../hooks/auth';
 
 interface CustomTableRowProps {
     item: any; // replace with your actual item type
@@ -76,11 +79,14 @@ type TableDataType = "twitter"|"tiktok"|"whatsapp"|"telegram"|"jaco";
 
 const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
     const sended = Object.keys(item.data).length > 1 ? true : false;
+    const {auth} = useAuth()
     const {register, control } = useForm<any>(
         {
             defaultValues:item.data 
         }
     ); // replace with your actual form hook
+    const contentRef = useRef<HTMLTableRowElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
 
     const [expandedData,setExpandedData] = useState<TableDataType|"*">('twitter');
     const [show,setShow] = useState(false);
@@ -92,9 +98,8 @@ const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
             setExpandedData(fieldName)
         }
     };
-
     return (<>
-    <Row key={item.uuid} item={{...item,id:item.uuid}} >
+    <Row key={item.uuid} item={{...item,id:item.uuid}}>
         <Cell>{item.user.username}</Cell>
         <Cell>{item.user.project?.name}</Cell>
         <Cell>{item.user.department?.name}</Cell>
@@ -107,8 +112,12 @@ const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
     </Row>
     {
         show && sended? 
-        <>
-        <Row key={Math.random()} item={{id:Math.random()}}>
+        <Row key={Math.random()} item={{id:Math.random()}}>        
+            <tr ref={contentRef} className='col-span-full'>
+                {
+                    checkPermission(auth,"print_reportrecord") ? <button onClick={()=>{reactToPrintFn()}} className='w-36 h-12 bg-primary rounded-lg text-2xl'>Print</button> : null
+                }
+            
             {
                 expandedData === "*" ? Object.keys(TableRows).map((val:string,index:number)=>{
                     return <ReportTable
@@ -131,11 +140,9 @@ const CustomTableRow: FC<CustomTableRowProps> = ({item}) => {
                 </>
                 )
             }
-
+            </tr>
         </Row>
-        
-
-        </> : null 
+        : null 
     }
     </>);
 }

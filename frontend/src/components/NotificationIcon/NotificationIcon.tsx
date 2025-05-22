@@ -5,6 +5,7 @@ import { sendRequest } from "../../calls/base";
 import { getDateDifference } from "../../utils/converter";
 import { useAuth } from "../../hooks/auth";
 import { NotificationType } from "../../types/auth";
+import { showNotification } from "./Notification";
 
 interface NotificationIconProps {}
 
@@ -21,11 +22,15 @@ const NotificationIcon: FC<NotificationIconProps> = () => {
             }).then((data)=>{
                 setNotifications(data);
                 const _ = data as NotificationType[]
+
                 if(_.filter(noti=>!noti.seen_by_users.includes(auth.uuid)).length > 0){  
                     setHasNew(true);
                 }else{
                     setHasNew(false);
                 }
+                _.filter(noti=>!noti.seen_by_users.includes(auth.uuid)).forEach(noti=>{
+                    showNotification(noti.message,noti.uuid)
+                })
             }).catch((error)=>{
                 console.log(error);
             })

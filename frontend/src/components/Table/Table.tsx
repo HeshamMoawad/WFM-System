@@ -24,7 +24,7 @@ const Table: FC<TableProps> = ({headers , data , className=""}) => {
                 data.map((row)=>{
 
                     return (<>
-                    <tr className='p-2 border-t border-[rgba(255,255,255,0.15)]' key={Math.random()}>{
+                    <tr className='p-2 border-t border-[rgba(255,255,255,0.15)] ' key={Math.random()}>{
                         row.map((data)=>
                         {
                             return typeof data === 'string' ? <td key={Math.random()} className='px-3 py-1'>{data}</td> : data
