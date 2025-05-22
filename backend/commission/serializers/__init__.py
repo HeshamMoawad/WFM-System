@@ -149,6 +149,7 @@ class CommissionSerializer(ModelSerializer):
             "gift" ,
             "salary" ,
             "date" ,
+            "plus_10" ,
         ]
         foreign_models = {
             "user": ForeignField("user",User,'uuid') ,

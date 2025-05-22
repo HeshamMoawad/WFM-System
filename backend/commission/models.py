@@ -111,10 +111,10 @@ class BasicRecord(BaseModel):
     basic = models.FloatField(verbose_name="Taken Basic" , default=0)
     date  = models.DateField(verbose_name="Date" , default=now )
 
-    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
+    def save(self, *args , **kwargs):
         if self.project is not None and self.user is not None:
             self.project = self.user.project
-        return super().save(force_insert, force_update, using, update_fields)
+        return super().save(*args , **kwargs)
     
     def __str__(self):
         return self.date.strftime("%Y/%m")
@@ -142,10 +142,11 @@ class Commission(BaseModel):
     date  = models.DateField(verbose_name="Date" , default=now )
     project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
 
-    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
+    def save(self, *args , **kwargs):
         if self.project is not None and self.basic is not None:
             self.project = self.basic.project
-        return super().save(force_insert, force_update, using, update_fields)
+        print(args , kwargs)
+        return super().save(*args , **kwargs)
     
     def __str__(self):
         return self.date.strftime("%Y/%m")

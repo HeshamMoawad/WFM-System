@@ -157,6 +157,7 @@ class CommissionAPI(APIViewSet):
                 "gift"  ,
                 "salary" ,
                 "date"   ,
+                "plus_10" ,
                 
         ]
     requiered_fields = [
@@ -175,6 +176,7 @@ class CommissionAPI(APIViewSet):
                 "gift"  ,
                 "salary" ,
                 "date"   ,
+                "plus_10" ,
         ]
     updating_filters = [
                 "target" ,
@@ -189,5 +191,6 @@ class CommissionAPI(APIViewSet):
                 "deduction" ,
                 "gift"  ,
                 "salary" ,
+                "plus_10" ,
         ]
     unique_field:str = 'uuid'

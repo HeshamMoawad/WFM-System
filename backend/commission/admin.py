@@ -149,6 +149,7 @@ class BasicRecordAdminSite(admin.ModelAdmin):
                 'take_annual',
                 'date',           
                 'basic',
+                "project",
             ],[
                 "uuid" ,
                 "created_at",
@@ -171,6 +172,7 @@ class CommissionAdminSite(admin.ModelAdmin):
                 "target",
                 "target_Team" ,
                 "plus" ,
+                "plus_10" ,
                 "american" ,
                 "american_count" ,
                 "subscriptions" ,
@@ -180,6 +182,7 @@ class CommissionAdminSite(admin.ModelAdmin):
                 "deduction" ,
                 "gift" ,
                 "salary" ,
+                "project" ,
                 "date" ,
             ],[
                 "uuid" ,
@@ -208,7 +211,7 @@ class SubscriptionAdminSite(admin.ModelAdmin):
     
     
 class AdditionalAdminSite(admin.ModelAdmin):
-    list_display = ["plus","american_leads"]
+    list_display = ["plus","american_leads","plus_10"]
     readonly_fields = ['uuid',"created_at","updated_at"]
     fieldsets = FieldSets([
             'Subscription Fields' ,
@@ -216,6 +219,7 @@ class AdditionalAdminSite(admin.ModelAdmin):
         ],[
             [
                 "plus",
+                "plus_10",
                 "american_leads",
             ],[
                 "uuid" ,
