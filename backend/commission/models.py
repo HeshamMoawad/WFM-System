@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_save , post_save , post_delete
 from users.custom_types import RequestStatuses
-from users.models import  User ,Department , create_update_history , Request
+from users.models import  User ,Department , create_update_history , Request , Project
 from core.models import BaseModel
 import typing , datetime
 from django.utils.timezone import now
@@ -102,6 +102,7 @@ class CoinChanger(BaseModel):
 class BasicRecord(BaseModel):
     user = models.ForeignKey(User, verbose_name="User", on_delete=models.SET_NULL , null=True)
     take_annual = models.IntegerField(verbose_name="Take Annual" , default= 0 )
+    project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
     # user_commission_details = models.ForeignKey(UserCommissionDetails, verbose_name="User Commission Details", on_delete=models.SET_NULL , null=True)
     deduction_days = models.FloatField(verbose_name="Deduction Days" , default=0)
     deduction_money = models.IntegerField(verbose_name="Deduction Money" , default=0)
@@ -109,6 +110,11 @@ class BasicRecord(BaseModel):
     gift = models.FloatField(verbose_name="Gift" , default=0)
     basic = models.FloatField(verbose_name="Taken Basic" , default=0)
     date  = models.DateField(verbose_name="Date" , default=now )
+
+    def save(self, *args , **kwargs):
+        if self.project is not None and self.user is not None:
+            self.project = self.user.project
+        return super().save(*args , **kwargs)
     
     def __str__(self):
         return self.date.strftime("%Y/%m")
@@ -122,7 +128,8 @@ class Commission(BaseModel):
     basic = models.ForeignKey(BasicRecord,verbose_name="Basic" , on_delete=models.SET_NULL , null=True)
     target = models.FloatField(verbose_name="Target" , default=0 )
     target_Team = models.FloatField(verbose_name="Target Team" , default=0)
-    plus = models.FloatField(verbose_name="Plus +2" , default=0)
+    plus = models.FloatField(verbose_name="Plus +5" , default=0)
+    plus_10 = models.FloatField(verbose_name="Plus +10" , default=0)
     american = models.FloatField(verbose_name="American Leads" , default=0)
     american_count = models.IntegerField(verbose_name="American Leads Count" , default=0)
     subscriptions = models.FloatField(verbose_name="Subscriptions" , default=0)
@@ -133,7 +140,14 @@ class Commission(BaseModel):
     gift = models.FloatField(verbose_name="Gift" , default=0)
     salary = models.FloatField(verbose_name="Total of Salary" , default=0)
     date  = models.DateField(verbose_name="Date" , default=now )
+    project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
 
+    def save(self, *args , **kwargs):
+        if self.project is not None and self.basic is not None:
+            self.project = self.basic.project
+        print(args , kwargs)
+        return super().save(*args , **kwargs)
+    
     def __str__(self):
         return self.date.strftime("%Y/%m")
 
@@ -162,8 +176,10 @@ class ActionPlan(BaseModel):
 
 
 class Additional(BaseModel):
-    plus = models.IntegerField(verbose_name="Plus +2 Price")
+    plus = models.IntegerField(verbose_name="Plus +5 Price"  , default=50)
+    plus_10 = models.IntegerField(verbose_name="Plus +10 Price" , default=100)
     american_leads = models.IntegerField(verbose_name="American Leads Price" )
+
 
 class Rule(BaseModel):
     class Types(models.TextChoices):
@@ -217,6 +233,7 @@ def create_Outcome_record(sender, instance:BasicRecord, created ,**kwargs):
         details.save()
         
 
+
 def create_Outcome_record_salary(sender, instance:Commission, created ,**kwargs):
     if created :
         details = TreasuryOutcome.objects.create(
@@ -258,14 +275,27 @@ def delete_annual(sender:BaseModel, instance:BasicRecord, **kwargs):
 
 def notify_action_plan(sender, instance:ActionPlan, created ,**kwargs):
     if created :
-        notify(f"{instance.creator}  عندك جزاء من",instance.user)
+        notify(f"{instance.creator} عندك جزاء من",instance.user)
     
 
 def notify_request_change(sender, instance:Request, created ,**kwargs):
     if not created and (instance.status == RequestStatuses.ACCEPTED or instance.status == RequestStatuses.REJECTED) :
-        notify(f"ريكويست : '{instance.details}' n {instance.status} تم تغيير حالة الريكويست الى ",instance.user)
+        notify(f"ريكويست : '{instance.details}' {instance.status} تم تغيير حالة الريكويست الى ",instance.user)
         
 
+def recalculate_salary(sender, instance:BasicRecord, **kwargs):
+    try:
+        commission = Commission.objects.get(basic=instance)
+        # Recalculate the salary field based on the updated BasicRecord instance
+        commission.salary = (commission.target + commission.target_Team + commission.plus + 
+                             commission.american + commission.subscriptions + commission.american_subscriptions - 
+                             commission.deduction + commission.gift + commission.plus_10 + instance.basic)
+        commission.save()
+    except Commission.DoesNotExist:
+        # If no related Commission instance exists, do nothing
+        pass
+
+post_save.connect(recalculate_salary, sender=BasicRecord)
 
 pre_save.connect(create_update_history,sender=Team)
 pre_save.connect(create_update_history,sender=CoinChanger)

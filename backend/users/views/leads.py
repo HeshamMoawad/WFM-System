@@ -150,7 +150,15 @@ def user_leads(request:Request):
         .annotate(day=TruncDate('date'))
         .values('day')
         .annotate(lead_count=Count('uuid'))
-        .filter(lead_count__gte=5)
+        .filter(lead_count__gte=5 , lead_count__lt=10)
+        .count()
+    )
+    lead_counts_plus_10 = (
+        leads
+        .annotate(day=TruncDate('date'))
+        .values('day')
+        .annotate(lead_count=Count('uuid'))
+        .filter(lead_count__gte=10)
         .count()
     )
     
@@ -162,8 +170,8 @@ def user_leads(request:Request):
             "total" : Lead.objects.filter(date__range = date_range ,user__in = team.agents.all() ).count()
         })
     additional = Additional.objects.first()
-    return Response({"total":leads.count(),"plus":lead_counts,"teams": teams_details, "plus_value":lead_counts * getattr(additional,"plus",30)  , "plus_price" : getattr(additional,"plus",30), "american_leads_price": getattr(additional,"american_leads",30)})
-    # return Response({},status=HTTP_400_BAD_REQUEST)
+    return Response({"total":leads.count(),"plus":lead_counts , "plus_10":lead_counts_plus_10,"plus_10_value":lead_counts_plus_10 * getattr(additional,"plus_10",30) , "plus_10_price": getattr(additional,"plus_10",30),"teams": teams_details, "plus_value":lead_counts * getattr(additional,"plus",30)  , "plus_price" : getattr(additional,"plus",30), "american_leads_price": getattr(additional,"american_leads",30)})
+
 
 
 

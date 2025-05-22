@@ -148,6 +148,7 @@ class ArrinigLeavingAdminSite(ImportExportModelAdmin):
             [
                 'user',
                 'date',
+                'project',
                 'arriving_at',
                 'leaving_at',
             ],[

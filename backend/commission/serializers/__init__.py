@@ -118,6 +118,7 @@ class BasicRecordSerializer(ModelSerializer):
             "date",
             "take_annual",
             "basic",
+            "project",
         ]
         foreign_models = {
             "user": ForeignField("user",User,'uuid') ,
@@ -148,6 +149,7 @@ class CommissionSerializer(ModelSerializer):
             "gift" ,
             "salary" ,
             "date" ,
+            "plus_10" ,
         ]
         foreign_models = {
             "user": ForeignField("user",User,'uuid') ,

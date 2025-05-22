@@ -154,11 +154,14 @@ class ArrivingLeaving(BaseModel):
     date = models.DateField(verbose_name="Day Date", ) # auto_now_add=True
     arriving_at = models.DateTimeField(verbose_name="Arrining Date & Time", ) # auto_now_add=True
     leaving_at = models.DateTimeField(verbose_name="Leaving Date & Time",null=True)
+    project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
     # deuration_between = models.PositiveIntegerField(verbose_name="Deuration in secounds" , null=True)
 
     def save(self,*args,**kwargs):
         if self.leaving_at:
             self.deuration_between = (self.leaving_at - self.arriving_at).total_seconds()
+        if self.project is None and self.leaving_at is None:
+            self.project = self.user.project
         return super().save(*args,**kwargs)
 
     class Meta:
