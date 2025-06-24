@@ -93,7 +93,11 @@ def save_upload(request:Request):
         return Response({"error": "Excel file must contain 'Phone' and 'Market' columns"}, status=HTTP_400_BAD_REQUEST)
     
     crm_names = User.objects.filter(~Q(crm_username="") & ~Q(crm_username=None) ).values_list("crm_username",flat=True)
-    
+    project = None
+    project_uuid = request.data.get("project_uuid")
+    if project_uuid:
+        project = Project.objects.filter(uuid=project_uuid).first()
+
     df = df[df["Market"].isin(crm_names)]
 
 
@@ -112,14 +116,13 @@ def save_upload(request:Request):
         "user_id" : "Market",
         "phone" : "Phone" ,
     },inplace=True)
-    
     objects = [ 
             Lead(
                 user = row["Market"] ,
-                phone = row["Phone"] ,
+                phone = str(int(float(row["Phone"]))) ,
                 name = getattr(row,"Name",""),
                 date =  row["Date"] ,
-                project = getattr(row["Market"],"project",None),
+                project = project or getattr(row["Market"],"project",None),
                 ) 
             for index , row in df.iterrows()
             if isinstance(row["Market"],User)
