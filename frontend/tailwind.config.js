@@ -37,6 +37,13 @@ module.exports = {
           "primary" : "#35bfbf",
           "secondry" :"#ff6150"
       },
+      "wa-colors":{
+        "background":"#ece5dd",
+        "colors":{
+            "primary" : "#25d366",
+            "secondry" :"#075e54"
+        },
+      },
 
 
 

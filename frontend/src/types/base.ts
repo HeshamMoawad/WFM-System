@@ -19,6 +19,18 @@ interface PageinationDetails{
     next:string | null;
     previous:string | null;
 }
+
+interface PhoneNumber {
+    id: string;
+    number: string;
+    verified: boolean;
+  }
+  
+  interface Account {
+    id: string;
+    name: string;
+    phoneNumbers: PhoneNumber[];
+  }
 export type {
     ChildrenType ,
     Childrens ,
@@ -26,5 +38,7 @@ export type {
     Language ,
     Base , 
     PageinationDetails ,
-    Status
+    Status,
+    PhoneNumber,
+    Account
 }

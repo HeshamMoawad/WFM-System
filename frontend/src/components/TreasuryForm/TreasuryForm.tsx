@@ -8,7 +8,7 @@ import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import Swal from 'sweetalert2';
 import { TRANSLATIONS } from '../../utils/constants';
 import { LanguageContext } from '../../contexts/LanguageContext';
-import SelectComponent from '../SelectComponent/SelectComponent';
+// import SelectComponent from '../SelectComponent/SelectComponent';
 
 interface TreasuryFormProps {
     creator_uuid: string;
@@ -73,7 +73,7 @@ const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header 
 
             <label className='col-span-1 place-self-center' htmlFor="details">{TRANSLATIONS.Treasury.inform.details[lang]}</label>
             <textarea className={`col-span-4 ${DEFAULT_INPUT_STYLE}`} name="details" id="details" minLength={3} required/>
-            {
+            {/* {
                 group ?
                 <SelectComponent 
                     url='api/treasury/projects-group'
@@ -86,7 +86,7 @@ const TreasuryForm: FC<TreasuryFormProps> = ({creator_uuid,url , color , header 
                     />
                 : null
 
-            }
+            } */}
 
             <label className= 'col-span-1 place-self-center' htmlFor="amount">{TRANSLATIONS.Treasury.inform.amount[lang]}</label>
             <input className={`col-span-2 ${DEFAULT_INPUT_STYLE}`} inputMode='numeric' min={10} type="number" name="amount" id="amount" required/>

@@ -1,6 +1,8 @@
 const t = (arKey:string,enKey:string)=> ({ar:arKey,en:enKey})
 
-export const BASE_URL = "" // http://192.168.11.251:8000/
+export const BASE_URL = "http://192.168.11.250:8000/" //
+export const BASE_URL_NESTJS = "http://localhost:3000" //
+export const BASE_URL_SOCKET = "http://localhost:96" //
 
 export const CURRENT_VERSION = "0.2.1"
 
@@ -13,7 +15,15 @@ export const WEEK_DAYS = [
   t("الجمعة","Fri"), 
   t("السبت","Sat")
 ]
-
+// WhatsApp color constants
+export const WHATSAPP_COLORS = {
+  primary: "#128C7E",
+  secondary: "#075E54",
+  accent: "#25D366",
+  background: "#ECE5DD",
+  text: "#000000",
+  lightText: "#FFFFFF"
+};
 export const LANGS = t("ar-EG","en-US")
 
 export const numbersOptions = {
@@ -27,8 +37,18 @@ export const TRANSLATIONS = {
   Date:t("التاريخ","Date") ,
   Delete:t("مسح","Delete"),
   User:t("المستخدم" , "User"),
-
+  WAInputMessage:{
+    placeholder:t("اكتب رساله","Write a message")
+  },
   SideBar:{
+    Whatsapp:{
+      title:t("واتساب","Whatsapp"),
+      accounts:t("الحسابات","Accounts"),
+      manager:t("مدير الواتساب","Whatsapp Manager"),
+      distrbution:t("توزيع","Distribution"),
+      
+
+    },
     DashBoard:{
       title:t("الرئيسية","Dashboard"),
       market:t("داش ماركت","Dash Market")

@@ -8,9 +8,9 @@ import {RxDashboard} from 'react-icons/rx';
 import {PiFingerprint , PiWallet , PiUserList , PiUsersThree , PiMoney , PiHandCoins , PiChartLine} from 'react-icons/pi';
 import {LiaUsersCogSolid} from 'react-icons/lia';
 import {VscGitPullRequestNewChanges} from 'react-icons/vsc';
-import {BsPersonWorkspace,BsSafe , BsCashCoin } from 'react-icons/bs';
+import {BsPersonWorkspace,BsSafe , BsCashCoin , BsWhatsapp } from 'react-icons/bs';
 import {IoCalendarNumberOutline , IoStatsChartOutline } from 'react-icons/io5';
-import {RiCustomerService2Line , RiUserAddLine , RiListSettingsLine , RiTeamLine} from 'react-icons/ri';
+import {RiCustomerService2Line , RiUserAddLine , RiListSettingsLine , RiTeamLine , RiCustomerService2Fill} from 'react-icons/ri';
 import {CgUserList} from 'react-icons/cg';
 import { useAuth } from '../../hooks/auth';
 import { GrNotification } from "react-icons/gr";
@@ -27,6 +27,7 @@ import { checkPagePermission } from '../../utils/permissions/permissions';
 import { AiOutlineUserDelete } from "react-icons/ai";
 import { TbCalendarDollar } from "react-icons/tb";
 import { MdOutlineMoneyOff } from "react-icons/md";
+
 
 
 
@@ -276,6 +277,32 @@ const Sidebar: FC<SidebarProps> = () => {
                 }
             ]
     
+        },
+        {
+            name:TRANSLATIONS.SideBar.Whatsapp.title[lang],
+            Icon:BsWhatsapp,
+            page_index:textToNumber("main-whatsapp"),
+            sections:[
+                {
+                    name:TRANSLATIONS.SideBar.Whatsapp.title[lang],
+                    href:'/whatsapp-web',
+                    Icon:RiCustomerService2Fill ,
+                    page_index:textToNumber("whatsapp-web"),
+                },
+                {
+                    name:TRANSLATIONS.SideBar.Whatsapp.accounts[lang],
+                    href:'/whatsapp-accounts',
+                    Icon:IoStatsChartOutline ,
+                    page_index:textToNumber("whatsapp-accounts"),
+                },
+                {
+                    name:TRANSLATIONS.SideBar.Whatsapp.distrbution[lang],
+                    href:'/whatsapp-distribution',
+                    Icon:IoStatsChartOutline ,
+                    page_index:textToNumber("whatsapp-distribution"),
+                },
+            ]
+    
         }
     ]
     
@@ -290,7 +317,7 @@ const Sidebar: FC<SidebarProps> = () => {
     }, [opened,setShowed]);
     return (
 
-        <div className={`side-bar ${opened ? 'h-screen bg-light-colors-dashboard-forth-bg' : 'h-[63px] md:h-[72px] bg-transparent' }`}>
+        <div className={`side-bar  ${opened ? 'h-screen bg-light-colors-dashboard-forth-bg' : 'h-[63px] md:h-[72px] bg-transparent' }`}>
             <div className="project-logo"  onClick={toggleSidebar}>
                 <SVGIcon className={`cursor-pointer h-12 md:h-14 ${opened ? 'fill-[white]' : 'fill-[black] dark:fill-[white]'}`} pathfilling={`${opened ? 'fill-light-colors-dashboard-forth-bg' : 'fill-light-colors-dashboard-primary-bg dark:fill-light-colors-dashboard-forth-bg'}`}/>
             </div>

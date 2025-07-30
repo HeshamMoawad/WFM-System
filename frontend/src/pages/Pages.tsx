@@ -36,7 +36,8 @@ import AdminSalaryHistory from "./AdminSalaryHistory/AdminSalaryHistory";
 import UserSalaryHistory from "./UserSalaryHistory/UserSalaryHistory";
 import ActionPlans from "./ActionPlans/ActionPlans";
 import MyActionPlans from "./MyActionPlans/MyActionPlans";
-import BasicView from "../components/BasicView/BasicView";
+import WhatsAppAccounts from "./WhatsAppAccounts/WhatsAppAccounts";
+import WhatsAppWeb from "./WhatsAppWeb/WhatsAppWeb";
 
 interface PagesProps {}
 
@@ -110,6 +111,8 @@ const Pages: FC<PagesProps> = () => {
                                             <Route path="/salary-history" element={<AdminSalaryHistory/>}/>
                                             <Route path="/action-plans" element={<ActionPlans/>}/>
                                             <Route path="/my-action-plans" element={<MyActionPlans/>}/>
+                                            <Route path="/whatsapp-accounts" element={<WhatsAppAccounts/>}/>  
+                                            <Route path="/whatsapp-web" element={<WhatsAppWeb/>}/>  
                                             {/* <Route path="/my-basic-view" element={<BasicView/>}/> */}
                                             <Route path="*" element={<NotFound/>}/>
                                         </Routes>

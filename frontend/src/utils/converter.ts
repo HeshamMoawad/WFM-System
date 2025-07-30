@@ -194,3 +194,23 @@ export const serialDateToJSDate = (serial: number): Date => {
     return fullDate;
 }
 
+export const convertPhoneToJid = (phone:string) => {
+    if (phone.startsWith("+")) {
+        phone = phone.replace("+","");
+    }
+    if (!phone.endsWith("@s.whatsapp.net")) {
+        phone = phone + "@s.whatsapp.net";
+    }
+    return phone;
+}
+
+export const convertJidToPhone = (phone:string): string  | null => {
+    if (phone.endsWith("@s.whatsapp.net") && !phone.startsWith("0@")) {
+        phone = phone.replace("@s.whatsapp.net","");
+        return `+${phone}`;
+    }else if (phone.endsWith("0@s.whatsapp.net")) {
+        return null;
+    }else {
+        return null;
+    }
+}

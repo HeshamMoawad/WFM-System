@@ -31,8 +31,11 @@ const DashMarket: FC<DashMarketProps> = () => {
     const [date, setDate] = useState<Date | null>(null);
     const [projectsData, setProjectsData] = useState<LeadReport | null>(null);
     const [average, setAverage] = useState<number>(0);
+    const [search, setSearch] = useState("");
     const {mode} = useContext(ModeContext);
     const [dateType, setDateType] = useState<"MM-yyyy"|"dd-MM-yyyy">("MM-yyyy")
+    let data = { nodes:projectsData ? projectsData.users : [] };
+
     const sort = useSort(
         {nodes:projectsData ? projectsData.users.map((value,index,array)=>{return {...value , id:value.uuid}}) : []},
         {onChange:(arg:any,state:any)=>console.log(arg,state)},
@@ -42,7 +45,16 @@ const DashMarket: FC<DashMarketProps> = () => {
           },
         }
       );
-
+    const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
+      };
+    
+        data = {
+            nodes: projectsData?.users?.filter((item:User) =>
+            item.username.toLowerCase().includes(search.toLowerCase())
+        ) ?? [],
+      };
+    
     const theme = useTheme({...getTheme(),
         Cell:`background-color:${mode ? "#1f2f3e" : "#fff"};color:${mode ? "#fff" : "black"};`,
         HeaderCell: `
@@ -71,7 +83,8 @@ const DashMarket: FC<DashMarketProps> = () => {
             }
         `,
         Table:`
-        height: 100%;
+        height: fit-content;
+        max-height:100%;
         width: 104%;
         /*margin-right: -50px;  maximum width of scrollbar */
         /*padding-right: 50px;  maximum width of scrollbar */
@@ -83,6 +96,7 @@ const DashMarket: FC<DashMarketProps> = () => {
         --data-table-library_grid-template-columns: 50% minmax(150px, 1fr);
         `,
         Body:"border-radius:10px;",
+        BaseCell:"text-center; max-height:40px;min-height:40px;"
         });
 
     useEffect(() => {
@@ -229,10 +243,15 @@ const DashMarket: FC<DashMarketProps> = () => {
                     </div>
                     {/* Add more users details as needed */}
                     <div className="flex flex-row w-full justify-evenly">
-                        <div className="overflow-hidden w-[clamp(200px,50%,600px)] h-[500px] rounded-xl">
+                        <div className="overflow-hidden w-[clamp(200px,50%,600px)] h-[500px] rounded-xl max-w-[93vw] transition-all duration-600 rounded-lg shadow-md dark:shadow-[gray] dark:shadow-sm  m-2 px-3 pt-2 hover:-translate-y-1 bg-light-colors-dashboard-secondry-bg dark:bg-dark-colors-dashboard-secondry-bg overflow-auto">
+                        <label className="block">
+                            Search by username:&nbsp;
+                            <input type="text" style={{height:"30px"}} className="mb-2" value={search} onChange={handleSearch} />
+                        </label>
+
                             <CompactTable
                                 columns={COLUMNS}
-                                data={{nodes:projectsData.users}}
+                                data={data}
                                 theme={theme}
                                 layout={{ fixedHeader: true }}
                                 sort={sort}

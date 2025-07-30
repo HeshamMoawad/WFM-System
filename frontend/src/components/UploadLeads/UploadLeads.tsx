@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import Table from '../Table/Table';
 import { convertObjectToArrays, parseFormData } from '../../utils/converter';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
+import SelectComponent from '../SelectComponent/SelectComponent';
+import { Project } from '../../types/auth';
 
 interface UploadLeadsProps {}
 
@@ -38,6 +40,7 @@ const UploadLeads: FC<UploadLeadsProps> = () => {
                         showConfirmButton: false,
                         timer: 500
                     })
+                    setUploaded(true);
                 })
                .catch(error => {
                     console.error("Error", error);
@@ -46,11 +49,19 @@ const UploadLeads: FC<UploadLeadsProps> = () => {
                 })
                 .finally(() => {
                     setLoading(false)
-                    e.currentTarget.reset()
+                    e?.currentTarget?.reset()
                 });
                 
         }}>
-
+            <SelectComponent<Project>
+                name="project_uuid"
+                LabelName="Project"
+                url="api/users/project"
+                config={{
+                    value:"uuid",
+                    label:"name"
+                }}
+            />
             <label  className='block cursor-pointer bg-btns-colors-primary col-span-3 h-[40px] rounded-lg text-center text-2xl'>
                 Upload Sheet
                 <input name='file' type="file" className='hidden' accept='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' onChange={e=>{
