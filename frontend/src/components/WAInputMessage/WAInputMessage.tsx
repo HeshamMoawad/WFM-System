@@ -3,33 +3,34 @@ import { IoSend } from "react-icons/io5";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import { TRANSLATIONS } from "../../utils/constants";
 import { MdKeyboardDoubleArrowDown } from "react-icons/md";
-import { useSocket } from "../../hooks/useSocket";
+import { getSocket } from "../../services/socket";
 
 interface WAInputMessageProps {
-    targetId:string
+    targetId: string;
 };
 
-
-export const WAInputMessage: FC<WAInputMessageProps> = ({targetId}) => {
+export const WAInputMessage: FC<WAInputMessageProps> = ({ targetId }) => {
     const [message, setMessage] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const {isConnected ,on , off , emit} = useSocket()
-    const {lang} = useContext(LanguageContext);
+    const { lang } = useContext(LanguageContext);
+
     useEffect(() => {
         if (textareaRef.current) {
-          textareaRef.current.style.height = 'auto';
-          textareaRef.current.style.height = `${textareaRef.current.scrollHeight - 17}px`;
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight - 17}px`;
         }
-      }, [message]);
-    
+    }, [message]);
+
     const handleSubmit = () => {
-        if(!isConnected) return;
-        emit("sendMessage", {
+        const socket = getSocket();
+        if (!socket || !message.trim()) return;
+
+        socket.emit("sendMessage", {
             to: targetId,
             message,
         });
         setMessage("");
-    }
+    };
     return (
         <div className="sticky bottom-0 w-[93%] flex flex-row justify-center items-center gap-3 p-2">
             <textarea 

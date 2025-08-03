@@ -1,77 +1,62 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Container from "../../layouts/Container/Container";
 import WAInputMessage from "../WAInputMessage/WAInputMessage";
-import { BASE_URL_NESTJS } from "../../utils/constants";
-import { ResponseChatMessageType, ResponseChatType, ResponseChat } from "../../types/response";
 import WAChatMessage from "../WAChatMessage/WAChatMessage";
-import { MdKeyboardDoubleArrowDown } from "react-icons/md";
-import useRequests from "../../hooks/requests";
 import { convertJidToPhone } from "../../utils/converter";
-import { useSocket } from "../../hooks/useSocket";
-import { Chat } from "whatsapp-web.js";
-
+import { getSocket } from "../../services/socket";
+import { AppChat, setMessagesForChat } from "../../features/chats/chatSlice";
+import { RootState } from "../../store/store";
+import { Message } from "whatsapp-web.js";
 
 interface WhatsAppWebChatProps {
     refresh: boolean;
-    currentChat: Chat | null;
+    currentChat: AppChat | null;
 };
 
-export const WhatsAppWebChat: FC<WhatsAppWebChatProps> = ({refresh , currentChat}) => {
+export const WhatsAppWebChat: FC<WhatsAppWebChatProps> = ({ currentChat }) => {
+    const dispatch = useDispatch();
+    const chats = useSelector((state: RootState) => state.chats.chats);
 
-    const { isConnected, socket } = useSocket();
-    
-    // Debug effect to log changes
-    useEffect(() => {
-        console.log('Chat changed:', { 
-            hasCurrentChat: !!currentChat, 
-            chatId: currentChat?.id._serialized,
-            isConnected,
-            hasSocket: !!socket 
-        });
-    }, [currentChat, isConnected, socket , refresh]);
+    const selectedChat = chats.find(c => c.id._serialized === currentChat?.id._serialized);
 
-    // Handle chat messages
     useEffect(() => {
-        if (!isConnected || !currentChat || !socket) {
-            console.log('Skipping effect - missing requirements:', { isConnected, hasCurrentChat: !!currentChat, hasSocket: !!socket });
+        const socket = getSocket();
+        if (!socket || !currentChat) {
             return;
         }
 
-        console.log('Setting up chat messages for:', currentChat.id._serialized);
-        
-        const handleChatMessages = (data: any) => {
-            console.log(`Received messages for ${currentChat.id._serialized}:`, data);
-            // Handle the received messages here
+        const handleChatMessages = (data: { chatId: string; messages: Message[] }) => {
+            if (data.chatId === currentChat.id._serialized) {
+                dispatch(setMessagesForChat(data));
+            }
         };
 
-        // Set up the listener
         socket.on("getChatMessages", handleChatMessages);
-        // Request messages for the current chat
+
         socket.emit("getChatMessages", {
             chatId: currentChat.id._serialized,
         });
 
-        // Cleanup function
         return () => {
-            console.log('Cleaning up previous chat:', currentChat.id._serialized);
             socket.off("getChatMessages", handleChatMessages);
         };
-    }, [currentChat?.id._serialized, isConnected, socket , refresh]);
+    }, [currentChat, dispatch]);
 
     return (
         <Container className="w-[76%] h-[77vh] bg-wa-colors-background">
             {
-                currentChat ? (
+                currentChat && selectedChat ? (
                     <>
                         <div className="sticky top-0 flex flex-row justify-between items-center border-b w-full pb-1 text-center bg-wa-colors-background">
-                            <label className="w-full text-lg font-bold" htmlFor="">{currentChat?.name } {currentChat?.name ? " | " : ""} {convertJidToPhone(currentChat?.id.user || "")}</label>
+                            <label className="w-full text-lg font-bold" htmlFor="">{currentChat?.name} {currentChat?.name ? " | " : ""} {convertJidToPhone(currentChat?.id.user || "")}</label>
                         </div>
                         <div className="flex flex-col overflow-y-auto gap-1 p-2 min-h-[68vh]">
-                            {/* {
-                                messages?.map((message, index) => {
+                            {
+                                selectedChat.messages?.map((message, index) => {
                                     return <WAChatMessage key={index} message={message} />
                                 })
-                            } */}
+                            }
                         </div>
                         <WAInputMessage targetId={currentChat?.id._serialized || ""} />
                     </>

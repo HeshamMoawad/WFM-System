@@ -13,14 +13,18 @@ interface MainLayoutProps extends ChildrenType{
 
 
 const MainLayout: FC<MainLayoutProps> = ({children}:MainLayoutProps) => {
-    const {auth} = useAuth();
+    const {auth, loading} = useAuth();
     const navigate = useNavigate();
 
     useEffect(()=>{
-        if (!auth.Authorization) {
+        if (!loading && !auth.Authorization) {
             navigate('/login');
         }
-    }, []);
+    }, [auth, loading, navigate]);
+
+    if (loading) {
+        return <div>Loading...</div>; 
+    }
 
     return (
         auth.username ?
@@ -36,7 +40,7 @@ const MainLayout: FC<MainLayoutProps> = ({children}:MainLayoutProps) => {
                     </div>
                 </div>
             </div>
-        : <></>
+        : null
     );
 };
 

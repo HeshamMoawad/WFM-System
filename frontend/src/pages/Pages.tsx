@@ -1,6 +1,6 @@
-import { useContext, type FC } from "react";
-import { BrowserRouter,Routes, Route} from 'react-router-dom';
-import MainLayout from "../layouts/MainLayout/MainLayout";
+import { type FC } from "react";
+import { Routes, Route} from 'react-router-dom';
+import AuthLayout from "../layouts/AuthLayout/AuthLayout";
 import DarkModeButton from "../components/DarkModeButton/DarkModeButton";
 import DashBoard from "./Dashboard/Dashboard";
 import Login from "./Login/Login";
@@ -69,55 +69,50 @@ const Pages: FC<PagesProps> = () => {
                 dark:bg-dark-colors-dashboard-primary-bg
                 `}>
                     <div className={``}>
-                        <BrowserRouter>
-                                    <Routes>
-                                        <Route path="/login" element={<Login/>}/>
-                                    </Routes>
-                                    <MainLayout>
-                                        <Routes>
-                                            <Route path="/" element={<DashBoard/>}/>
-                                            <Route path="/dashboard" element={<DashBoard/>}/>
-                                            <Route path="/dashboard-market" element={<DashMarket/>}/>
-                                            <Route path="/requests" element={<Requests/>}/>
-                                            <Route path="/profile" element={<Profile/>}/>
-                                            <Route path="/add-user" element={<AddUser/>}/>
-                                            <Route path="/edit-user/:user_uuid" element={<EditUser/>}/>
-                                            <Route path="/users-list" element={<UsersList/>}/>
-                                            <Route path="/devices-access" element={<DevicesAccess/>}/>
-                                            <Route path="/attendance-details" element={<AttendanceDetails/>}/>
-                                            <Route path="/attendance-details-lated" element={<AttendanceDetailsLated/>}/>
-                                            <Route path="/treasury" element={<Treasury/>}/>
-                                            <Route path="/treasury-projects" element={<TreasuryProjects/>}/>
-                                            <Route path="/advances" element={<Advances/>}/>
-                                            <Route path="/basic" element={<Basic/>}/>
-                                            <Route path="/user-basic/:user_uuid/:date" element={<UserBasic/>}/>
-                                            <Route path="/coin-changer" element={<CoinChanger/>}/>
-                                            <Route path="/leads" element={<Leads/>}/>
-                                            <Route path="/notifications" element={<Notifications/>}/>
-                                            <Route path="/teams" element={<Teams/>}/>
-                                            <Route path="/teams-details" element={<TeamDetails/>}/>
-                                            <Route path="/salary-all" element={<SalaryAll/>}/>
-                                            <Route path="/salary-marketing" element={<SalaryAll department__name="Marketing"/>}/>
-                                            <Route path="/salary-sales" element={<SalaryAll department__name="Sales"/>}/>
-                                            <Route path="/salary-technichal" element={<SalaryAll department__name="Technichal"/>}/>
-                                            <Route path="/salary-general" element={<SalaryAll department__name="General"/>}/>
-                                            <Route path="/salary/:user_uuid/:date" element={<Salary/>}/>
-                                            <Route path="/my-salary-list" element={<MySalaryList/>}/>
-                                            <Route path="/add-report-social" element={<AddReport/>}/>
-                                            <Route path="/reports" element={<Reports/>}/>
-                                            <Route path="/project-report/:project_uuid" element={<ProjectReport/>}/>
-                                            <Route path="/user-salary-history/:user_uuid" element={<UserSalaryHistory/>}/>
-                                            <Route path="/old-lead" element={<AddOldLead/>}/>
-                                            <Route path="/salary-history" element={<AdminSalaryHistory/>}/>
-                                            <Route path="/action-plans" element={<ActionPlans/>}/>
-                                            <Route path="/my-action-plans" element={<MyActionPlans/>}/>
-                                            <Route path="/whatsapp-accounts" element={<WhatsAppAccounts/>}/>  
-                                            <Route path="/whatsapp-web" element={<WhatsAppWeb/>}/>  
-                                            {/* <Route path="/my-basic-view" element={<BasicView/>}/> */}
-                                            <Route path="*" element={<NotFound/>}/>
-                                        </Routes>
-                                    </MainLayout>
-                        </BrowserRouter>
+                        <Routes>
+                            <Route path="/login" element={<Login />} />
+                            <Route element={<AuthLayout />}>
+                                <Route path="/" element={<DashBoard />} />
+                                <Route path="/dashboard" element={<DashBoard />} />
+                                <Route path="/dashboard-market" element={<DashMarket />} />
+                                <Route path="/requests" element={<Requests />} />
+                                <Route path="/profile" element={<Profile />} />
+                                <Route path="/add-user" element={<AddUser />} />
+                                <Route path="/edit-user/:user_uuid" element={<EditUser />} />
+                                <Route path="/users-list" element={<UsersList />} />
+                                <Route path="/devices-access" element={<DevicesAccess />} />
+                                <Route path="/attendance-details" element={<AttendanceDetails />} />
+                                <Route path="/attendance-details-lated" element={<AttendanceDetailsLated />} />
+                                <Route path="/treasury" element={<Treasury />} />
+                                <Route path="/treasury-projects" element={<TreasuryProjects />} />
+                                <Route path="/advances" element={<Advances />} />
+                                <Route path="/basic" element={<Basic />} />
+                                <Route path="/user-basic/:user_uuid/:date" element={<UserBasic />} />
+                                <Route path="/coin-changer" element={<CoinChanger />} />
+                                <Route path="/leads" element={<Leads />} />
+                                <Route path="/notifications" element={<Notifications />} />
+                                <Route path="/teams" element={<Teams />} />
+                                <Route path="/teams-details" element={<TeamDetails />} />
+                                <Route path="/salary-all" element={<SalaryAll />} />
+                                <Route path="/salary-marketing" element={<SalaryAll department__name="Marketing" />} />
+                                <Route path="/salary-sales" element={<SalaryAll department__name="Sales" />} />
+                                <Route path="/salary-technichal" element={<SalaryAll department__name="Technichal" />} />
+                                <Route path="/salary-general" element={<SalaryAll department__name="General" />} />
+                                <Route path="/salary/:user_uuid/:date" element={<Salary />} />
+                                <Route path="/my-salary-list" element={<MySalaryList />} />
+                                <Route path="/add-report-social" element={<AddReport />} />
+                                <Route path="/reports" element={<Reports />} />
+                                <Route path="/project-report/:project_uuid" element={<ProjectReport />} />
+                                <Route path="/user-salary-history/:user_uuid" element={<UserSalaryHistory />} />
+                                <Route path="/old-lead" element={<AddOldLead />} />
+                                <Route path="/salary-history" element={<AdminSalaryHistory />} />
+                                <Route path="/action-plans" element={<ActionPlans />} />
+                                <Route path="/my-action-plans" element={<MyActionPlans />} />
+                                <Route path="/whatsapp-accounts" element={<WhatsAppAccounts />} />
+                                <Route path="/whatsapp-web" element={<WhatsAppWeb />} />
+                                <Route path="*" element={<NotFound />} />
+                            </Route>
+                        </Routes>
                     </div>  
                     <DarkModeButton/>
             </div>

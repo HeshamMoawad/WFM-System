@@ -1,13 +1,13 @@
 import { createContext, useContext } from 'react';
-import { useSocket as useSocketHook } from '../hooks/useSocket';
+// import { useSocket as useSocketHook } from '../hooks/useSocket';
 
-const SocketContext = createContext<ReturnType<typeof useSocketHook> | null>(null);
+const SocketContext = createContext<  null>(null);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const socket = useSocketHook();
+  // const socket = useSocketHook();
 
   return (
-    <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={null}>
       {children}
     </SocketContext.Provider>
   );

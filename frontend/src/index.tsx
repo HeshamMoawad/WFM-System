@@ -2,10 +2,14 @@ import ReactDOM from 'react-dom/client';
 import React from 'react';
 import './index.css';
 import Pages from './pages/Pages';
+import { BrowserRouter } from 'react-router-dom';
 import AuthContextProvider from './contexts/authContext';
 import ModeContextProvider from './contexts/DarkModeContext'; 
 import LanguageContextProvider from './contexts/LanguageContext';
 import VersionContextProvider from './contexts/versionContext';
+import { store } from './store/store';
+import { Provider } from 'react-redux';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,15 +17,19 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <AuthContextProvider>
-      <VersionContextProvider>
-        <ModeContextProvider>
-          <LanguageContextProvider>
-            <Pages/>
-          </LanguageContextProvider>
-        </ModeContextProvider>
-      </VersionContextProvider>
-    </AuthContextProvider>
+    <Provider store={store}>
+      <BrowserRouter>
+        <AuthContextProvider>
+          <VersionContextProvider>
+            <ModeContextProvider>
+              <LanguageContextProvider>
+                <Pages />
+              </LanguageContextProvider>
+            </ModeContextProvider>
+          </VersionContextProvider>
+        </AuthContextProvider>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 
