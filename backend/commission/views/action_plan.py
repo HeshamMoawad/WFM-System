@@ -13,7 +13,8 @@ from users.views import IsOwner , IsSuperUser , IsManager
 @permission_classes([IsOwner | IsSuperUser | IsManager])
 def get_action_plan(request:Request):
     if request.method == "GET" :
-        action_plan = ActionPlan.objects.all()
+        filters = request.query_params
+        action_plan = ActionPlan.objects.filter(**filters)
         return Response({"count":action_plan.count(),"results":ActionPlanSerializer(action_plan,many=True).data},HTTP_200_OK)
     elif request.method == "POST" :
         action_plan = ActionPlan(**request.data)
