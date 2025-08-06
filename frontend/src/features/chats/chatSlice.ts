@@ -1,10 +1,12 @@
 // src/store/socketSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Chat, Contact, Message } from 'whatsapp-web.js';
+import { Chat, Contact } from 'whatsapp-web.js';
+import { AppMessage } from '../../types/whatsapp';
 
 // Define a custom chat type that includes messages
-export interface AppChat extends Chat {
-  messages: Message[];
+export interface AppChat extends Omit<Chat, 'lastMessage' | 'messages'> {
+  messages: AppMessage[];
+  lastMessage?: AppMessage;
 }
 
 export interface ChatState {
@@ -23,25 +25,27 @@ export const chatSlice = createSlice({
   reducers: {
     setChats: (state, action: PayloadAction<Chat[]>) => {
       state.chats = action.payload.map((chat) => ({
-        ...chat,
+        ...(chat as any),
         messages: [], // Initialize with an empty messages array
-      }));
+        lastMessage: chat.lastMessage as AppMessage | undefined,
+      })) as AppChat[];
     },
     setContacts: (state, action: PayloadAction<Contact[]>) => {
       state.contacts = action.payload;
     },
     setChatsAndContacts: (state, action: PayloadAction<{ chats: Chat[]; contacts: Contact[] }>) => {
       state.chats = action.payload.chats.map((chat) => ({
-        ...chat,
+        ...(chat as any),
         messages: [], // Initialize with an empty messages array
-      }));
+        lastMessage: chat.lastMessage as AppMessage | undefined,
+      })) as AppChat[];
       state.contacts = action.payload.contacts;
     },
     resetChatsAndContacts: (state) => {
       state.chats = [];
       state.contacts = [];
     },
-    addMessage: (state, action: PayloadAction<Message>) => {
+    addMessage: (state, action: PayloadAction<AppMessage>) => {
       const message = action.payload;
       const chat = state.chats.find((c) => c.id._serialized === message.id.remote);
       if (chat) {
@@ -73,7 +77,7 @@ export const chatSlice = createSlice({
         state.contacts[contactIndex] = { ...state.contacts[contactIndex], ...updatedProps };
       }
     },
-    setMessagesForChat: (state, action: PayloadAction<{ chatId: string; messages: Message[] }>) => {
+    setMessagesForChat: (state, action: PayloadAction<{ chatId: string; messages: AppMessage[] }>) => {
       const { chatId, messages } = action.payload;
       const chat = state.chats.find((c) => c.id._serialized === chatId);
       if (chat) {
@@ -85,7 +89,6 @@ export const chatSlice = createSlice({
       for (const chat of state.chats) {
         const message = chat.messages.find((m) => m.id.id === messageId);
         if (message) {
-          // You might need to extend the Message type as well if mediaUrl is not a standard property
           (message as any).mediaUrl = mediaUrl;
           break;
         }

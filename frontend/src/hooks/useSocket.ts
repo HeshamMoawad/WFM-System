@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Chat, Contact, Message } from 'whatsapp-web.js';
-import { addMessage, setChatsAndContacts, updateChat, updateContact } from '../features/chats/chatSlice';
+import { Chat, Contact, Message } from "whatsapp-web.js";
+import { AppMessage } from "../types/whatsapp";
+import { AppChat, setChats } from '../features/chats/chatSlice';
+import { addMessage, setChatsAndContacts, updateChat, updateContact, setMessagesForChat } from '../features/chats/chatSlice';
 import { setQrCode } from '../features/qr/qrSlice';
-import { initializeSocket, socket } from '../services/socket';
-import { setSocketConnected, setSocketDisconnected } from '../features/socket/socketSlice';
+import { initializeSocket, socket, handleNewMessage } from '../services/socket';
+import { setSocketConnected, setSocketDisconnected, setSocketError, setLoginSuccess } from '../features/socket/socketSlice';
 
 const useSocket = () => {
     const dispatch = useDispatch();
@@ -24,16 +26,26 @@ const useSocket = () => {
             dispatch(setSocketDisconnected());
         };
 
-    const onInit = (data: { chats: Chat[], contacts: Contact[] }) => {
-      dispatch(setChatsAndContacts(data));
+    const onInit = (data: {success: boolean, chats: Chat[], contacts: Contact[] }) => {
+      if (data.success) {
+        dispatch(setChatsAndContacts(data));
+      } else {
+        dispatch(setSocketError({ message: 'Failed to initialize socket', code: 'INIT_FAILED' }));
+      }
     };
 
     const onQr = (qr: string) => {
       dispatch(setQrCode(qr));
     };
 
-    const onNewMessage = (message: Message) => {
-      dispatch(addMessage(message));
+    const onNewMessage = (data: any) => {
+      console.log('new message received', data);
+      const message = handleNewMessage(data);
+      if (message) {
+        dispatch(addMessage(message as AppMessage));
+      } else {
+        console.warn('Received invalid message format:', data);
+      }
     };
 
     const handleChatUpdate = (response: { success: boolean, chatId: string, data: any }) => {
@@ -45,6 +57,37 @@ const useSocket = () => {
     const handleContactUpdate = (response: { success: boolean, contactId: string, data: any }) => {
       if (response.success) {
         dispatch(updateContact({ contactId: response.contactId, updatedProps: response.data }));
+      }
+    };
+
+    const onChats = (data: { chats: Chat[], contacts: Contact[] }) => {
+      console.log('chats received');
+      dispatch(setChatsAndContacts(data));
+    };
+    const onSyncChats = (data: { chats: Chat[]}) => {
+      console.log('sync chats received');
+      dispatch(setChats(data.chats));
+    };
+
+    const onLoginSuccess = (userId: string) => {
+      console.log('login success', userId);
+      dispatch(setLoginSuccess(userId));
+    };
+
+    const onException = (error: { message: string; code?: string }) => {
+      console.error('socket exception', error);
+      dispatch(setSocketError({ message: error.message, code: error.code }));
+    };
+
+    const onError = (error: any) => {
+      console.error('socket error', error);
+      dispatch(setSocketError({ message: error.message, code: error.code }));
+    };
+
+    const onGetChatMessages = (data: { success: boolean; messages: Message[] }) => {
+      if (data.success && data.messages.length > 0) {
+        const chatId = data.messages[0].id.remote;
+        dispatch(setMessagesForChat({ chatId, messages: data.messages as AppMessage[] }));
       }
     };
 
@@ -61,6 +104,14 @@ const useSocket = () => {
     s.on('init', onInit);
     s.on('qr', onQr);
     s.on('new_message', onNewMessage);
+    s.on('connect_error', onError);
+    s.on('connect_timeout', onError);
+    s.on('error', onError);
+    s.on('exception', onException);
+    s.on('success_login', onLoginSuccess);
+    s.on('chats', onChats);
+    s.on('getChatMessages', onGetChatMessages);
+    s.on('sync_chats', onSyncChats);
 
     // New Listeners
     s.on('muteChat', handleChatUpdate);
@@ -82,6 +133,14 @@ const useSocket = () => {
       s.off('init', onInit);
       s.off('qr', onQr);
       s.off('new_message', onNewMessage);
+      s.off('connect_error', onError);
+      s.off('connect_timeout', onError);
+      s.off('error', onError);
+      s.off('exception', onException);
+      s.off('success_login', onLoginSuccess);
+      s.off('chats', onChats);
+      s.off('getChatMessages', onGetChatMessages);
+      s.off('sync_chats', onSyncChats);
 
       // Cleanup new listeners
       s.off('muteChat', handleChatUpdate);

@@ -33,8 +33,10 @@ module.exports = {
         "text":"black"
       },
       "primary":"#51c9c9",
+      "primary-hover":"#41b8b8",
       "btns-colors":{
           "primary" : "#35bfbf",
+          "primary-hover" :"#41b8b8",
           "secondry" :"#ff6150"
       },
       "wa-colors":{
@@ -43,6 +45,8 @@ module.exports = {
             "primary" : "#25d366",
             "secondry" :"#075e54"
         },
+        "hover":"#ece5dd",
+        "ui-background":"#ece5dd"
       },
 
 

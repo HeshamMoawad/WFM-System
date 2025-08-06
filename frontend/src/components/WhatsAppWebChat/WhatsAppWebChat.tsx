@@ -7,7 +7,7 @@ import { convertJidToPhone } from "../../utils/converter";
 import { getSocket } from "../../services/socket";
 import { AppChat, setMessagesForChat } from "../../features/chats/chatSlice";
 import { RootState } from "../../store/store";
-import { Message } from "whatsapp-web.js";
+import { AppMessage } from "../../types/whatsapp";
 
 interface WhatsAppWebChatProps {
     refresh: boolean;
@@ -26,21 +26,10 @@ export const WhatsAppWebChat: FC<WhatsAppWebChatProps> = ({ currentChat }) => {
             return;
         }
 
-        const handleChatMessages = (data: { chatId: string; messages: Message[] }) => {
-            if (data.chatId === currentChat.id._serialized) {
-                dispatch(setMessagesForChat(data));
-            }
-        };
-
-        socket.on("getChatMessages", handleChatMessages);
-
         socket.emit("getChatMessages", {
             chatId: currentChat.id._serialized,
+            limit: 100,
         });
-
-        return () => {
-            socket.off("getChatMessages", handleChatMessages);
-        };
     }, [currentChat, dispatch]);
 
     return (
@@ -53,7 +42,7 @@ export const WhatsAppWebChat: FC<WhatsAppWebChatProps> = ({ currentChat }) => {
                         </div>
                         <div className="flex flex-col overflow-y-auto gap-1 p-2 min-h-[68vh]">
                             {
-                                selectedChat.messages?.map((message, index) => {
+                                selectedChat.messages?.map((message: AppMessage, index) => {
                                     return <WAChatMessage key={index} message={message} />
                                 })
                             }

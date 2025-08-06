@@ -6,6 +6,8 @@ import SidebarContextProvider from '../../contexts/SidebarContext';
 import { useAuth } from '../../hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import Azkar from '../../components/Azkar/Azkar';
+import SocketErrorDisplay from '../../components/SocketErrorDisplay';
+import SocketSuccessDisplay from '../../components/SocketSuccessDisplay';
 
 interface MainLayoutProps extends ChildrenType{
 
@@ -29,6 +31,8 @@ const MainLayout: FC<MainLayoutProps> = ({children}:MainLayoutProps) => {
     return (
         auth.username ?
             <div className='flex flex-row' id='main-layout'>
+                <SocketErrorDisplay />
+                <SocketSuccessDisplay />
                 <SidebarContextProvider>
                     <Sidebar/>
                 </SidebarContextProvider>
