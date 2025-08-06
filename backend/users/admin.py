@@ -19,7 +19,9 @@ from .models import (
     Group ,
     MainPage,
     SubPage ,
-    GenericFilter
+    GenericFilter ,
+    WhatsappAccount,
+    WhatsappNumber
 )
 from utils.admin_utils import FieldSets
 
@@ -342,9 +344,50 @@ class GenericFilterAdminSite(ImportExportModelAdmin):
     search_fields = ['name', 'groups__name']
 
 
+class WhatsappAccountAdminSite(ImportExportModelAdmin):
+    list_display = ["name","phone"]
+    list_filter = ["name","phone"]
+    readonly_fields = ['uuid', "created_at", "updated_at"]
+    search_fields = ['name','phone']
+    fieldsets = FieldSets([
+            'WhatsappAccount Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'name', 
+                'phone',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at" ,
+            ]
+    ]).fieldsets
+
+
+class WhatsappNumberAdminSite(ImportExportModelAdmin):
+    list_display = ["name","phone"]
+    list_filter = ["name","phone"]
+    readonly_fields = ['uuid', "created_at", "updated_at"]
+    search_fields = ['name','phone']
+    fieldsets = FieldSets([
+            'WhatsappNumber Fields' ,
+            'Other Fields'
+        ],[
+            [
+                'name', 
+                'phone',
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at" ,
+            ]
+    ]).fieldsets
+
 admin.site.site_title = "WFM-System"
 admin.site.site_header = "WFM-System"
 
+admin.site.register(WhatsappAccount)
+admin.site.register(WhatsappNumber)
 admin.site.register(User , UserAdminSite)
 admin.site.register(Department, DepartmentAdminSite)
 admin.site.register(Project , ProjectAdminSite)

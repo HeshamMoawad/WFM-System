@@ -20,6 +20,8 @@ from ..models import (
     MainPage,
     SubPage ,
     BasePage , 
+    WhatsappAccount,
+    WhatsappNumber,
     )
 
 
@@ -342,3 +344,28 @@ class SubPageSerializer(BasePageSerializer):
     class Meta (BasePageSerializer.Meta):
         model = SubPage
         fields = BasePageSerializer.Meta.fields + ['main_page']
+
+
+
+class WhatsappAccountSerializer(ModelSerializer):
+    class Meta:
+        model = WhatsappAccount
+        fields = [
+            "uuid",
+            "name",
+            "phone",
+        ]
+
+class WhatsappNumberSerializer(ModelSerializer):
+    class Meta:
+        model = WhatsappNumber
+        fields = [
+            "uuid",
+            "account",
+            "user",
+            "phone",
+        ]
+        foreign_models = {
+            "account": ForeignField("account",WhatsappAccount,'uuid') ,
+            "user": ForeignField("user",User,'uuid') ,
+        }

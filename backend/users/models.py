@@ -248,8 +248,23 @@ class ReportRecord(BaseModel):
     class Meta:
         unique_together = ['user','date']
     
+class WhatsappAccount(BaseModel):
+    name = models.CharField(verbose_name="Account Name", max_length=100)
+    phone = models.CharField(verbose_name="Phone Number", max_length=20)
+    
+    def __str__(self):
+        return self.name
+    
+class WhatsappNumber(BaseModel):
+    account = models.ForeignKey(WhatsappAccount,verbose_name="Account" , on_delete=models.SET_NULL , null=True)
+    user = models.ForeignKey(User,verbose_name="User" , on_delete=models.SET_NULL , null=True)
+    phone = models.CharField(verbose_name="Phone Number", max_length=30)
+    
+    def __str__(self):
+        return self.phone
 
-
+    class Meta:
+        unique_together = ['account','phone']
 
 
     

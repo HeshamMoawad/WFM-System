@@ -1,6 +1,9 @@
+from rest_framework.views import APIView
 from api_views.mixin import (
     PageNumberPagination ,
 )
+from rest_framework.request import Request
+from rest_framework.response import Response
 from api_views.models import APIViewSet 
 from users.models import (
     User , 
@@ -11,6 +14,8 @@ from users.models import (
     Lead,
     Request ,
     FingerPrintID ,
+    WhatsappAccount,
+    WhatsappNumber,
     )
 from users.serializers import (
     ProjectSerializer , 
@@ -21,9 +26,11 @@ from users.serializers import (
     LeadSerializer ,
     RequestSerializer ,
     FingerPrintIDSerializer ,
+    WhatsappAccountSerializer,
+    WhatsappNumberSerializer,
     )
 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser , MultiPartParser 
 from permissions.users import IsAgent , IsManager , IsHR , IsOwner , IsSuperUser , IsLeader
 
@@ -169,3 +176,56 @@ class FingerPrintIDAPI(APIViewSet):
         "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
         "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
     }
+
+# class WhatsappAccountAPI(APIViewSet):
+#     # permission_classes = [IsAuthenticated]
+#     allowed_methods = ["GET","POST","DELETE"]
+#     pagination_class = DefaultPagination
+#     model = WhatsappAccount
+#     model_serializer= WhatsappAccountSerializer
+#     order_by = ('-created_at',)
+#     search_filters = ["uuid","name","phone"]
+#     creating_filters = ["name","phone"]
+#     requiered_fields = ["name","phone"]
+#     unique_field:str = 'uuid'
+#     permissions_config = {
+#         "POST": [IsSuperUser | IsOwner | IsManager | IsHR],
+#         "PUT": [IsSuperUser | IsOwner | IsManager | IsHR],
+#         "DELETE": [IsSuperUser | IsOwner | IsManager | IsHR],
+#     }
+
+
+class WhatsappNumberAPI(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = WhatsappNumberSerializer
+    queryset = WhatsappNumber.objects.all()
+
+
+    def get(self,request:Request):
+        queryset = self.queryset.filter(user=request.user)
+        return Response(self.serializer_class(queryset,many=True).data)
+
+    def post(self,request:Request):
+        user = request.data.get("user")
+        user = None #User.objects.filter(uuid=user).first()
+        # if not user :
+        #     return Response({"error":"User Not Found"},status=404)
+        account = request.data.get("account")
+        account = WhatsappAccount.objects.filter(name=account).first()
+        if not account :
+            return Response({"error":"Account Not Found"},status=404)
+        chats = request.data.get("chats",[])
+        container = []
+        phones = WhatsappNumber.objects.all().values_list("phone",flat=True)
+        for chat in chats :
+            target_phone = chat.get("id").get("_serialized","")
+            if target_phone in phones :
+                continue
+            row = WhatsappNumber(
+                account=account,
+                phone=target_phone,
+                user=user
+            )
+            container.append(row)
+        WhatsappNumber.objects.bulk_create(container, ignore_conflicts=True)
+        return Response(serializer.data)

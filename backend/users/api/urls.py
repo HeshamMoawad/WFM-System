@@ -15,7 +15,8 @@ from users.views import (
     LeadAPI ,
     ProfileAPI ,
     RequestAPI ,
-    FingerPrintIDAPI
+    FingerPrintIDAPI,
+    WhatsappNumberAPI
      )
 from users.views.arrive_leave import arreive , leave , arrive_leave_details  , MonthlyHistoryView
 from users.views.forget_pass import forget_password
@@ -50,6 +51,7 @@ urlpatterns = [
     
     path('leads-report',get_leads_report) ,
     path('get-my-projects',get_projects_to_report) ,
+    path('whatsapp-number',WhatsappNumberAPI.as_view()) ,
 
     path('old-lead',del_old_lead)
 ]
