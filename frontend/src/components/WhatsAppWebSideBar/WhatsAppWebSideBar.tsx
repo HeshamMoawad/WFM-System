@@ -19,11 +19,10 @@ interface WhatsAppWebSideBarProps {
 
 export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, setCurrentChat }) => {
     const [contextMenu, setContextMenu] = useState<{ x: number, y: number, chat: AppChat } | null>(null);
-    const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
-
     const { connected: isConnected, loggedInUser} = useSelector((state: RootState) => state.socket);
     const { chats, contacts } = useSelector((state: RootState) => state.chats);
     const qrCode = useSelector((state: RootState) => state.qr.qrCode);
+    const myChats = useSelector((state: RootState) => state.myChats.myChats);
 
     const archivedChats = chats.filter(c => c.archived);
     const unarchivedChats = chats
@@ -97,7 +96,7 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
     return (
         <Container className="relative w-[28%] h-[77vh] bg-wa-colors-btns-colors-secondry">
             <div className="flex flex-row justify-between items-center border-b pb-1">
-                <h1>WhatsApp Web Server</h1>
+                <h1>WhatsApp Web Server | Chats {chats.length}</h1>
                 {isConnected ? <TbWifi className="w-10 h-10 text-[green]" /> : <TbPlugConnectedX className="w-10 h-10 text-[red]" />}
             </div>
 
@@ -107,9 +106,6 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
                         Initialize Client
                     </button>
                 )}
-                {/* <button onClick={() => setCreateGroupModalOpen(true)} className="p-2 my-2 w-full bg-green-500 text-white rounded hover:bg-green-600">
-                    Create Group
-                </button> */}
             </div>
 
             {qrCode && (
@@ -130,8 +126,8 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
                             lastMessage={chat.lastMessage}
                             time={chat?.lastMessage?.timestamp?.toString() || ""} />
                         <div className="absolute top-2 right-2 flex items-center gap-1">
-                            {chat.pinned && <BsPinAngleFill className="text-gray-500" />}
-                            {chat.isMuted && <GoMute className="text-gray-500" />}
+                            {chat.pinned && <BsPinAngleFill className="text-[#000]" />}
+                            {chat.isMuted && <GoMute className="text-[#000]" />}
                         </div>
                     </div>
                 ))}
@@ -151,13 +147,6 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
                     onArchiveToggle={handleArchiveToggle}
                 />
             )}
-            {/* {isCreateGroupModalOpen && (
-                <CreateGroupModal
-                    isOpen={isCreateGroupModalOpen}
-                    onClose={() => setCreateGroupModalOpen(false)}
-                    contacts={contacts.filter(c => !c.isMe && !c.isGroup)}
-                />
-            )} */}
         </Container>
     );
 };

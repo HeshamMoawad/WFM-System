@@ -19,6 +19,7 @@ export const WhatsAppWeb: FC<WhatsAppWebProps> = () => {
     
     return (
             <SocketProvider>
+                
                 <div className={`w-[99%] mx-auto bg-white flex flex-row p-1`}>
                     <WhatsAppWebSidebar setRefresh={setRefresh} setCurrentChat={setCurrentChat} />
                     <WhatsAppWebChat refresh={refresh} currentChat={currentChat} />
