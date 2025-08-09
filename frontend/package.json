@@ -28,7 +28,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-local": "react-scripts start 192.168.11.250:3000",
+    "start-local": "react-scripts start 192.168.11.250:300",
+    "start-port": "react-scripts start localhost:3001",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
