@@ -356,6 +356,7 @@ class WhatsappAccountAdminSite(ImportExportModelAdmin):
             [
                 'name', 
                 'phone',
+                'project',
             ],[
                 "uuid" ,
                 "created_at",
@@ -365,17 +366,18 @@ class WhatsappAccountAdminSite(ImportExportModelAdmin):
 
 
 class WhatsappNumberAdminSite(ImportExportModelAdmin):
-    list_display = ["name","phone"]
-    list_filter = ["name","phone"]
+    list_display = ["phone"]
+    list_filter = ["phone"]
     readonly_fields = ['uuid', "created_at", "updated_at"]
-    search_fields = ['name','phone']
+    search_fields = ['phone']
     fieldsets = FieldSets([
             'WhatsappNumber Fields' ,
             'Other Fields'
         ],[
             [
-                'name', 
                 'phone',
+                'account',
+                'user',
             ],[
                 "uuid" ,
                 "created_at",
@@ -386,8 +388,8 @@ class WhatsappNumberAdminSite(ImportExportModelAdmin):
 admin.site.site_title = "WFM-System"
 admin.site.site_header = "WFM-System"
 
-admin.site.register(WhatsappAccount)
-admin.site.register(WhatsappNumber)
+admin.site.register(WhatsappAccount , WhatsappAccountAdminSite)
+admin.site.register(WhatsappNumber , WhatsappNumberAdminSite)
 admin.site.register(User , UserAdminSite)
 admin.site.register(Department, DepartmentAdminSite)
 admin.site.register(Project , ProjectAdminSite)
