@@ -1,13 +1,14 @@
 // src/services/socket.ts
 import { io, Socket } from 'socket.io-client';
 import { Message } from 'whatsapp-web.js';
+import { BASE_URL_SOCKET } from '../utils/constants'
 
 export interface SocketMessage {
   event: string;
   data: any;
 }
 
-const URL = 'http://localhost:96';
+const URL = BASE_URL_SOCKET;
 
 export let socket: Socket | null = null;
 

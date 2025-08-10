@@ -8,6 +8,8 @@ import { ResponseChatType , ResponseChat } from "../../types/response";
 import {requests} from "../../hooks/requests";
 import { AppChat } from "../../features/chats/chatSlice";
 import useSocket from "../../hooks/useSocket";
+import { useDispatch } from "react-redux";
+import { setMyChats } from "../../features/mychats/mychatsSlice";
 
 interface WhatsAppWebProps {
 }
@@ -16,10 +18,20 @@ export const WhatsAppWeb: FC<WhatsAppWebProps> = () => {
     const [refresh , setRefresh] = useState(false);
     const [currentChat , setCurrentChat] = useState<AppChat | null>(null);
     const _ =  useSocket()
+    const dispatch = useDispatch()
+    const [refreshMyChats , setRefreshMyChats] = useState(false);
+    useEffect(() => {
+        sendRequest({url:"api/users/whatsapp-number",method:"GET"})
+            .then((data)=>{
+                dispatch(setMyChats(data))
+            })
+            .catch((err)=>{
+                console.error(err)
+            })
+    }, [refreshMyChats , dispatch]);
     
     return (
             <SocketProvider>
-                
                 <div className={`w-[99%] mx-auto bg-white flex flex-row p-1`}>
                     <WhatsAppWebSidebar setRefresh={setRefresh} setCurrentChat={setCurrentChat} />
                     <WhatsAppWebChat refresh={refresh} currentChat={currentChat} />

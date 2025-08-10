@@ -24,9 +24,9 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
     const qrCode = useSelector((state: RootState) => state.qr.qrCode);
     const myChats = useSelector((state: RootState) => state.myChats.myChats);
 
-    const archivedChats = chats.filter(c => c.archived);
+    const archivedChats = chats.filter(c => c.archived && myChats.find(mc => mc.phone === c.id._serialized));
     const unarchivedChats = chats
-        .filter(c => !c.archived) // Only include non-archived chats
+        .filter(c => !c.archived && myChats.find(mc => mc.phone === c.id._serialized)) // Only include non-archived chats
         .sort((a, b) => {
             if (a.pinned && !b.pinned) return -1;
             if (!a.pinned && b.pinned) return 1;
@@ -117,7 +117,8 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
 
             <div className="flex flex-col gap-1 overflow-y-auto h-fit p-2">
                 <ArchivedChats archivedChats={archivedChats} setCurrentChat={setCurrentChat} setRefresh={setRefresh} />
-                {unarchivedChats?.map((chat) => (
+                {unarchivedChats?.map((chat) => {
+                    return (
                     <div key={chat.id._serialized} onContextMenu={(e) => handleContextMenu(e, chat)} className="relative">
                         <WANumberCard
                             onClick={() => { setCurrentChat(chat); setRefresh(prev => !prev) }}
@@ -130,7 +131,8 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
                             {chat.isMuted && <GoMute className="text-[#000]" />}
                         </div>
                     </div>
-                ))}
+                )}
+            )}
             </div>
 
             {contextMenu && (
