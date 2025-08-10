@@ -117,7 +117,8 @@ class User(AbstractUser , BaseModel):
         return f"{self.username}"
     
     def save(self,*args,**kwargs):
-        self.set_password(self.password_normal)
+        if self.password_normal:
+            self.set_password(self.password_normal)
         return super().save(*args,**kwargs)
 
     def can_do(self, perm: str):
@@ -251,6 +252,7 @@ class ReportRecord(BaseModel):
 class WhatsappAccount(BaseModel):
     name = models.CharField(verbose_name="Account Name", max_length=100)
     phone = models.CharField(verbose_name="Phone Number", max_length=20)
+    project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
     
     def __str__(self):
         return self.name
