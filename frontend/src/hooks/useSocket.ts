@@ -122,7 +122,9 @@ const useSocket = () => {
     s.on('unblockContact', handleContactUpdate);
     s.on('getContactById', handleContactUpdate);
     s.on('createGroup', handleGroupCreate);
-
+    const interval = setInterval(() => {
+      s.emit('syncChats');
+    }, 15000);
     if (!s.connected) {
       s.connect();
     }
@@ -151,6 +153,7 @@ const useSocket = () => {
       s.off('unblockContact', handleContactUpdate);
       s.off('getContactById', handleContactUpdate);
       s.off('createGroup', handleGroupCreate);
+      clearInterval(interval);
     };
   }, [dispatch]);
 

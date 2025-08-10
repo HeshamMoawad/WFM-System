@@ -77,13 +77,13 @@ export const chatSlice = createSlice({
         state.contacts[contactIndex] = { ...state.contacts[contactIndex], ...updatedProps };
       }
     },
-    setMessagesForChat: (state, action: PayloadAction<{ chatId: string; messages: AppMessage[] }>) => {
-      const { chatId, messages } = action.payload;
-      const chat = state.chats.find((c) => c.id._serialized === chatId);
-      if (chat) {
-        chat.messages = messages;
-      }
-    },
+    // setMessagesForChat: (state, action: PayloadAction<{ chatId: string; messages: AppMessage[] }>) => {
+    //   const { chatId, messages } = action.payload;
+    //   const chat = state.chats.find((c) => c.id._serialized === chatId);
+    //   if (chat) {
+    //     chat.messages = messages;
+    //   }
+    // },
     updateMessageMedia: (state, action: PayloadAction<{ messageId: string; mediaUrl: string }>) => {
       const { messageId, mediaUrl } = action.payload;
       for (const chat of state.chats) {
@@ -97,5 +97,5 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setChats, setContacts, setChatsAndContacts, resetChatsAndContacts, addMessage, updateMessageAck, updateMessageMedia, setMessagesForChat, updateChat, updateContact } = chatSlice.actions;
+export const { setChats, setContacts, setChatsAndContacts, resetChatsAndContacts, addMessage, updateMessageAck, updateMessageMedia, updateChat, updateContact } = chatSlice.actions;
 export default chatSlice.reducer;

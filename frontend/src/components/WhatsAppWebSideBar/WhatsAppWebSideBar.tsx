@@ -96,12 +96,12 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
     return (
         <Container className="relative w-[28%] h-[77vh] bg-wa-colors-btns-colors-secondry">
             <div className="flex flex-row justify-between items-center border-b pb-1">
-                <h1>WhatsApp Web Server | Chats {chats.length}</h1>
+                <h1>WhatsApp Web Server | Chats {myChats.length}</h1>
                 {isConnected ? <TbWifi className="w-10 h-10 text-[green]" /> : <TbPlugConnectedX className="w-10 h-10 text-[red]" />}
             </div>
 
             <div className="flex gap-2">
-                {!loggedInUser && (
+                {chats.length === 0 && (
                     <button onClick={initializeClient} className="p-2 my-2 w-full bg-btns-colors-primary text-white rounded hover:bg-btns-colors-primary-hover">
                         Initialize Client
                     </button>
