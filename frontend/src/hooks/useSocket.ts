@@ -3,10 +3,12 @@ import { useDispatch } from 'react-redux';
 import { Chat, Contact, Message } from "whatsapp-web.js";
 import { AppMessage } from "../types/whatsapp";
 import { AppChat, setChats } from '../features/chats/chatSlice';
-import { addMessage, setChatsAndContacts, updateChat, updateContact, setMessagesForChat } from '../features/chats/chatSlice';
+import { addMessage, setChatsAndContacts, updateChat, updateContact } from '../features/chats/chatSlice';
 import { setQrCode } from '../features/qr/qrSlice';
 import { initializeSocket, socket, handleNewMessage } from '../services/socket';
 import { setSocketConnected, setSocketDisconnected, setSocketError, setLoginSuccess } from '../features/socket/socketSlice';
+import { addMessage as addMessageToMessages , setMessagesForChat } from '../features/chats/messageSlice';
+
 
 const useSocket = () => {
     const dispatch = useDispatch();
@@ -64,9 +66,13 @@ const useSocket = () => {
       console.log('chats received');
       dispatch(setChatsAndContacts(data));
     };
-    const onSyncChats = (data: { chats: Chat[]}) => {
+    const onSyncChats = (data: {success: boolean, chats: Chat[]}) => {
       console.log('sync chats received');
-      dispatch(setChats(data.chats));
+      if (data.success) {
+        dispatch(setChats(data.chats));
+      } else {
+        dispatch(setSocketError({ message: 'Failed to sync chats', code: 'SYNC_FAILED' }));
+      }
     };
 
     const onLoginSuccess = (userId: string) => {
@@ -87,7 +93,7 @@ const useSocket = () => {
     const onGetChatMessages = (data: { success: boolean; messages: Message[] }) => {
       if (data.success && data.messages.length > 0) {
         const chatId = data.messages[0].id.remote;
-        dispatch(setMessagesForChat({ chatId, messages: data.messages as AppMessage[] }));
+        dispatch(setMessagesForChat({ messages: data.messages as AppMessage[] }));
       }
     };
 
@@ -161,3 +167,4 @@ const useSocket = () => {
 };
 
 export default useSocket;
+export {}

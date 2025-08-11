@@ -31,11 +31,8 @@ const ArchivedChats: FC<ArchivedChatsProps> = ({ archivedChats, setCurrentChat, 
                         <div key={chat.id._serialized}>
                             <WANumberCard
                                 onClick={() => { setCurrentChat(chat); setRefresh(prev => !prev) }}
-                                name={chat.name}
-                                id={chat.id.user}
-                                lastMessage={chat.lastMessage}
-                                time={chat?.lastMessage?.timestamp?.toString() || ""}
-                            />
+                                chat={chat}
+                                />
                         </div>
                     ))}
                 </div>

@@ -121,11 +121,10 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
                     return (
                     <div key={chat.id._serialized} onContextMenu={(e) => handleContextMenu(e, chat)} className="relative">
                         <WANumberCard
+                            key={chat.id._serialized}
                             onClick={() => { setCurrentChat(chat); setRefresh(prev => !prev) }}
-                            name={chat.name}
-                            id={chat.id.user}
-                            lastMessage={chat.lastMessage}
-                            time={chat?.lastMessage?.timestamp?.toString() || ""} />
+                            chat={chat} 
+                            />
                         <div className="absolute top-2 right-2 flex items-center gap-1">
                             {chat.pinned && <BsPinAngleFill className="text-[#000]" />}
                             {chat.isMuted && <GoMute className="text-[#000]" />}

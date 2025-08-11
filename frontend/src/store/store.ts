@@ -3,14 +3,15 @@ import socketReducer from '../features/socket/socketSlice';
 import chatReducer from '../features/chats/chatSlice';
 import qrReducer from '../features/qr/qrSlice';
 import myChatsReducer from '../features/mychats/mychatsSlice';
-
+import messageReducer from '../features/chats/messageSlice';
 
 export const store = configureStore({
   reducer: {
     socket:socketReducer,
     chats:chatReducer,
     qr: qrReducer,
-    myChats:myChatsReducer
+    myChats:myChatsReducer,
+    messages:messageReducer
   },
 })
 

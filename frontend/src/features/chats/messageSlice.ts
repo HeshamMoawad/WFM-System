@@ -12,7 +12,7 @@ const initialState: MessageState = {
   messages: [],
 };
 
-export const chatSlice = createSlice({
+export const messageSlice = createSlice({
   name: 'waMessages',
   initialState,
   reducers: {
@@ -37,12 +37,9 @@ export const chatSlice = createSlice({
         }
       }
     },
-    setMessagesForChat: (state, action: PayloadAction<{ chatId: string; messages: AppMessage[] }>) => {
-      const { chatId, messages } = action.payload;
-      const chatIndex = state.messages.findIndex((c) => c.id.remote === chatId);
-      if (chatIndex !== -1) {
-        state.messages[chatIndex] = messages;
-      }
+    setMessagesForChat: (state, action: PayloadAction<{ messages: AppMessage[] }>) => {
+      const { messages } = action.payload;
+      state.messages = messages;
     },
     resetMessages: (state) => {
       state.messages = [];
@@ -50,5 +47,5 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { addMessage } = chatSlice.actions;
-export default chatSlice.reducer;
+export const { addMessage, updateMessageAck, updateMessageMedia, setMessagesForChat, resetMessages } = messageSlice.actions;
+export default messageSlice.reducer;

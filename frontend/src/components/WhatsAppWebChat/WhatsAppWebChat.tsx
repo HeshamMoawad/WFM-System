@@ -5,7 +5,7 @@ import WAInputMessage from "../WAInputMessage/WAInputMessage";
 import WAChatMessage from "../WAChatMessage/WAChatMessage";
 import { convertJidToPhone } from "../../utils/converter";
 import { getSocket } from "../../services/socket";
-import { AppChat, setMessagesForChat } from "../../features/chats/chatSlice";
+import { AppChat } from "../../features/chats/chatSlice";
 import { RootState } from "../../store/store";
 import { AppMessage } from "../../types/whatsapp";
 
@@ -17,7 +17,7 @@ interface WhatsAppWebChatProps {
 export const WhatsAppWebChat: FC<WhatsAppWebChatProps> = ({ currentChat }) => {
     const dispatch = useDispatch();
     const chats = useSelector((state: RootState) => state.chats.chats);
-
+    const messages = useSelector((state: RootState) => state.messages.messages);
     const selectedChat = chats.find(c => c.id._serialized === currentChat?.id._serialized);
 
     useEffect(() => {
@@ -42,7 +42,7 @@ export const WhatsAppWebChat: FC<WhatsAppWebChatProps> = ({ currentChat }) => {
                         </div>
                         <div className="flex flex-col overflow-y-auto gap-1 p-2 min-h-[68vh]">
                             {
-                                selectedChat.messages?.map((message: AppMessage, index) => {
+                                messages?.map((message: AppMessage, index) => {
                                     return <WAChatMessage key={index} message={message} />
                                 })
                             }
