@@ -26,6 +26,12 @@ export const WhatsAppWebChat: FC<WhatsAppWebChatProps> = ({ currentChat }) => {
             return;
         }
 
+        // Mark chat as read when opened
+        if (currentChat.unreadCount > 0) {
+            socket.emit('markChatAsRead', { chatId: currentChat.id._serialized });
+        }
+
+        // Load messages for the chat
         socket.emit("getChatMessages", {
             chatId: currentChat.id._serialized,
             limit: 100,

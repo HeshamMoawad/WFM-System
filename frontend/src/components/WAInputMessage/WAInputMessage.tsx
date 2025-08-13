@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import { TRANSLATIONS } from "../../utils/constants";
@@ -13,6 +13,16 @@ export const WAInputMessage: FC<WAInputMessageProps> = ({ targetId }) => {
     const [message, setMessage] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { lang } = useContext(LanguageContext);
+    const handleSubmit = useCallback(() => {
+        const socket = getSocket();
+        if (!socket || !textareaRef.current?.value.trim()) return;
+        socket.emit("sendMessage", {
+            to: targetId,
+            message: textareaRef.current.value,
+        });
+        setMessage("");
+        textareaRef.current.value = "";
+    }, [targetId, textareaRef]);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -21,16 +31,20 @@ export const WAInputMessage: FC<WAInputMessageProps> = ({ targetId }) => {
         }
     }, [message]);
 
-    const handleSubmit = () => {
-        const socket = getSocket();
-        if (!socket || !message.trim()) return;
-
-        socket.emit("sendMessage", {
-            to: targetId,
-            message,
+    useEffect(() => {
+        window.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSubmit();
+            }
         });
-        setMessage("");
-    };
+        return () => {
+            window.removeEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSubmit();
+                }
+            });
+        };
+    }, [handleSubmit]);
     return (
         <div className="sticky bottom-0 w-[93%] flex flex-row justify-center items-center gap-3 p-2">
             <textarea 
@@ -41,8 +55,8 @@ export const WAInputMessage: FC<WAInputMessageProps> = ({ targetId }) => {
                 placeholder={TRANSLATIONS.WAInputMessage.placeholder[lang]} 
                 className="text-start rounded-xl p-2 px-4 w-full resize-none border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg" 
                 />
-            <button type="submit" className="bg-[#25d366] rounded-full flex justify-center items-center w-[50px] h-[50px]" onClick={handleSubmit}><IoSend className="w-[20px] h-[20px] text-center"/></button>
-            <button type="button" className="bg-[#25d366] rounded-full flex justify-center items-center w-[40px] h-[40px]"><MdKeyboardDoubleArrowDown className="w-[30px] h-[30px] text-center"/></button>
+            <button type="submit" disabled={message.trim() === ""} className="bg-[#25d366] rounded-full flex justify-center items-center w-[50px] h-[50px]" onClick={handleSubmit}><IoSend className="w-[20px] h-[20px] text-center"/></button>
+            <button type="button" disabled={message.trim() === ""} className="bg-[#25d366] rounded-full flex justify-center items-center w-[40px] h-[40px]"><MdKeyboardDoubleArrowDown className="w-[30px] h-[30px] text-center"/></button>
         </div>
     );
 }

@@ -23,7 +23,6 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
     const { chats, contacts } = useSelector((state: RootState) => state.chats);
     const qrCode = useSelector((state: RootState) => state.qr.qrCode);
     const myChats = useSelector((state: RootState) => state.myChats.myChats);
-
     const archivedChats = chats.filter(c => c.archived && myChats.find(mc => mc.phone === c.id._serialized));
     const unarchivedChats = chats
         .filter(c => !c.archived && myChats.find(mc => mc.phone === c.id._serialized)) // Only include non-archived chats
@@ -102,7 +101,9 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
 
             <div className="flex gap-2">
                 {chats.length === 0 && (
-                    <button onClick={initializeClient} className="p-2 my-2 w-full bg-btns-colors-primary text-white rounded hover:bg-btns-colors-primary-hover">
+                    <button onClick={() => {
+                        initializeClient();
+                        }} className="p-2 my-2 w-full bg-btns-colors-primary text-white rounded hover:bg-btns-colors-primary-hover">
                         Initialize Client
                     </button>
                 )}

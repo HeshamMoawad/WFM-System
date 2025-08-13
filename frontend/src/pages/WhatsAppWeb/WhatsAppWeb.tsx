@@ -20,11 +20,8 @@ export const WhatsAppWeb: FC<WhatsAppWebProps> = () => {
     const _ =  useSocket()
     const dispatch = useDispatch()
     const [refreshMyChats , setRefreshMyChats] = useState(false);
-    const interval = setInterval(() => {
-        setRefreshMyChats(prev => !prev)
-    }, 15000);
-
     useEffect(() => {
+        const interval = setInterval(() => {
         sendRequest({url:"api/users/whatsapp-number",method:"GET"})
             .then((data)=>{
                 dispatch(setMyChats(data))
@@ -32,6 +29,7 @@ export const WhatsAppWeb: FC<WhatsAppWebProps> = () => {
             .catch((err)=>{
                 console.error(err)
             })
+        }, 15000);
         return () => clearInterval(interval);
     }, [refreshMyChats , dispatch]);
     

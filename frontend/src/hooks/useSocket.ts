@@ -130,7 +130,7 @@ const useSocket = () => {
     s.on('createGroup', handleGroupCreate);
     const interval = setInterval(() => {
       s.emit('syncChats');
-    }, 15000);
+    },20000);
     if (!s.connected) {
       s.connect();
     }

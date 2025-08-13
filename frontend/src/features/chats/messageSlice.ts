@@ -38,7 +38,8 @@ export const messageSlice = createSlice({
       }
     },
     setMessagesForChat: (state, action: PayloadAction<{ messages: AppMessage[] }>) => {
-      const { messages } = action.payload;
+      const { messages } = action.payload
+      messages.sort((a, b) =>  a.timestamp - b.timestamp);
       state.messages = messages;
     },
     resetMessages: (state) => {
