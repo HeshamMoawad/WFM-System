@@ -228,4 +228,4 @@ class WhatsappNumberAPI(APIView):
             )
             container.append(row)
         WhatsappNumber.objects.bulk_create(container, ignore_conflicts=True)
-        return Response(serializer.data)
+        return Response({"message":"Done"})
