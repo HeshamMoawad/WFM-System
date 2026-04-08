@@ -36,8 +36,9 @@ const useSocket = () => {
       }
     };
 
-    const onQr = (qr: string) => {
-      dispatch(setQrCode(qr));
+    const onQr = (data: {qr: string}) => {
+      console.log('qr received', data.qr);
+      dispatch(setQrCode(data.qr));
     };
 
     const onNewMessage = (data: any) => {
@@ -75,9 +76,9 @@ const useSocket = () => {
       }
     };
 
-    const onLoginSuccess = (userId: string) => {
-      console.log('login success', userId);
-      dispatch(setLoginSuccess(userId));
+    const onLoginSuccess = (data: { clientId: string}) => {
+      console.log('login success', data.clientId);
+      dispatch(setLoginSuccess(data.clientId));
     };
 
     const onException = (error: { message: string; code?: string }) => {
@@ -85,13 +86,13 @@ const useSocket = () => {
       dispatch(setSocketError({ message: error.message, code: error.code }));
     };
 
-    const onError = (error: any) => {
-      console.error('socket error', error);
-      dispatch(setSocketError({ message: error.message, code: error.code }));
+    const onError = (data: {error: string }) => {
+      console.error('socket error', data);
+      dispatch(setSocketError({ message: data.error }));
     };
 
-    const onGetChatMessages = (data: { success: boolean; messages: Message[] }) => {
-      if (data.success && data.messages.length > 0) {
+    const onGetChatMessages = (data: { messages: Message[] }) => {
+      if (data.messages.length > 0) {
         const chatId = data.messages[0].id.remote;
         dispatch(setMessagesForChat({ messages: data.messages as AppMessage[] }));
       }
@@ -107,17 +108,15 @@ const useSocket = () => {
 
     s.on('connect', onConnect);
     s.on('disconnect', onDisconnect);
-    s.on('init', onInit);
+    s.on('initialize', onInit);
     s.on('qr', onQr);
-    s.on('new_message', onNewMessage);
-    s.on('connect_error', onError);
-    s.on('connect_timeout', onError);
+    s.on('newMessage', onNewMessage);
     s.on('error', onError);
     s.on('exception', onException);
-    s.on('success_login', onLoginSuccess);
+    s.on('ready', onLoginSuccess);
     s.on('chats', onChats);
     s.on('getChatMessages', onGetChatMessages);
-    s.on('sync_chats', onSyncChats);
+    // s.on('sync_chats', onSyncChats);
 
     // New Listeners
     s.on('muteChat', handleChatUpdate);
@@ -128,9 +127,9 @@ const useSocket = () => {
     s.on('unblockContact', handleContactUpdate);
     s.on('getContactById', handleContactUpdate);
     s.on('createGroup', handleGroupCreate);
-    const interval = setInterval(() => {
-      s.emit('syncChats');
-    },20000);
+    // const interval = setInterval(() => {
+    //   s.emit('syncChats');
+    // },20000);
     if (!s.connected) {
       s.connect();
     }
@@ -138,17 +137,14 @@ const useSocket = () => {
     return () => {
       s.off('connect', onConnect);
       s.off('disconnect', onDisconnect);
-      s.off('init', onInit);
+      s.off('initialize', onInit);
       s.off('qr', onQr);
-      s.off('new_message', onNewMessage);
-      s.off('connect_error', onError);
-      s.off('connect_timeout', onError);
+      s.off('newMessage', onNewMessage);
       s.off('error', onError);
       s.off('exception', onException);
-      s.off('success_login', onLoginSuccess);
+      s.off('ready', onLoginSuccess);
       s.off('chats', onChats);
       s.off('getChatMessages', onGetChatMessages);
-      s.off('sync_chats', onSyncChats);
 
       // Cleanup new listeners
       s.off('muteChat', handleChatUpdate);
@@ -159,7 +155,7 @@ const useSocket = () => {
       s.off('unblockContact', handleContactUpdate);
       s.off('getContactById', handleContactUpdate);
       s.off('createGroup', handleGroupCreate);
-      clearInterval(interval);
+      // clearInterval(interval);
     };
   }, [dispatch]);
 

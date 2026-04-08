@@ -54,7 +54,7 @@ const UserBasic: FC<UserBasicProps> = () => {
                     ): null
                 }
                 <AttendanceDetailsTable setTotal={setTotalDays} className='md:col-span-7 place-self-center' label={TRANSLATIONS.AttendanceDetails.title[lang]} date={parseDateFromParams(date)} userID={user_uuid} withDetails={false}/>
-                <ActionPlanTableBasic className='md:col-span-7 w-full md:col-start-4 place-self-center' setTotal={setTotalMoney} date={parseDateFromParams(date)} user_uuid={userCommissionDetails.user.uuid} />
+                <ActionPlanTableBasic className='md:col-span-7 w-full md:col-start-4 place-self-center' setTotal={setTotalDays} date={parseDateFromParams(date)} user_uuid={userCommissionDetails.user.uuid} />
                 <RequestsTableBasic className='md:col-span-7 w-full md:col-start-4 place-self-center'  date={parseDateFromParams(date)} user_uuid={userCommissionDetails.user.uuid}/>
                 <AdvancesTable status='ACCEPTED' date={parseDateFromParams(date)} setTotal={setTotalMoney} className='md:col-span-7 w-full md:col-start-4 place-self-center' user_uuid={userCommissionDetails.user.uuid} canDelete={true}/>
             </>

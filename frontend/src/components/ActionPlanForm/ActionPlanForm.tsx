@@ -71,7 +71,7 @@ const ActionPlanForm: FC<ActionPlanFormProps> = ({className , setRefresh}) => {
                 </div>
                 <div className='col-span-3 flex flex-row justify-between'>
                     <label htmlFor="deduction_days">{TRANSLATIONS.ActionPlan.Form.deduction_days[lang]} </label>
-                    <input type='number'  name="deduction_days" max={30} id="deduction_days" className='w-[20%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' dir={TRANSLATIONS.Direction[lang]} required/>
+                    <input type='number' step={"any"}  name="deduction_days" max={30} id="deduction_days" className='w-[20%] outline-none px-4 rounded-lg border border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg' dir={TRANSLATIONS.Direction[lang]} required/>
                 </div>
                 <div className='col-span-3 flex flex-row justify-between'>
                     <label htmlFor="name">{TRANSLATIONS.ActionPlan.Form.name[lang]} </label>

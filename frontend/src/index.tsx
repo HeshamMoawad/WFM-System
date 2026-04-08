@@ -9,6 +9,7 @@ import LanguageContextProvider from './contexts/LanguageContext';
 import VersionContextProvider from './contexts/versionContext';
 import { store } from './store/store';
 import { Provider } from 'react-redux';
+import { Toaster } from 'sonner';
 
 
 const root = ReactDOM.createRoot(
@@ -24,6 +25,7 @@ root.render(
             <ModeContextProvider>
               <LanguageContextProvider>
                 <Pages />
+                <Toaster position="top-right" richColors />
               </LanguageContextProvider>
             </ModeContextProvider>
           </VersionContextProvider>

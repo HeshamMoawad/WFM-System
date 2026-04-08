@@ -2,9 +2,9 @@ const t = (arKey:string,enKey:string)=> ({ar:arKey,en:enKey})
 
 export const BASE_URL = "/" //http://localhost:8000
 export const BASE_URL_NESTJS = "/" //http://localhost:3000
-export const BASE_URL_SOCKET = "/ws" //
-
-export const CURRENT_VERSION = "0.2.1"
+export const BASE_URL_SOCKET = "/" //http://localhost:3000
+export const CLIENTID = "+201554071240"
+export const CURRENT_VERSION = "0.2.2"
 
 export const WEEK_DAYS = [
   t("الاحد","Sun"), 

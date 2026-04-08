@@ -11,6 +11,7 @@ import ArchivedChats from "../ArchivedChats/ArchivedChats";
 import { BsPinAngleFill } from "react-icons/bs";
 import { GoMute } from "react-icons/go";
 import ContextMenu from "../ContextMenu/ContextMenu";
+import { CLIENTID } from "../../utils/constants";
 
 interface WhatsAppWebSideBarProps {
     setRefresh: Dispatch<SetStateAction<boolean>>;
@@ -35,7 +36,7 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
     const initializeClient = () => {
         const socket = getSocket();
         if (socket) {
-            socket.emit('init', { phone: '+201554071240', name: 'Nabd' , uuid: JSON.parse(localStorage.getItem('Auth') || '{}')?.uuid });
+            socket.emit('initialize', { clientId: CLIENTID, name: 'Nabd' , uuid: JSON.parse(localStorage.getItem('Auth') || '{}')?.uuid });
         }
     };
 
@@ -59,14 +60,14 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
         const socket = getSocket();
         if (!socket) return;
         const event = chat.isMuted ? 'unmuteChat' : 'muteChat';
-        socket.emit(event, { chatId: chat.id._serialized });
+        socket.emit(event, { clientId: CLIENTID, chatId: chat.id._serialized });
     };
 
     const handleReadToggle = (chat: AppChat) => {
         const socket = getSocket();
         if (!socket) return;
         const event = chat.unreadCount > 0 ? 'markChatAsRead' : 'markChatAsUnread';
-        socket.emit(event, { chatId: chat.id._serialized });
+        socket.emit(event, { clientId: CLIENTID, chatId: chat.id._serialized });
     };
 
     const handleBlockToggle = (chat: AppChat) => {
@@ -75,21 +76,21 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
         const contact = contacts.find(c => c.id._serialized === chat.id._serialized);
         if (!contact) return;
         const event = contact.isBlocked ? 'unblockContact' : 'blockContact';
-        socket.emit(event, { contactId: contact.id._serialized });
+        socket.emit(event, { clientId: CLIENTID, contactId: contact.id._serialized });
     };
 
     const handlePinToggle = (chat: AppChat) => {
         const socket = getSocket();
         if (!socket) return;
         const event = chat.pinned ? 'unpinChat' : 'pinChat';
-        socket.emit(event, { chatId: chat.id._serialized });
+        socket.emit(event, { clientId: CLIENTID, chatId: chat.id._serialized });
     };
 
     const handleArchiveToggle = (chat: AppChat) => {
         const socket = getSocket();
         if (!socket) return;
         const event = chat.archived ? 'unarchiveChat' : 'archiveChat';
-        socket.emit(event, { chatId: chat.id._serialized });
+        socket.emit(event, { clientId: CLIENTID, chatId: chat.id._serialized });
     };
 
     return (
@@ -117,13 +118,13 @@ export const WhatsAppWebSideBar: FC<WhatsAppWebSideBarProps> = ({ setRefresh, se
             )}
 
             <div className="flex flex-col gap-1 overflow-y-auto h-fit p-2">
-                <ArchivedChats archivedChats={archivedChats} setCurrentChat={setCurrentChat} setRefresh={setRefresh} />
+                <ArchivedChats archivedChats={archivedChats} contacts={contacts} setCurrentChat={setCurrentChat} setRefresh={setRefresh} />
                 {unarchivedChats?.map((chat) => {
                     return (
                     <div key={chat.id._serialized} onContextMenu={(e) => handleContextMenu(e, chat)} className="relative">
                         <WANumberCard
                             key={chat.id._serialized}
-                            onClick={() => { setCurrentChat(chat); setRefresh(prev => !prev) }}
+                            onClickChat={(chatcard) => { setCurrentChat(chatcard); setRefresh(prev => !prev);console.log(chatcard) }}
                             chat={chat} 
                             />
                         <div className="absolute top-2 right-2 flex items-center gap-1">

@@ -6,8 +6,7 @@ export const getFingerprint = () => {
       resolve(FingerprintJS.x64hash128(components.map((component) => component.value).join(), 31))
     });
 })
-
-  };
+};
 
 // const [id , setID] = useState<string>('')
 // useEffect(() => {

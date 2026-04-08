@@ -1,262 +1,239 @@
-# React Frontend Integration Guide for WA-Service
+# React Integration Guide for `wa-service`
 
-This document provides a guide on how to integrate a React frontend with the `wa-service` NestJS backend. The backend exposes a WebSocket gateway for real-time communication.
+This guide provides instructions for the frontend team on how to integrate a React application with the `wa-service` backend using Socket.IO.
 
-## 1. Project Setup
+## 1. Setting up the Connection
 
-First, create a new React application using your preferred tool, such as Create React App or Vite.
-
-```bash
-npx create-react-app wa-frontend
-cd wa-frontend
-```
-
-Next, you'll need to install the `socket.io-client` library to communicate with the WebSocket server.
+First, you need to install the `socket.io-client` library:
 
 ```bash
 npm install socket.io-client
 ```
 
-## 2. WebSocket Connection
-
-The backend WebSocket server is running on port 96. You'll need to establish a connection to it from your React application.
-
-Create a new file `src/socket.js` to manage the socket connection centrally.
+Then, you can establish a connection to the backend:
 
 ```javascript
-// src/socket.js
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
-// Replace with your server's URL
-const URL = 'http://localhost:96';
+const socket = io("http://localhost:3000"); // Replace with your backend URL
 
-export const socket = io(URL, {
-  autoConnect: false
+socket.on("connect", () => {
+  console.log("Connected to the server");
+});
+
+socket.on("disconnect", () => {
+  console.log("Disconnected from the server");
 });
 ```
 
-## 3. Interacting with the Backend
+## 2. Authentication
 
-You can now use the `socket` instance to listen for events from the server and emit events to it.
+The backend uses a UUID for authentication. You need to provide the UUID as a query parameter when connecting to the server. The server will validate the UUID and if it is invalid, the connection will be rejected.
 
-### 3.1. Initializing the Connection
-
-To start a WhatsApp client session, you need to emit an `init` event with the user's phone number. The user's authentication token should be sent along with the connection request to identify them.
-
-Here's an example of how you might do this in a React component:
-
-```jsx
-// src/App.js
-import React, { useState, useEffect } from 'react';
-import { socket } from './socket';
-
-function App() {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [qrCode, setQrCode] = useState('');
-  const [chats, setChats] = useState([]);
-  const [contacts, setContacts] = useState([]);
-
-  useEffect(() => {
-    // Assuming you have the user's auth token
-    const authToken = 'your-auth-token'; // Replace with the actual token
-    socket.auth = { token: authToken };
-
-    socket.connect();
-
-    function onConnect() {
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
-    function onInit(data) {
-      if (data.success) {
-        setChats(data.chats);
-        setContacts(data.contacts);
-      } else {
-        console.error('Initialization failed:', data.error);
-      }
-    }
-
-    function onQr(qr) {
-      setQrCode(qr);
-    }
-
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('init', onInit);
-    socket.on('qr', onQr);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('init', onInit);
-      socket.off('qr', onQr);
-      socket.disconnect();
-    };
-  }, []);
-
-  const initializeClient = (phoneNumber) => {
-    socket.emit('init', { phone: phoneNumber });
-  };
-
-  return (
-    <div className="App">
-      <h1>WhatsApp Client</h1>
-      {/* UI to get phone number and call initializeClient */}
-      {qrCode && <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCode)}&size=200x200`} alt="QR Code" />}
-      {/* UI to display chats and contacts */}
-    </div>
-  );
-}
-
-export default App;
+```javascript
+const socket = io("http://localhost:3000", {
+  query: {
+    uuid: "YOUR_USER_UUID", // Replace with the actual user UUID
+  },
+});
 ```
 
-### 3.2. Listening for Server Events
+**Note on CORS:** The backend is configured to only accept connections from a specific frontend URL. Make sure the `FRONTEND_URL` environment variable is set correctly in the backend's `.env` file.
 
-Your React application should listen for various events from the server to update its state. Here are some of the key events:
+## 3. WebSocket Events
 
-- **`success_login`**: Fired when the WhatsApp client successfully logs in.
-- **`new_message`**: Fired when a new message is received.
-- **`listChats`**: Provides the list of chats for the user.
-- **`getChatMessages`**: Provides messages for a specific chat.
+This section details the WebSocket events you can emit from the client and the events you should listen for from the server.
 
-### 3.3. Emitting Events to the Server
+### 3.1. Emitting Events (Client to Server)
 
-To perform actions, you'll emit events to the server. Here are a few examples:
+#### `init`
 
-- **`listChats`**: Request the list of chats for the current user.
-- **`getChatMessages`**: Request messages for a specific chat.
-- **`sendMessage`**: Send a new message.
+Initializes the WhatsApp client for a specific phone number.
 
-```jsx
-// Example of sending a message
-const sendMessage = (to, message) => {
-  socket.emit('sendMessage', { to, message });
-};
-
-// Example of fetching chats
-const fetchChats = () => {
-  socket.emit('listChats');
-};
-```
-
-## 4. Component Structure
-
-A good way to structure your React application would be to have separate components for different parts of the UI:
-
-- **`ChatList.js`**: Displays the list of chats.
-- **`ChatWindow.js`**: Displays the messages for a selected chat and includes an input for sending new messages.
-- **`ContactList.js`**: Displays the list of contacts.
-
-This modular approach will make your application easier to manage and scale.
-
-This guide should provide a solid foundation for building your React frontend. If you have any questions or need further clarification, feel free to ask!
-
-## 5. Advanced Features
-
-Here's how to use the more advanced WhatsApp features that have been added to the backend.
-
-### 5.1. Get Contact Info
-
-To get detailed information about a specific contact:
-
-```jsx
-// Get contact info
-const getContactInfo = (contactId) => {
-  socket.emit('getContactById', { contactId });
-};
-
-// Listen for the response
-socket.on('getContactById', (response) => {
-  if (response.success) {
-    console.log('Contact Info:', response.contact);
-  } else {
-    console.error('Failed to get contact info:', response.error);
+- **Event:** `init`
+- **Payload:**
+  ```javascript
+  {
+    phone: "PHONE_NUMBER", // The phone number to initialize
+    name: "CLIENT_NAME", // A name for the client
+    uuid: "USER_UUID" // The user's UUID
   }
-});
-```
+  ```
+- **Example:**
+  ```javascript
+  socket.emit("init", { phone: "1234567890", name: "MyClient", uuid: "user-123" });
+  ```
 
-### 5.2. Mute/Unmute Chat
+#### `logout`
 
-To mute or unmute a chat:
+Logs out the WhatsApp client.
 
-```jsx
-// Mute a chat
-const muteChat = (chatId) => {
-  socket.emit('muteChat', { chatId });
-};
+- **Event:** `logout`
+- **Example:**
+  ```javascript
+  socket.emit("logout");
+  ```
 
-// Unmute a chat
-const unmuteChat = (chatId) => {
-  socket.emit('unmuteChat', { chatId });
-};
+#### `getChatMessages`
 
-// Listen for responses
-socket.on('muteChat', (response) => console.log(response));
-socket.on('unmuteChat', (response) => console.log(response));
-```
+Retrieves messages from a specific chat.
 
-### 5.3. Block/Unblock Contact
-
-To block or unblock a contact:
-
-```jsx
-// Block a contact
-const blockContact = (contactId) => {
-  socket.emit('blockContact', { contactId });
-};
-
-// Unblock a contact
-const unblockContact = (contactId) => {
-  socket.emit('unblockContact', { contactId });
-};
-
-// Listen for responses
-socket.on('blockContact', (response) => console.log(response));
-socket.on('unblockContact', (response) => console.log(response));
-```
-
-### 5.4. Mark Chat as Read/Unread
-
-To change the read status of a chat:
-
-```jsx
-// Mark as read
-const markAsRead = (chatId) => {
-  socket.emit('markChatAsRead', { chatId });
-};
-
-// Mark as unread
-const markAsUnread = (chatId) => {
-  socket.emit('markChatAsUnread', { chatId });
-};
-
-// Listen for responses
-socket.on('markChatAsRead', (response) => console.log(response));
-socket.on('markChatAsUnread', (response) => console.log(response));
-```
-
-### 5.5. Create a Group
-
-To create a new group with a list of participants:
-
-```jsx
-// Create a group
-const createGroup = (name, participants) => {
-  // participants should be an array of contact IDs, e.g., ['1234567890@c.us', '0987654321@c.us']
-  socket.emit('createGroup', { name, participants });
-};
-
-// Listen for the response
-socket.on('createGroup', (response) => {
-  if (response.success) {
-    console.log('Group created:', response.group);
-  } else {
-    console.error('Failed to create group:', response.error);
+- **Event:** `getChatMessages`
+- **Payload:**
+  ```javascript
+  {
+    chatId: "CHAT_ID", // The ID of the chat
+    limit: 50, // Optional: The number of messages to retrieve
+    fromMe: false // Optional: Whether to retrieve messages from the user
   }
-});
-```
+  ```
+- **Example:**
+  ```javascript
+  socket.emit("getChatMessages", { chatId: "1234567890@c.us", limit: 50 });
+  ```
+
+#### `sendMessage`
+
+Sends a message to a specific chat.
+
+- **Event:** `sendMessage`
+- **Payload:**
+  ```javascript
+  {
+    to: "CHAT_ID", // The ID of the chat to send the message to
+    message: "Hello, world!" // The message content
+  }
+  ```
+- **Example:**
+  ```javascript
+  socket.emit("sendMessage", { to: "1234567890@c.us", message: "Hello!" });
+  ```
+
+#### Other Events
+
+The following events are also available. They all take a `chatId` or `contactId` in the payload.
+
+- `syncChats`
+- `pinChat`
+- `archiveChat`
+- `unarchiveChat`
+- `listChats`
+- `getProfilePic`
+- `getContactById`
+- `muteChat`
+- `unmuteChat`
+- `blockContact`
+- `unblockContact`
+- `markChatAsRead`
+- `markChatAsSeen`
+- `markChatAsUnread`
+- `createGroup`
+
+### 3.2. Listening for Events (Server to Client)
+
+#### `qr`
+
+Fired when a QR code is available for scanning.
+
+- **Event:** `qr`
+- **Payload:** `string` (The QR code as a string)
+- **Example:**
+  ```javascript
+  socket.on("qr", (qr) => {
+    // Display the QR code to the user
+  });
+  ```
+
+#### `init`
+
+Fired when the WhatsApp client has been initialized.
+
+- **Event:** `init`
+- **Payload:**
+  ```javascript
+  {
+    success: true,
+    chats: [], // An array of chat objects
+    contacts: [] // An array of contact objects
+  }
+  ```
+- **Example:**
+  ```javascript
+  socket.on("init", (data) => {
+    if (data.success) {
+      console.log("Client initialized successfully");
+    } else {
+      console.error("Initialization failed:", data.error);
+    }
+  });
+  ```
+
+#### `getChatMessages`
+
+Fired in response to the `getChatMessages` event.
+
+- **Event:** `getChatMessages`
+- **Payload:**
+  ```javascript
+  {
+    success: true,
+    messages: [] // An array of message objects
+  }
+  ```
+- **Example:**
+  ```javascript
+  socket.on("getChatMessages", (data) => {
+    if (data.success) {
+      // Process the messages
+    }
+  });
+  ```
+
+#### `new_message`
+
+Fired when a new message is received.
+
+- **Event:** `new_message`
+- **Payload:** `object` (The message object)
+- **Example:**
+  ```javascript
+  socket.on("new_message", (message) => {
+    // Add the new message to the chat
+  });
+  ```
+
+#### `message_sent`
+
+Fired when a message has been successfully sent.
+
+- **Event:** `message_sent`
+- **Payload:** `object` (The sent message object)
+- **Example:**
+  ```javascript
+  socket.on("message_sent", (message) => {
+    // Update the UI to show the message as sent
+  });
+  ```
+
+#### `message_error`
+
+Fired when there is an error sending a message.
+
+- **Event:** `message_error`
+- **Payload:**
+  ```javascript
+  {
+    success: false,
+    error: "ERROR_MESSAGE"
+  }
+  ```
+- **Example:**
+  ```javascript
+  socket.on("message_error", (error) => {
+    console.error("Failed to send message:", error.error);
+  });
+  ```
+
+#### Other Events
+
+You should also listen for the corresponding response events for the other client-to-server events you emit (e.g., `sync_chats`, `pinChat`, etc.). These events will typically have a payload with a `success` property and, if `success` is `true`, the requested data.

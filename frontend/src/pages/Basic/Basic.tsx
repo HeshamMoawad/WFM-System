@@ -200,6 +200,9 @@ const Basic: FC<BasicProps> = () => {
                                     }
                                 ])}
                             />
+                            <div className='w-full text-center'>
+                                Total Basic : {(data?.results as any).reduce((total:number,obj:User)=>total+ ( obj?.has_basic ? obj?.has_basic : 0),0)} EGP
+                            </div>
                         </>
                     ) : (
                         <></>

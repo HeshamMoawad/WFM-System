@@ -10,6 +10,7 @@ import { AppChat } from "../../features/chats/chatSlice";
 import useSocket from "../../hooks/useSocket";
 import { useDispatch } from "react-redux";
 import { setMyChats } from "../../features/mychats/mychatsSlice";
+import { CLIENTID } from "../../utils/constants";
 
 interface WhatsAppWebProps {
 }
@@ -17,7 +18,7 @@ interface WhatsAppWebProps {
 export const WhatsAppWeb: FC<WhatsAppWebProps> = () => {
     const [refresh , setRefresh] = useState(false);
     const [currentChat , setCurrentChat] = useState<AppChat | null>(null);
-    const _ =  useSocket()
+    const socket =  useSocket()
     const dispatch = useDispatch()
     const [refreshMyChats , setRefreshMyChats] = useState(false);
     useEffect(() => {
@@ -32,7 +33,10 @@ export const WhatsAppWeb: FC<WhatsAppWebProps> = () => {
         }, 15000);
         return () => clearInterval(interval);
     }, [refreshMyChats , dispatch]);
-    
+    useEffect(() => {
+        if (!socket) return;
+        socket.emit('getChatMessages', { clientId: CLIENTID, chatId: currentChat?.id._serialized });
+    }, [currentChat, socket]);
     return (
             <SocketProvider>
                 <div className={`w-[99%] mx-auto bg-white flex flex-row p-1`}>

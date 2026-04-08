@@ -4,6 +4,7 @@ import { LanguageContext } from "../../contexts/LanguageContext";
 import { TRANSLATIONS } from "../../utils/constants";
 import { MdKeyboardDoubleArrowDown } from "react-icons/md";
 import { getSocket } from "../../services/socket";
+import { CLIENTID } from "../../utils/constants";
 
 interface WAInputMessageProps {
     targetId: string;
@@ -17,10 +18,12 @@ export const WAInputMessage: FC<WAInputMessageProps> = ({ targetId }) => {
         const socket = getSocket();
         if (!socket || !textareaRef.current?.value.trim()) return;
         socket.emit("sendMessage", {
+            clientId: CLIENTID,
             to: targetId,
             message: textareaRef.current.value,
         });
         socket.emit("getChatMessages", {
+            clientId: CLIENTID,
             chatId: targetId,
             limit: 1000,
         });
@@ -60,7 +63,6 @@ export const WAInputMessage: FC<WAInputMessageProps> = ({ targetId }) => {
                 className="text-start rounded-xl p-2 px-4 w-full resize-none border-[gray] bg-light-colors-login-third-bg dark:border-[#374558] dark:bg-dark-colors-login-third-bg" 
                 />
             <button type="submit" disabled={message.trim() === ""} className="bg-[#25d366] rounded-full flex justify-center items-center w-[50px] h-[50px]" onClick={handleSubmit}><IoSend className="w-[20px] h-[20px] text-center"/></button>
-            <button type="button" disabled={message.trim() === ""} className="bg-[#25d366] rounded-full flex justify-center items-center w-[40px] h-[40px]"><MdKeyboardDoubleArrowDown className="w-[30px] h-[30px] text-center"/></button>
         </div>
     );
 }
