@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DB_CONFIG = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    } if POSTGRESQL else {
+    } if not POSTGRESQL else {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'wfmsystem',
             'USER': 'wfm',
