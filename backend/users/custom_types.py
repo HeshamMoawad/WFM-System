@@ -18,3 +18,9 @@ class RequestStatuses (models.TextChoices):
     PENDING = ("PENDING", "Pending")
     ACCEPTED = ("ACCEPTED", "Accepted")
     REJECTED = ('REJECTED','Rejected')
+
+
+class MarketChoices (models.TextChoices):
+    SAUDI = ("SAUDI", "Saudi")
+    AMERICAN = ("AMERICAN", "American")
+    AMERICAN_AND_SAUDI = ("AMERICAN_AND_SAUDI", "American and Saudi")

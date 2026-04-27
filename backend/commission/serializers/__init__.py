@@ -53,6 +53,7 @@ class TargetSliceSerializer(ModelSerializer):
             "max_value",
             "money",
             "is_global",
+            "is_for_americans",
             "is_money_percentage",
             "department",
         ]
@@ -144,6 +145,8 @@ class CommissionSerializer(ModelSerializer):
             "plus_count" ,
             "plus_10" ,
             "plus_10_count" ,
+            "plus_15" ,
+            "plus_15_count" ,
             "american" ,
             "american_count" ,
             "subscriptions" ,
@@ -154,7 +157,7 @@ class CommissionSerializer(ModelSerializer):
             "gift" ,
             "salary" ,
             "date" ,
-            "plus_10" ,
+            "plus_15" ,
         ]
         foreign_models = {
             "user": ForeignField("user",User,'uuid') ,
@@ -179,6 +182,8 @@ class AdditionalSerializer(ModelSerializer):
         fields = [
             "uuid",
             "plus",
+            "plus_10",
+            "plus_15",
             "american_leads",
         ]
 

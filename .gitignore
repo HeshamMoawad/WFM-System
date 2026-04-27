@@ -171,3 +171,5 @@ node_modules/
 backup.sh
 backend/store.json
 backend/store-all.json
+.idea/
+Examples/

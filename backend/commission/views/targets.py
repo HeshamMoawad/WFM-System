@@ -13,6 +13,8 @@ from rest_framework.status import HTTP_400_BAD_REQUEST , HTTP_200_OK
 def get_target_slices(request:Request):
     user_uuid = request.query_params.get("user_uuid",request.data.get("user_uuid",None))
     table_type = request.query_params.get("table_type",request.data.get("table_type",None))
+    is_for_americans = request.query_params.get("is_for_americans",request.data.get("is_for_americans",False))
+    is_for_americans = is_for_americans == "true"
     if user_uuid :
         if table_type == "team" :
             user = User.objects.get(uuid=user_uuid)
@@ -25,7 +27,7 @@ def get_target_slices(request:Request):
             details = UserCommissionDetails.objects.get( user__uuid = user_uuid )
             result_queryset = details.commission_rules.all()
             if details.set_global_commission_rules :
-                result_queryset = TargetSlice.objects.filter(is_global=True,department=details.user.department) | details.commission_rules.all()
+                result_queryset = TargetSlice.objects.filter(is_global=True,department=details.user.department , is_for_americans=is_for_americans) | details.commission_rules.all()
             return Response({"count":"Personal","results":TargetSliceSerializer(result_queryset.order_by("min_value").distinct(),many=True).data},HTTP_200_OK)
     return Response({},HTTP_400_BAD_REQUEST)
 

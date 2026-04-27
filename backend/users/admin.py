@@ -162,8 +162,8 @@ class ArrinigLeavingAdminSite(ImportExportModelAdmin):
 
 
 class LeadAdminSite(ImportExportModelAdmin):
-    list_display = ["user","phone",'project',"date"]
-    list_filter = ["user","date" ,'project']
+    list_display = ["user","phone",'project',"date","market","source"]
+    list_filter = ["user","date" ,'project',"market","source"]
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['phone' ,'name', 'uuid' , 'date__date']  
     fieldsets = FieldSets([
@@ -176,6 +176,8 @@ class LeadAdminSite(ImportExportModelAdmin):
                 'name',
                 'date',
                 'project',
+                'market',
+                'source',
             ],[
                 "uuid" ,
                 "created_at",

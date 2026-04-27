@@ -15,6 +15,7 @@ class TargetSlice(BaseModel):
     name = models.CharField(verbose_name="Name", max_length=150)
     min_value = models.PositiveIntegerField(verbose_name="Min Value")
     max_value = models.PositiveIntegerField(verbose_name="Max Value" )
+    is_for_americans = models.BooleanField(verbose_name="Is For American Leads" , default=False)
     money = models.CharField(verbose_name="Commission", max_length=100)
     is_money_percentage = models.BooleanField(verbose_name="Set Commession as Percentage")
     is_global = models.BooleanField(verbose_name="Set Global Rule")
@@ -134,6 +135,8 @@ class Commission(BaseModel):
     plus = models.FloatField(verbose_name="Plus +5" , default=0)
     plus_10_count = models.IntegerField(verbose_name="Plus 10 Count" , default=0)
     plus_10 = models.FloatField(verbose_name="Plus +10" , default=0)
+    plus_15_count = models.IntegerField(verbose_name="Plus 15 Count" , default=0)
+    plus_15 = models.FloatField(verbose_name="Plus +15" , default=0)
     american = models.FloatField(verbose_name="American Leads" , default=0)
     american_count = models.IntegerField(verbose_name="American Leads Count" , default=0)
     subscriptions = models.FloatField(verbose_name="Subscriptions" , default=0)
@@ -182,6 +185,7 @@ class ActionPlan(BaseModel):
 class Additional(BaseModel):
     plus = models.IntegerField(verbose_name="Plus +5 Price"  , default=50)
     plus_10 = models.IntegerField(verbose_name="Plus +10 Price" , default=100)
+    plus_15 = models.IntegerField(verbose_name="Plus +15 Price" , default=150)
     american_leads = models.IntegerField(verbose_name="American Leads Price" )
 
 

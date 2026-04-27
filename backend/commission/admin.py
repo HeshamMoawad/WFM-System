@@ -40,8 +40,8 @@ class DedactionRulesAdminSite(admin.ModelAdmin):
 
 
 class TargetSliceAdminSite(admin.ModelAdmin):
-    list_display = ["name","min_value","max_value", "money" , "is_global" , 'is_money_percentage' , 'department']
-    list_filter = ["is_global" , "department" , "is_money_percentage"]
+    list_display = ["name","min_value","max_value", "money" , "is_for_americans" , "is_global" , 'is_money_percentage' , 'department']
+    list_filter = ["is_global" , "department" , "is_money_percentage" , "is_for_americans"]
     readonly_fields = ['uuid',"created_at","updated_at"]
     search_fields = ['min_value', 'max_value' , "money"] + ["name"] + ['uuid',"created_at","updated_at"]
     fieldsets = FieldSets([
@@ -54,6 +54,7 @@ class TargetSliceAdminSite(admin.ModelAdmin):
                 'max_value',
                 'money',
                 'is_global',
+                'is_for_americans',
                 'is_money_percentage',
                 'department',
             ],[
@@ -173,6 +174,7 @@ class CommissionAdminSite(admin.ModelAdmin):
                 "target_Team" ,
                 "plus" ,
                 "plus_10" ,
+                "plus_15" ,
                 "american" ,
                 "american_count" ,
                 "subscriptions" ,
@@ -211,15 +213,16 @@ class SubscriptionAdminSite(admin.ModelAdmin):
     
     
 class AdditionalAdminSite(admin.ModelAdmin):
-    list_display = ["plus","american_leads","plus_10"]
+    list_display = ["plus","plus_10","plus_15","american_leads"]
     readonly_fields = ['uuid',"created_at","updated_at"]
     fieldsets = FieldSets([
-            'Subscription Fields' ,
+            'Additional Fields' ,
             'Other Fields'
         ],[
             [
                 "plus",
                 "plus_10",
+                "plus_15",
                 "american_leads",
             ],[
                 "uuid" ,

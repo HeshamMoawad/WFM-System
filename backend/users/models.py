@@ -7,7 +7,7 @@ from .managers import (
         ManagerObjects ,
         OwnerObjects
     )
-from .custom_types import UserTypes , RequestTypes , RequestStatuses
+from .custom_types import UserTypes , RequestTypes , RequestStatuses , MarketChoices
 from utils.models_utils import image_upload_path , validate_lead_number , validate_role , validate_user_number
 from django.db.models.signals import pre_save , post_save , post_delete
 from core.models import BaseModel, BasePage, BaseFilter
@@ -190,6 +190,8 @@ class Lead(BaseModel):
     name = models.CharField(verbose_name="Lead Name", max_length=100)
     date = models.DateTimeField(verbose_name="Day Date", null=True,default=now )
     project = models.ForeignKey(Project,verbose_name="Project" , on_delete=models.SET_NULL , null=True)
+    market = models.CharField(verbose_name="Market", max_length=50, choices=MarketChoices.choices, null=True, blank=True)
+    source = models.CharField(verbose_name="Source", max_length=100, null=True, blank=True)
     class Meta:
         constraints = [
             models.UniqueConstraint(

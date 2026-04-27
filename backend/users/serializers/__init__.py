@@ -238,6 +238,8 @@ class LeadSerializer(ModelSerializer):
             "name",
             "date",
             "project",
+            "market",
+            "source",
         ]
         foreign_models = {
             "user": ForeignField("user",User,'uuid') ,

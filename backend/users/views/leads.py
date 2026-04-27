@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from users.models import Lead , User 
 from commission.models import Additional , Team
 from users.serializers import  LeadSerializer
+from users.custom_types import MarketChoices
 from users.views import IsAuthenticated , IsOwner , IsSuperUser
 from django.db import connection 
 import datetime , numpy,calendar
@@ -37,12 +38,26 @@ def upload_sheet(request: Request):
     
     try:
         df = pd.read_excel(file)
-        df = df[["Market","Phone","Date"]]
+        # Handle both Arabic and English column names
+        columns_mapping = {
+            "السوق": "MarketType",
+            "المنصة": "Source",
+            "Market": "Market",  # This is for user assignment
+            "Source": "Source",
+            "Phone": "Phone",
+            "Date": "Date"
+        }
+        df = df.rename(columns=columns_mapping)
+        required_columns = ["Market", "Phone", "Date"]
+        optional_columns = ["MarketType", "Source"]
+        available_columns = [col for col in required_columns if col in df.columns]
+        optional_available = [col for col in optional_columns if col in df.columns]
+        df = df[available_columns + optional_available]
     except Exception as e:
         return Response({"error": f"Error reading Excel file: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
     if 'Phone' not in df.columns or 'Market' not in df.columns:
-        return Response({"error": "Excel file must contain 'Phone' and 'Market' columns"}, status=HTTP_400_BAD_REQUEST)
+        return Response({"error": "Excel file must contain 'Phone' and 'Market' columns (or 'السوق' for Market)"}, status=HTTP_400_BAD_REQUEST)
     
     
     crm_names = User.objects.filter(~Q(crm_username="") & ~Q(crm_username=None) ).values_list("crm_username",flat=True)
@@ -85,12 +100,27 @@ def save_upload(request:Request):
     
     try:
         df = pd.read_excel(file)
-        df = df[["Market","Phone","Date","Name"]]
+        # Handle both Arabic and English column names
+        columns_mapping = {
+            "السوق": "MarketType",
+            "المنصة": "Source",
+            "Market": "Market",  # This is for user assignment
+            "Source": "Source",
+            "Phone": "Phone",
+            "Date": "Date",
+            "Name": "Name"
+        }
+        df = df.rename(columns=columns_mapping)
+        required_columns = ["Market", "Phone", "Date", "Name"]
+        optional_columns = ["MarketType", "Source"]
+        available_columns = [col for col in required_columns if col in df.columns]
+        optional_available = [col for col in optional_columns if col in df.columns]
+        df = df[available_columns + optional_available]
     except Exception as e:
         return Response({"error": f"Error reading Excel file: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
     if 'Phone' not in df.columns or 'Market' not in df.columns:
-        return Response({"error": "Excel file must contain 'Phone' and 'Market' columns"}, status=HTTP_400_BAD_REQUEST)
+        return Response({"error": "Excel file must contain 'Phone' and 'Market' columns (or 'السوق' for Market)"}, status=HTTP_400_BAD_REQUEST)
     
     crm_names = User.objects.filter(~Q(crm_username="") & ~Q(crm_username=None) ).values_list("crm_username",flat=True)
     project = None
@@ -109,6 +139,30 @@ def save_upload(request:Request):
     
     df["Market"] = df["Market"].map(lambda crm_username : User.objects.filter(crm_username=crm_username).first() )
     
+    # Map market values from Arabic to choice values
+    market_mapping = {
+        "سعودي": MarketChoices.SAUDI,
+        "أمريكي": MarketChoices.AMERICAN,
+        "سعودي و أمريكي": MarketChoices.AMERICAN_AND_SAUDI,
+        "أمريكي و سعودي": MarketChoices.AMERICAN_AND_SAUDI,
+        "saudi": MarketChoices.SAUDI,
+        "american": MarketChoices.AMERICAN,
+        "american and saudi": MarketChoices.AMERICAN_AND_SAUDI,
+        "american & saudi": MarketChoices.AMERICAN_AND_SAUDI
+    }
+    
+    # Handle MarketType column (from "السوق")
+    if "MarketType" in df.columns:
+        df["MarketType"] = df["MarketType"].fillna("").astype(str).str.strip()
+        df["MarketType"] = df["MarketType"].map(lambda x: market_mapping.get(x.lower(), ""))
+    else:
+        df["MarketType"] = ""
+        
+    # Handle Source column (from "المنصة")
+    if "Source" in df.columns:
+        df["Source"] = df["Source"].fillna("").astype(str)
+    else:
+        df["Source"] = ""
         
     database_frame = pd.read_sql_query(str(Lead.objects.all().query),connection)
     
@@ -123,6 +177,8 @@ def save_upload(request:Request):
                 name = getattr(row,"Name",""),
                 date =  row["Date"] ,
                 project = project or getattr(row["Market"],"project",None),
+                market = row.get("MarketType", "") or "",
+                source = row.get("Source", "") or "",
                 ) 
             for index , row in df.iterrows()
             if isinstance(row["Market"],User)
@@ -161,9 +217,22 @@ def user_leads(request:Request):
         .annotate(day=TruncDate('date'))
         .values('day')
         .annotate(lead_count=Count('uuid'))
-        .filter(lead_count__gte=10)
+        .filter(lead_count__gte=10, lead_count__lt=15)
         .count()
     )
+    lead_counts_plus_15 = (
+        leads
+        .annotate(day=TruncDate('date'))
+        .values('day')
+        .annotate(lead_count=Count('uuid'))
+        .filter(lead_count__gte=15)
+        .count()
+    )
+    
+    # Count leads by market type
+    saudi_leads_count = leads.filter(market=MarketChoices.SAUDI).count()
+    american_leads_count = leads.filter(Q(market=MarketChoices.AMERICAN) | Q(market=MarketChoices.AMERICAN_AND_SAUDI)).count()
+    total_leads_count = leads.count()
     
     teams_details = []
     teams = Team.objects.filter(leader__uuid= user_uuid)
@@ -173,7 +242,23 @@ def user_leads(request:Request):
             "total" : Lead.objects.filter(date__range = date_range ,user__in = team.agents.all() ).count()
         })
     additional = Additional.objects.first()
-    return Response({"total":leads.count(),"plus":lead_counts , "plus_10":lead_counts_plus_10,"plus_10_value":lead_counts_plus_10 * getattr(additional,"plus_10",30) , "plus_10_price": getattr(additional,"plus_10",30),"teams": teams_details, "plus_value":lead_counts * getattr(additional,"plus",30)  , "plus_price" : getattr(additional,"plus",30), "american_leads_price": getattr(additional,"american_leads",30)})
+    return Response({
+        "total_leads": total_leads_count,
+        "saudi_leads": saudi_leads_count,
+        "american_leads": american_leads_count,
+        "total":leads.count(),
+        "plus":lead_counts , 
+        "plus_10":lead_counts_plus_10,
+        "plus_10_value":lead_counts_plus_10 * getattr(additional,"plus_10",30) , 
+        "plus_10_price": getattr(additional,"plus_10",30),
+        "plus_15":lead_counts_plus_15,
+        "plus_15_value":lead_counts_plus_15 * getattr(additional,"plus_15",30) , 
+        "plus_15_price": getattr(additional,"plus_15",30),
+        "teams": teams_details, 
+        "plus_value":lead_counts * getattr(additional,"plus",30)  , 
+        "plus_price" : getattr(additional,"plus",30), 
+        "american_leads_price": getattr(additional,"american_leads",30)
+    })
 
 
 
