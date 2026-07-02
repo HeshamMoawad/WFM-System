@@ -11,6 +11,7 @@ from .models import (
     Subscription ,
     Additional,
     AmericanSubscription,
+    SalesAmericanSubscription,
     )
 from utils.admin_utils import FieldSets
 
@@ -252,6 +253,24 @@ class ActionPlanAdminSite(admin.ModelAdmin):
             ]
     ]).fieldsets
 
+class SalesAmericanSubscriptionAdminSite(admin.ModelAdmin):
+    list_display = ["name","min_value","max_value","percentage"]
+    readonly_fields = ['uuid',"created_at","updated_at"]
+    fieldsets = FieldSets([
+            'SalesAmericanSubscription Fields' ,
+            'Other Fields'
+        ],[
+            [
+                "name",
+                "min_value",
+                "max_value",
+                "percentage",
+            ],[
+                "uuid" ,
+                "created_at",
+                "updated_at",
+            ]
+    ]).fieldsets
 
 admin.site.register(ActionPlan , ActionPlanAdminSite)
 admin.site.register(Team , TeamAdminSite)
@@ -264,3 +283,5 @@ admin.site.register(Commission , CommissionAdminSite)
 admin.site.register(AmericanSubscription, SubscriptionAdminSite)
 admin.site.register(Subscription , SubscriptionAdminSite)
 admin.site.register(Additional , AdditionalAdminSite)
+admin.site.register(SalesAmericanSubscription, SalesAmericanSubscriptionAdminSite)
+

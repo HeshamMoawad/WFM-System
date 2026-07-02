@@ -171,6 +171,15 @@ class AmericanSubscription(BaseModel):
     count = models.IntegerField(verbose_name="American Subscriptions Count",unique=True)
     value = models.IntegerField(verbose_name="Money" )
 
+class SalesAmericanSubscription(BaseModel):
+    name = models.CharField(verbose_name="Name", max_length=150)
+    min_value = models.PositiveIntegerField(verbose_name="Min Value")
+    max_value = models.PositiveIntegerField(verbose_name="Max Value" )
+    percentage = models.FloatField(verbose_name="Commission Percentage")
+    class Meta:
+        verbose_name = "American Subscription"
+        verbose_name_plural = "American Subscriptions"
+
 
 class ActionPlan(BaseModel):
     user = models.ForeignKey(User, verbose_name="User", on_delete=models.SET_NULL , null=True)

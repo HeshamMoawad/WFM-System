@@ -13,7 +13,8 @@ from commission.models import (
     BasicRecord ,
     Commission ,
     Subscription ,
-    Additional
+    Additional ,
+    SalesAmericanSubscription
 )
 from users.serializers import UserSerializer , DepartmentSerializer
 
@@ -208,3 +209,14 @@ class ActionPlanSerializer(ModelSerializer):
             "user": ForeignField("user",User,'uuid') ,
         }
 
+
+class SalesAmericanSubscriptionSerializer(ModelSerializer):
+    class Meta :
+        model = SalesAmericanSubscription
+        fields = [
+            "uuid",
+            "name",
+            "min_value",
+            "max_value",
+            "percentage",
+        ]

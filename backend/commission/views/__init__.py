@@ -11,7 +11,8 @@ from commission.models import (
     CoinChanger ,
     Team ,
     Subscription,
-    ActionPlan
+    ActionPlan,
+    SalesAmericanSubscription
     )
 from commission.serializers import (
     UserCommissionDetailsSerializer , 
@@ -22,7 +23,8 @@ from commission.serializers import (
     CoinChangerSerializer,
     TeamSerializer , 
     SubscriptionSerializer ,
-    ActionPlanSerializer
+    ActionPlanSerializer ,
+    SalesAmericanSubscriptionSerializer
     )
 
 
@@ -215,3 +217,30 @@ class CommissionAPI(APIViewSet):
                 "plus_10" ,
         ]
     unique_field:str = 'uuid'
+
+
+class SalesAmericanSubscriptionAPI(APIViewSet):
+    model = SalesAmericanSubscription
+    model_serializer= SalesAmericanSubscriptionSerializer
+    order_by = ('-created_at',)
+    search_filters = ["uuid","name", "min_value", "max_value", "percentage"]
+    creating_filters = [
+                "name" ,
+                "min_value" ,
+                "max_value" ,
+                "percentage" ,
+        ]
+    requiered_fields = [
+                "name" ,
+                "min_value" ,
+                "max_value" ,
+                "percentage" ,
+        ]
+    updating_filters = [
+                "name" ,
+                "min_value" ,
+                "max_value" ,
+                "percentage" ,
+        ]
+    unique_field:str = 'uuid'
+
