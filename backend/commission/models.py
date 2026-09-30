@@ -181,6 +181,15 @@ class SalesAmericanSubscription(BaseModel):
         verbose_name_plural = "American Subscriptions"
 
 
+class LeadersAmericanSubscription(BaseModel):
+    count = models.IntegerField(verbose_name="Leaders American Subscriptions Count",unique=True)
+    value = models.IntegerField(verbose_name="Money" )
+
+    class Meta:
+        verbose_name = "Leaders American Subscription"
+        verbose_name_plural = "Leaders American Subscriptions"
+
+
 class ActionPlan(BaseModel):
     user = models.ForeignKey(User, verbose_name="User", on_delete=models.SET_NULL , null=True)
     name = models.CharField(verbose_name="Action Plan Name", max_length=100)

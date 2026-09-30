@@ -14,7 +14,8 @@ from commission.models import (
     Commission ,
     Subscription ,
     Additional ,
-    SalesAmericanSubscription
+    SalesAmericanSubscription,
+    LeadersAmericanSubscription
 )
 from users.serializers import UserSerializer , DepartmentSerializer
 
@@ -219,4 +220,14 @@ class SalesAmericanSubscriptionSerializer(ModelSerializer):
             "min_value",
             "max_value",
             "percentage",
+        ]
+
+
+class LeadersAmericanSubscriptionSerializer(ModelSerializer):
+    class Meta :
+        model = LeadersAmericanSubscription
+        fields = [
+            "uuid",
+            "count",
+            "value",
         ]

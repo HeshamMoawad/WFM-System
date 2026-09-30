@@ -12,7 +12,8 @@ from commission.models import (
     Team ,
     Subscription,
     ActionPlan,
-    SalesAmericanSubscription
+    SalesAmericanSubscription,
+    LeadersAmericanSubscription
     )
 from commission.serializers import (
     UserCommissionDetailsSerializer , 
@@ -24,7 +25,8 @@ from commission.serializers import (
     TeamSerializer , 
     SubscriptionSerializer ,
     ActionPlanSerializer ,
-    SalesAmericanSubscriptionSerializer
+    SalesAmericanSubscriptionSerializer ,
+    LeadersAmericanSubscriptionSerializer
     )
 
 
@@ -242,5 +244,15 @@ class SalesAmericanSubscriptionAPI(APIViewSet):
                 "max_value" ,
                 "percentage" ,
         ]
+    unique_field:str = 'uuid'
+
+
+class LeadersAmericanSubscriptionAPI(APIViewSet):
+    # permission_classes = [IsSuperUser , IsOwner]
+    allowed_methods = ["GET"]
+    pagination_class = Pagination1K
+    model = LeadersAmericanSubscription
+    model_serializer= LeadersAmericanSubscriptionSerializer
+    search_filters = ["uuid","count","value"]
     unique_field:str = 'uuid'
 

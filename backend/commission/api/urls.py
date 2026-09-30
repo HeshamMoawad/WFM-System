@@ -10,7 +10,8 @@ from commission.views import (
     SubscriptionAPI ,
     CommissionAPI , 
     ActionPlanAPI ,
-    SalesAmericanSubscriptionAPI
+    SalesAmericanSubscriptionAPI,
+    LeadersAmericanSubscriptionAPI
     )
 from ..views.basic import get_users_with_has_basic , get_users_with_basic_commission
 from ..views.targets import get_target_slices 
@@ -26,6 +27,7 @@ urlpatterns = [
     path('subscription',SubscriptionAPI.as_view()),
     path('american-subscription',AmericanSubscriptionAPI.as_view()),
     path('sales-american-subscription',SalesAmericanSubscriptionAPI.as_view()),
+    path('leaders-american-subscription',LeadersAmericanSubscriptionAPI.as_view()),
     path('salary',CommissionAPI.as_view()),
     path('team',TeamAPI.as_view()),
     path('targets',get_target_slices),
